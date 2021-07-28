@@ -69,11 +69,27 @@ def save_mat(loc_list, efo_list, dcr_list, save_path):
 
 
 if __name__ == '__main__':
-    folder_name1 = r'W:\桌面\1'
-    path1 = r'W:\桌面'
-    data_list1, file_list1, num1 = read_npy(folder_name1)
-    for i, j in enumerate(num1):
-        data1 = data_list1[i]
-        loc_list1, efo_list1, dcr_list1 = get_itr_9(data1)
-        save_path1 = path1 + r'\{}.mat'.format(file_list1[j])
-        save_mat(loc_list1, efo_list1, dcr_list1, save_path1)
+    mode = 0
+    if mode == 0:
+        folder_name1 = r'W:\桌面\1'
+        path1 = r'W:\桌面'
+        data_list1, file_list1, num1 = read_npy(folder_name1)
+        for i, j in enumerate(num1):
+            data1 = data_list1[i]
+            loc_list1, efo_list1, dcr_list1 = get_itr_9(data1)
+            save_path1 = path1 + r'\{}.mat'.format(file_list1[j])
+            save_mat(loc_list1, efo_list1, dcr_list1, save_path1)
+
+    elif mode == 1:
+        # Import the saved data.
+        mfx = np.load('W:\桌面\PSD95 647 RIM 594 M2.npy')
+
+        # Get localization coordinates (3D) of valid events...
+        loc = mfx[mfx['vld']]['itr']['loc'][:,-1,:]
+
+        # ... and split them into individual components (x,y,z).
+        loc_x, loc_y, loc_z = loc.T
+
+        # Get the mean effective detection rate at tcp offset (out-of-center) positions
+        # during the final iteration (denoted by the index -1) of valid events.
+        efo = mfx[mfx['vld']]['itr']['efo'][:,-1]

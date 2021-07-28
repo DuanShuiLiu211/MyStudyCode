@@ -15,15 +15,23 @@ def read_npy(folder_name):
 
 
 def get_itr_4(data):
+    tic_list = []
     loc_list = []
     efo_list = []
+    cfr_list = []
     dcr_list = []
     for itr in data:
         if itr['vld']:
             itr_list = itr[0]
+            tic = itr_list[4]['tic']
             loc = itr_list[4]['loc']
             efo = itr_list[4]['efo']
+            cfr = itr_list[4]['cfr']
             dcr = itr_list[4]['dcr']
+            if not np.isnan(tic):
+                tic_list.append(tic)
+            else:
+                tic_list.append(None)
             if not (np.isnan(loc[0]) or np.isnan(loc[1])):
                 loc_list.append(loc)
             else:
@@ -32,23 +40,39 @@ def get_itr_4(data):
                 efo_list.append(efo)
             else:
                 efo_list.append(None)
+            if not np.isnan(cfr):
+                cfr_list.append(cfr)
+            else:
+                cfr_list.append(None)
             if not np.isnan(dcr):
                 dcr_list.append(dcr)
             else:
                 dcr_list.append(None)
-    return loc_list, efo_list, dcr_list
+    return tic_list, loc_list, efo_list, cfr_list, dcr_list
 
 
 def get_itr_9(data):
+    tic_list = []
     loc_list = []
     efo_list = []
+    cfr_list = []
     dcr_list = []
     for itr in data:
         if itr['vld']:
+            # dtype: [('itr', '<i4'), ('tic', '<u4'), ('loc', '<f8', (3,)), ('eco', '<i4'), ('ecc', '<i4'),
+            # ('efo', '<f8'), ('efc', '<f8'), ('sta', '<i4'), ('cfr', '<f8'), ('dcr', '<f8'), ('ext', '<f8', (3,)),
+            # ('gvy', '<f8'), ('gvx', '<f8'), ('eoy', '<f8'), ('eox', '<f8'), ('dmz', '<f8'), ('lcy', '<f8'),
+            # ('lcx', '<f8'), ('lcz', '<f8'), ('fbg', '<f8')]
             itr_list = itr[0]
+            tic = itr_list[9]['tic']
             loc = itr_list[9]['loc']
             efo = itr_list[9]['efo']
+            cfr = itr_list[9]['cfr']
             dcr = itr_list[9]['dcr']
+            if not np.isnan(tic):
+                tic_list.append(tic)
+            else:
+                tic_list.append(None)
             if not (np.isnan(loc[0]) or np.isnan(loc[1]) or np.isnan(loc[2])):
                 loc_list.append(loc)
             else:
@@ -57,39 +81,39 @@ def get_itr_9(data):
                 efo_list.append(efo)
             else:
                 efo_list.append(None)
+            if not np.isnan(cfr):
+                cfr_list.append(cfr)
+            else:
+                cfr_list.append(None)
             if not np.isnan(dcr):
                 dcr_list.append(dcr)
             else:
                 dcr_list.append(None)
-    return loc_list, efo_list, dcr_list
+    return tic_list, loc_list, efo_list, cfr_list, dcr_list
 
 
-def save_mat(loc_list, efo_list, dcr_list, save_path):
-    io.savemat(save_path, {'loc': loc_list, 'efo': efo_list, 'dcr': dcr_list})
+def save_mat(tic_list, loc_list, efo_list, cfr_list, dcr_list, save_path):
+    io.savemat(save_path, {'tic': tic_list, 'loc': loc_list, 'efo': efo_list, 'cfr': cfr_list, 'dcr': dcr_list})
 
 
 if __name__ == '__main__':
     mode = 0
     if mode == 0:
-        folder_name1 = r'W:\桌面\1'
-        path1 = r'W:\桌面'
+        folder_name1 = r'/Volumes/GAIN-WH/Minflux/0625'
+        path1 = r'/Volumes/GAIN-WH/Minflux'
         data_list1, file_list1, num1 = read_npy(folder_name1)
         for i, j in enumerate(num1):
             data1 = data_list1[i]
-            loc_list1, efo_list1, dcr_list1 = get_itr_9(data1)
+            tic_list1, loc_list1, efo_list1, cfr_list1, dcr_list1 = get_itr_9(data1)
             save_path1 = path1 + r'\{}.mat'.format(file_list1[j])
-            save_mat(loc_list1, efo_list1, dcr_list1, save_path1)
+            save_mat(tic_list1, loc_list1, efo_list1, cfr_list1, dcr_list1, save_path1)
 
     elif mode == 1:
         # Import the saved data.
-        mfx = np.load('W:\桌面\PSD95 647 RIM 594 M2.npy')
-
-        # Get localization coordinates (3D) of valid events...
-        loc = mfx[mfx['vld']]['itr']['loc'][:,-1,:]
-
-        # ... and split them into individual components (x,y,z).
-        loc_x, loc_y, loc_z = loc.T
-
-        # Get the mean effective detection rate at tcp offset (out-of-center) positions
         # during the final iteration (denoted by the index -1) of valid events.
-        efo = mfx[mfx['vld']]['itr']['efo'][:,-1]
+        mfx = np.load('\桌面\PSD95 647 RIM 594 M2.npy')
+        tic1 = mfx[mfx['vld']]['itr']['tic'][:, -1]
+        loc1 = mfx[mfx['vld']]['itr']['loc'][:, -1, :]
+        efo1 = mfx[mfx['vld']]['itr']['efo'][:, -1]
+        cfr1 = mfx[mfx['vld']]['itr']['cfr'][:, -1]
+        dcr1 = mfx[mfx['vld']]['itr']['dcr'][:, -1]

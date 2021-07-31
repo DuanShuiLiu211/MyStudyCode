@@ -1,7 +1,6 @@
-import torch
 import numpy as np
+import torch
 from PIL import Image
-import matplotlib.pyplot as plt
 
 x = torch.empty(5, 3)
 

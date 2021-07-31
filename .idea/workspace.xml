@@ -3,8 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="0accaf47-eb8f-4abf-9ff4-a5d30053cf69" name="默认变更列表" comment="6">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/随想/MinfluxNpyToMat.py" beforeDir="false" afterPath="$PROJECT_DIR$/随想/MinfluxNpyToMat.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/随想/采数据.py" beforeDir="false" afterPath="$PROJECT_DIR$/随想/采数据.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/练习/2.py" beforeDir="false" afterPath="$PROJECT_DIR$/练习/2.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,6 +20,9 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/练习/2.py" root0="FORCE_HIGHLIGHTING" />
+  </component>
   <component name="ProjectId" id="1vLrCmPxbF1J2cJgm2VdiIdMdPD" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -31,7 +33,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="restartRequiresConfirmation" value="false" />
-    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RunManager" selected="Python.MinfluxNpyToMat">
     <configuration name="采数据" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">

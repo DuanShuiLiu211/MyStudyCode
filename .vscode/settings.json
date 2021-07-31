@@ -7,7 +7,7 @@
         "cpp": "cd $dir && g++ $fileName -o $fileNameWithoutExt && $dir$fileNameWithoutExt",
         "objective-c": "cd $dir && gcc -framework Cocoa $fileName -o $fileNameWithoutExt && $dir$fileNameWithoutExt",
         "php": "php",
-        "python": "set PYTHONIOENCODING=utf8 && /Users/WangHao/应用/miniconda3/envs/Py39/bin/python3.9",
+        "python": "set PYTHONIOENCODING=utf8 && /Users/WangHao/Program/Miniconda/miniconda3/envs/Py39/bin/python3.9",
         "perl": "perl",
         "perl6": "perl6",
         "ruby": "ruby",

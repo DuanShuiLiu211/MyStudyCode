@@ -1,6 +1,7 @@
 import time
 import warnings
 import numpy as np
+from scipy import io
 from scipy.special import binom
 from functools import lru_cache
 import matplotlib.pyplot as plt
@@ -289,25 +290,24 @@ class ZernikeWavefront:
             [a * z.phase(rho=rho, theta=theta, normed=normed, outside=outside) for z, a in self.zernikes.items()],
             axis=0)
 
+    # TODO: 给定振幅范围并随机产生振幅，计算 zernike 多项式，其中部分代码需要调整
+    def random_wavefront(self, amplitude_ranges, order='noll'):
+        """
+            Creates random wavefront with random amplitudes drawn from a uniform distribution
 
-# 给定振幅范围并随机产生振幅，计算 zernike 多项式
-def random_zernike_wavefront(amplitude_ranges, order='noll'):
-    """
-        Creates random zernike wavefront with random amplitudes drawn from a uniform distribution
-
-        :param amplitude_ranges: dictionary, nd array, tuple or list, amplitude bounds
-        :param order: string, to define the Zernike nomenclature if index is an integer, eg noll or ansi,
-                              default is noll
-        :return: Zernike wavefront object
-    """
-    ranges = np.random
-    amplitude_ranges = ensure_dict(amplitude_ranges, order)
-    all((np.isscalar(v) and v >= 0) or (isinstance(v, (tuple, list)) and len(v) == 2) for v in
-        amplitude_ranges.values()) or present(ValueError('false in one elements of the iterable'))  # 必须全部跌倒迭代都正确
-    amplitude_ranges = {k: ((-v, v) if np.isscalar(v) else v) for k, v in amplitude_ranges.items()}
-    all(v[0] <= v[1] for v in amplitude_ranges.values()) or present(
-        ValueError("Lower bound is expected to be less than the upper bound"))
-    return ZernikeWavefront({k: ranges.uniform(*v) for k, v in amplitude_ranges.items()}, order=order)
+            :param amplitude_ranges: dictionary, nd array, tuple or list, amplitude bounds
+            :param order: string, to define the Zernike nomenclature if index is an integer, eg noll or ansi,
+                                  default is noll
+            :return: Zernike wavefront object
+        """
+        ranges = np.random
+        amplitude_ranges = ensure_dict(amplitude_ranges, order)
+        all((np.isscalar(v) and v >= 0) or (isinstance(v, (tuple, list)) and len(v) == 2) for v in
+            amplitude_ranges.values()) or present(ValueError('false in one elements of the iterable'))  # 必须全部跌倒迭代都正确
+        amplitude_ranges = {k: ((-v, v) if np.isscalar(v) else v) for k, v in amplitude_ranges.items()}
+        all(v[0] <= v[1] for v in amplitude_ranges.values()) or present(
+            ValueError("Lower bound is expected to be less than the upper bound"))
+        return ZernikeWavefront({k: ranges.uniform(*v) for k, v in amplitude_ranges.items()}, order=order)
 
 
 class PsfGenerator3D:
@@ -406,11 +406,11 @@ class PsfGenerator3D:
 
 
 if __name__ == '__main__':
-    mode = 2
+    mode = 4
     if mode == 1:
         f1 = Zernike((1, 1), order='ansi')
-        aberration1 = f1.polynomial(512)
-        plt.imshow(aberration1)
+        w2 = f1.polynomial(512)
+        plt.imshow(w2)
         plt.colorbar()
         plt.axis('off')
         plt.show()
@@ -423,7 +423,7 @@ if __name__ == '__main__':
         plt.axis('off')
         plt.show()
 
-        f3 = random_zernike_wavefront([(0, 0), (-1, 1), (1, 2)], order='ansi')
+        f3 = f2.random_wavefront([(0, 0), (-1, 1), (1, 2)], order='ansi')
         aberration3 = f3.polynomial(512)
         plt.imshow(aberration3)
         plt.colorbar()
@@ -433,16 +433,15 @@ if __name__ == '__main__':
     elif mode == 2:
         start = time.time()
         psf1 = PsfGenerator3D(psf_shape=(95, 256, 256), units=(0.032, 0.016, 0.016),
-                              na_detection=1.4, lam_detection=0.775, n=1.4)
-        wf1 = ZernikeWavefront({(3, -3): 0.3875}, order='ansi')
+                              na_detection=1.4, lam_detection=0.775, n=1.518)
+        wf1 = ZernikeWavefront({(3, -3): -0.775 / 4}, order='ansi')
         h1 = psf1.incoherent_psf(wf1, normed=True)
         for idx, img in enumerate(h1):
             print(idx, np.max(img))
             print(idx, img.sum())
-            plt.imsave(f'/Users/WangHao/Desktop/1/{idx}.png', img, dpi=300)
         end = time.time()
         print("运行时间:%.2f秒" % (end - start))
-        w1 = wf1.polynomial(64)
+        w1 = wf1.polynomial(256)
         phase1 = wf1.phase(psf1.k_rho, psf1.k_phi, normed=True, outside=None)
         phase1 = np.fft.fftshift(phase1)
 
@@ -482,7 +481,7 @@ if __name__ == '__main__':
         k_rho = r / k_cut
         k_phi = np.arctan2(y1, x1)
         k_mask = (r <= k_cut)
-        f4 = ZernikeWavefront({(3, -3): 0.3875}, order='ansi')
+        f4 = ZernikeWavefront({(3, -3): -0.3875}, order='ansi')
 
         ab1 = np.fft.fftshift(k_mask * f4.phase(k_rho, k_phi, normed=True, outside=None))
         ab12 = np.fft.fftshift(np.abs(np.fft.ifftn(ab1, axes=(0, 1))) ** 2)
@@ -535,4 +534,15 @@ if __name__ == '__main__':
         plt.colorbar()
         plt.title('aberration')
 
+        plt.show()
+
+    elif mode == 4:
+        save_path = 'W:/桌面/1229/归一化/'
+        amp = 1
+        wf2 = ZernikeWavefront({(3, 3): amp}, order='ansi')
+        w2 = wf2.polynomial(177, normed=True)
+        io.savemat(f'{save_path}3,3,{amp}.mat', {'data': w2})
+        plt.imshow(w2)
+        plt.colorbar()
+        plt.axis('off')
         plt.show()

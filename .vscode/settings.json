@@ -7,7 +7,7 @@
         "cpp": "cd $dir && g++ $fileName -o $fileNameWithoutExt && $dir$fileNameWithoutExt",
         "objective-c": "cd $dir && gcc -framework Cocoa $fileName -o $fileNameWithoutExt && $dir$fileNameWithoutExt",
         "php": "php",
-        "python": "set PYTHONIOENCODING=utf8 && /Users/WangHao/Program/Miniconda/miniconda3/envs/Py39/bin/python3.9",
+        "python": "set PYTHONIOENCODING=utf8 && /Users/WangHao/Program/Conda/miniconda3/envs/Py38/bin/python3.8",
         "perl": "perl",
         "perl6": "perl6",
         "ruby": "ruby",
@@ -51,6 +51,5 @@
         "fortran-modern": "cd $dir && gfortran $fileName -o $fileNameWithoutExt && $dir$fileNameWithoutExt",
         "fortran_fixed-form": "cd $dir && gfortran $fileName -o $fileNameWithoutExt && $dir$fileNameWithoutExt",
         "fortran": "cd $dir && gfortran $fileName -o $fileNameWithoutExt && $dir$fileNameWithoutExt"
-    },
-    "jupyter.jupyterServerType": "remote"
+    }
 }

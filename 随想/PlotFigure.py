@@ -30,7 +30,7 @@ plot.close(plot.figure(1))
 
 # 举例二
 fig = plot.figure(2, figsize=(2, 2), dpi=300, frameon=True)
-image = np.array([[1, 1, 1, 1],[2, 2, 2 ,2],[3, 3, 3, 3],[4, 4, 4, 4]])
+image = np.array([[1, 1, 1, 1], [2, 2, 2 ,2], [3, 3, 3, 3], [4, 4, 4, 4]])
 # 绘图时可以设置绘图框架轴的横纵比，色彩图以及色彩映射关系，插值方法和绘图区域位置等
 '''
 imshow(X, cmap=None, norm=None, aspect=None,
@@ -41,7 +41,7 @@ imshow(X, cmap=None, norm=None, aspect=None,
 plot.imshow(image, cmap='gray')
 plot.margins(0., 0.)
 plot.axis('off')
-plot.subplots_adjust(0.,0.,1.,1.,0.,0.)
+plot.subplots_adjust(0., 0., 1., 1., 0., 0.)
 plot.close(plot.figure(2))
 fig.savefig('image2.tiff', bbox_inches='tight', pad_inches=0., transparent=True)
 plot.show()

@@ -2,15 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="561a736f-3da3-4169-83ce-51708bf6bb24" name="变更" comment="开拓对matplotlib的学习">
-      <change afterPath="$PROJECT_DIR$/.idea/other.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/随想/Animation.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/Script.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Script.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.vscode/launch.json" beforeDir="false" afterPath="$PROJECT_DIR$/.vscode/launch.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.vscode/settings.json" beforeDir="false" afterPath="$PROJECT_DIR$/.vscode/settings.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/随想/PlotFigure.py" beforeDir="false" afterPath="$PROJECT_DIR$/随想/PlotFigure.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/随想/信号/fourier4.gif" beforeDir="false" afterPath="$PROJECT_DIR$/随想/信号/fourier4.gif" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/随想/信号/fouriermethod.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/随想/信号/fouriermethod.ipynb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -155,8 +147,16 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1640849921137</updated>
-      <workItem from="1647797618653" duration="1755000" />
+      <workItem from="1647797618653" duration="2511000" />
     </task>
+    <task id="LOCAL-00001" summary="开拓对matplotlib的学习">
+      <created>1647801915869</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1647801915869</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -178,6 +178,10 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="开拓对matplotlib的学习" />
+    <option name="LAST_COMMIT_MESSAGE" value="开拓对matplotlib的学习" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Script$0319.coverage" NAME="0319 覆盖结果" MODIFIED="1647662458481" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/算法" />

@@ -49,7 +49,6 @@ class Object3D(ABC):
 class Points(Object3D):
     """
         Creates multiple points
-
         :param shape: tuple, object shape as (z, y, x), e.g. (64, 64, 64)
         :param num: integer, number of points, e.g. 3
         :param center: boolean, whether to have a point at the center, default is True
@@ -87,7 +86,6 @@ class Points(Object3D):
 class Sphere(Object3D):
     """
         Creates 3d sphere
-
         :param shape: tuple, object shape as (z, y, x), e.g. (64, 64, 64)
         :param units: tuple, voxel size in microns, e.g. (0.1, 0.1, 0.1)
         :param radius: scalar, radius of sphere in microns, e.g. 0.75
@@ -128,22 +126,22 @@ class Sphere(Object3D):
 class Images(Object3D):
     """
         Creates 3d sphere
-
         :param shape: tuple, object shape as (z, y, x), e.g. (64, 64, 64)
         :param filepath: string, filepath, e.g. W:/.../.../1.tif
-        :param augment: boolean, whether to resize the image, default is False
     """
 
-    def __init__(self, shape, filepath, augment=False):
+    def __init__(self, shape, filepath):
         super().__init__(shape)
         self.shape = shape
-        self.augment = augment
         self.image = tifffile.imread(filepath)
         self.generate()
 
     def generate(self):
-        self.image.ndim == 3 or present(ValueError("3d image required"))
-        self.object = self.image
+        if self.image.ndim in (3, 4):
+            present('need gray image not rgb image')
+        else:
+            self.object = self.image * np.ones(self.shape)
+
         self.check_object()
 
     def get(self):
@@ -159,7 +157,6 @@ Object3D.register(Images)
 class Noises:
     """
         Add noise to data
-
         :param image: 3d array as image
         :param snr: scalar or tuple, signal to noise ratio
         :param mean: scalar or tuple, mean background noise
@@ -216,7 +213,6 @@ class Noises:
 def cropper(image, crop_shape, jitter=False, max_jitter=None, planes=None):
     """
         Crops 3d data
-
         :param image: 3d array, image to be cropped
         :param crop_shape: tuple, crop shape
         :param jitter: boolean, randomly move the center point within a given limit, default is False
@@ -255,47 +251,78 @@ def cropper(image, crop_shape, jitter=False, max_jitter=None, planes=None):
 
 
 if __name__ == '__main__':
+    # 设置所需泽尼克模式字典
+    # -------------------------------------------------------------------------------------------------------------- #
     zernike_nm = {
+        'defocus': (2, 0),
         'astig_vert': (2, -2),
         'astig_obli': (2, 2),
+        'astig_2th_vert': (4, -2),
+        'astig_2th_obli': (4, 2),
         'coma_vert': (3, -1),
         'coma_obli': (3, 1),
+        'coma_2th_vert': (5, -1),
+        'coma_2th_obli': (5, 1),
         'spher_1st': (4, 0),
         'spher_2st': (6, 0),
         'spher_3st': (8, 0),
+        'spher_4st': (10, 0),
         'trefo_vert': (3, -3),
         'trefo_obli': (3, 3),
+        'trefo_2th_vert': (4, -4),
+        'trefo_2th_obli': (4, 4),
     }
 
     all_mode_name = zernike_nm.keys()
 
-    # -------------------- 模式1：生成最大最小振幅的系统 Psf；模式2：最大最小振幅范围均匀采样生成系统 Psf -------------------- #
-    mode = 2
-    # -------------------- 模式3：最大最小振幅范围随机均匀采样生成 Psf 与输入物体的 Psf ----------------------------------- #
+    # 设置程序工作模式
+    # -------------------------------------------------------------------------------------------------------------- #
+    """
+    模式1：生成最大、零和最小像差的系统 Psf
+    模式2：最大最小像差范围均匀采样生成系统 Psf
+    模式3：最大最小像差范围随机均匀采样生成 Psf 与输入物体的成像结果
+    模式4：生成 Psf 焦面上的结果
+    """
 
-    file_db = 'W:/桌面/像差补偿/ZernikeOpticsSimulation/Data1'
+    mode = 1
+
+    # 设置数据存储路径
+    # -------------------------------------------------------------------------------------------------------------- #
+
+    file_db = 'Data'
     if not os.path.exists(file_db):
         os.makedirs(file_db)
-    file_db1 = 'W:/桌面/像差补偿/ZernikeOpticsSimulation/Data1/Aberration'
+    file_db1 = 'Data/Aberration'
     if not os.path.exists(file_db1):
         os.makedirs(file_db1)
-    file_db2 = 'W:/桌面/像差补偿/ZernikeOpticsSimulation/Data1/Psf'
+    file_db2 = 'Data/Psf'
     if not os.path.exists(file_db2):
         os.makedirs(file_db2)
 
+    # 程序各个模式的执行逻辑
+    # -------------------------------------------------------------------------------------------------------------- #
     if mode == 1:
-        nm_amp = {v: [-0.775 / 4, 0.775 / 4] for k, v in zernike_nm.items()}
+        object_params = {'object_name': 'images',
+                         'shape': (11, 502, 502),
+                         'filepath': '/Users/WangHao/工作/纳米光子中心/全光相关/数据-0325/F-actin_Nonlinear_Uint16/training_wf/0009.tif'}
+        the_object = Object3D.instantiate(**object_params)
+        obj = the_object.get()
+
+        nm_amp = {v: [-0.775 / 4, 0, 0.775 / 4] for k, v in zernike_nm.items()}
         start1 = time.time()
         for i, (key, value) in enumerate(nm_amp.items()):
             mode_name = list(all_mode_name)[i]
             start2 = time.time()
             for j, v in enumerate(value):
                 zwf = ZernikeWavefront({key: v}, order='ansi')
-                psf = PsfGenerator3D(psf_shape=(121, 256, 256), units=(0.032, 0.016, 0.016),
-                                     na_detection=1.4, lam_detection=0.775, n=1.518)
+                psf = PsfGenerator3D(psf_shape=(11, 502, 502), units=(0.16, 0.0313, 0.0313),
+                                     na_detection=1.7, lam_detection=0.488, n=1.518)
 
-                zwf_xy = zwf.polynomial(256, normed=True, outside=0)
-                psf_zxy = psf.incoherent_psf(zwf, normed=True)
+                zwf_xy = zwf.polynomial(502, normed=True, outside=0)
+                psf_zxy = psf.incoherent_psf_abs(zwf, normed=True)
+                psf_obj = []
+                for idx in range(11):
+                    psf_obj.append(convolve(obj[idx] ** 2, psf_zxy[idx], 'same'))
 
                 index_news = list(zwf.zernikes.keys())
 
@@ -324,29 +351,42 @@ if __name__ == '__main__':
                 for k, img in enumerate(psf_zxy):
                     plt.imsave(f'{psf_zxy_save_dir}_{k}.png', img, dpi=300)
 
+                psf_obj_save_dir = os.path.join(psf_save_dir_base,
+                                                f'{mode_name}_{v:.4f}_{index_news[0].index_noll}_{j}_psf_obj')
+                for k, img in enumerate(psf_obj):
+                    plt.imsave(f'{psf_obj_save_dir}_{k}.png', img, dpi=300)
+
             end2 = time.time()
             print("运行时间:%.2f秒" % (end2 - start2))
         end1 = time.time()
         print("运行时间:%.2f秒" % (end1 - start1))
 
     elif mode == 2:
-        nm_amp = {v: np.arange(
-            np.round(-0.775 / 4 * 1. / np.sqrt((1. + (v[1] == 0)) / (2. * v[0] + 2)) / np.sqrt(np.pi), 3),
-            np.round(0.775 / 4 * 1. / np.sqrt((1. + (v[1] == 0)) / (2. * v[0] + 2)) / np.sqrt(np.pi), 3),
-            0.00025) for k, v in zernike_nm.items()}
+        # # 按照 Sted 显微镜的精度设置 (-0.5π， 0.5π) 的像差
+        # nm_amp = {v: np.arange(
+        #     np.round(-0.775 / 4 * 1. / np.sqrt((1. + (v[1] == 0)) / (2. * v[0] + 2)) / np.sqrt(np.pi), 3),
+        #     np.round(0.775 / 4 * 1. / np.sqrt((1. + (v[1] == 0)) / (2. * v[0] + 2)) / np.sqrt(np.pi), 3),
+        #     0.00025) for k, v in zernike_nm.items()}
+        # 按照理论值等精度设置 (-0.5π， 0.5π) 的像差
+        nm_amp = {v: np.arange(np.round(-0.775 / 4, 3), np.round(0.775 / 4, 3), 0.0002588)
+                  for k, v in zernike_nm.items()}
         start1 = time.time()
-        index_save_dir = os.path.join(file_db, 'nine_mode_index')
+        index_save_dir = os.path.join(file_db, 'all_mode_index')
         np.save(index_save_dir, nm_amp)
         for i, (key, value) in enumerate(nm_amp.items()):
             mode_name = list(all_mode_name)[i]
             start2 = time.time()
             for j, v in enumerate(value):
                 zwf = ZernikeWavefront({key: v}, order='ansi')
-                psf = PsfGenerator3D(psf_shape=(121, 256, 256), units=(0.032, 0.016, 0.016),
+                psf = PsfGenerator3D(psf_shape=(3, 129, 129), units=(0.1, 0.1, 0.1),
                                      na_detection=1.4, lam_detection=0.775, n=1.518)
 
-                zwf_xy = zwf.polynomial(256, normed=False, outside=0)
-                psf_zxy = psf.incoherent_psf(zwf, normed=False)
+                zwf_xy = zwf.polynomial(129, normed=True, outside=0)
+                psf_zxy = psf.incoherent_psf(zwf, normed=True)
+
+                # import matplotlib.pyplot as plot
+                # plot.imshow(np.abs(psf_zxy[1, :, :]))
+                # plot.show()
 
                 index_news = list(zwf.zernikes.keys())
 
@@ -362,7 +402,7 @@ if __name__ == '__main__':
                     os.makedirs(psf_save_dir_base)
                 psf_zxy_save_dir = os.path.join(psf_save_dir_base,
                                                 f'{mode_name}_{v:.5f}_{index_news[0].index_noll}_{j}_psf_zxy')
-                np.save(psf_zxy_save_dir, psf_zxy)
+                np.save(psf_zxy_save_dir, psf_zxy[1, :, :])
 
             end2 = time.time()
             print("运行时间:%.2f秒" % (end2 - start2))
@@ -375,14 +415,13 @@ if __name__ == '__main__':
                          'shape': (121, 256, 256),
                          'units': (0.032, 0.016, 0.016)}
         the_object = Object3D.instantiate(**object_params)
-        the_object.generate()
         obj = the_object.get()
         normamp = 0
         if normamp:
-            # 归一化下的幅值对应的相差(-0.5π, 0.5π)
+            # 归一化下的幅值对应的相差(-π, π)
             nm_amp = {v: np.round(np.random.uniform(-0.775 / 4, 0.775 / 4, 2000), 4) for k, v in zernike_nm.items()}
         else:
-            # 未归一化的幅值对应的相差(-0.5π, 0.5π)
+            # 未归一化的幅值对应的相差(-π, π)
             nm_amp = {v: np.arange(
                 np.round(-0.775 / 4 * 1. / np.sqrt((1. + (v[1] == 0)) / (2. * v[0] + 2)) / np.sqrt(np.pi), 3),
                 np.round(0.775 / 4 * 1. / np.sqrt((1. + (v[1] == 0)) / (2. * v[0] + 2)) / np.sqrt(np.pi), 3),
@@ -423,5 +462,35 @@ if __name__ == '__main__':
 
             end2 = time.time()
             print("运行时间:%.2f秒" % (end2 - start2))
+        end1 = time.time()
+        print("运行时间:%.2f秒" % (end1 - start1))
+
+    elif mode == 4:
+
+        start1 = time.time()
+
+        zwf = ZernikeWavefront({(0, 0): 0}, order='ansi')
+        psf = PsfGenerator3D(psf_shape=(3, 129, 129), units=(0.1, 0.1, 0.1),
+                             na_detection=1.4, lam_detection=0.775, n=1.518)
+
+        zwf_xy = zwf.polynomial(129, normed=False, outside=0)
+        psf_zxy = psf.incoherent_psf(zwf, normed=False)
+
+        index_news = list(zwf.zernikes.keys())
+
+        zwf_save_dir_base = os.path.join(file_db1, 'piston')
+        if not os.path.exists(zwf_save_dir_base):
+            os.makedirs(zwf_save_dir_base)
+        zwf_xy_save_dir = os.path.join(zwf_save_dir_base,
+                                       f'piston_{0:.5f}_{index_news[0].index_noll}_{0}_zwf_xy')
+        np.save(zwf_xy_save_dir, zwf_xy)
+
+        psf_save_dir_base = os.path.join(file_db2, 'piston')
+        if not os.path.exists(psf_save_dir_base):
+            os.makedirs(psf_save_dir_base)
+        psf_zxy_save_dir = os.path.join(psf_save_dir_base,
+                                        f'piston_{0:.5f}_{index_news[0].index_noll}_{0}_psf_zxy')
+        np.save(psf_zxy_save_dir, psf_zxy[1, :, :])
+
         end1 = time.time()
         print("运行时间:%.2f秒" % (end1 - start1))

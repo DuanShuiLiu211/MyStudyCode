@@ -1,16 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="561a736f-3da3-4169-83ce-51708bf6bb24" name="变更" comment="开拓对matplotlib的学习">
+    <list default="true" id="78529805-a04e-4921-8499-9af8e6795f7f" name="变更" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/练习/24.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/随想/OpticsConvolutionNet.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/随想/ZernikeOpticsSimulation/2D Fourier transforms and applications.pdf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/随想/ZernikeOpticsSimulation/ZernikePolynomials.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/Script.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Script.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/other.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/other.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/算法/0322.py" beforeDir="false" afterPath="$PROJECT_DIR$/算法/0322.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/随想/PlotFigure.py" beforeDir="false" afterPath="$PROJECT_DIR$/随想/PlotFigure.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/随想/ZernikeOpticsSimulation/ZernikeOptics.py" beforeDir="false" afterPath="$PROJECT_DIR$/随想/ZernikeOpticsSimulation/ZernikeOptics.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/随想/ZernikeOpticsSimulation/ZernikeSimulation.py" beforeDir="false" afterPath="$PROJECT_DIR$/随想/ZernikeOpticsSimulation/ZernikeSimulation.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/随想/复变函数模块.py" beforeDir="false" afterPath="$PROJECT_DIR$/随想/复变函数模块.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/随想/收益.py" beforeDir="false" afterPath="$PROJECT_DIR$/随想/收益/收益.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
-  </component>
-  <component name="ExportToHTMLSettings">
-    <option name="OUTPUT_DIRECTORY" value="$PROJECT_DIR$/exportToHTML" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -20,52 +32,38 @@
     </option>
   </component>
   <component name="Git.Settings">
-    <branch-grouping />
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
-  <component name="ProjectId" id="22zoknt0U18GXhy8z7rmR6Ck0u7" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectId" id="26mujjZ7tuhT0ojxT60bzAopZec" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
-    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/随想/ZernikeOpticsSimulation" />
+    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/随想/ZernikeOpticsSimulation" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/随想/TensorflowVein" />
+      <recent name="$PROJECT_DIR$/随想" />
+      <recent name="$PROJECT_DIR$/随想/收益" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.Animation">
-    <configuration name="Animation" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="Script" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/随想" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/随想/Animation.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="true" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="PlotFigure" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Python.OpticsConvolutionNet">
+    <configuration name="24" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Script" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -73,12 +71,12 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/随想" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/练习" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/随想/PlotFigure.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/练习/24.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -87,7 +85,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="Tensorflow2.x" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="OpticsConvolutionNet" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Script" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -95,12 +93,12 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/随想/TensorflowVein" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/随想" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/随想/TensorflowVein/Tensorflow2.x.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/随想/OpticsConvolutionNet.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -109,7 +107,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
+    <configuration name="ZernikeSimulation" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Script" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -117,14 +115,14 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/随想/ZernikeOpticsSimulation" />
+      <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/随想/ZernikeOpticsSimulation/ZernikeSimulation.py" />
       <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="true" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
       <option name="REDIRECT_INPUT" value="false" />
@@ -133,30 +131,32 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.Animation" />
-        <item itemvalue="Python.PlotFigure" />
-        <item itemvalue="Python.Tensorflow2.x" />
+        <item itemvalue="Python.OpticsConvolutionNet" />
+        <item itemvalue="Python.ZernikeSimulation" />
+        <item itemvalue="Python.24" />
       </list>
     </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="应用程序级" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="默认任务">
-      <changelist id="561a736f-3da3-4169-83ce-51708bf6bb24" name="变更" comment="" />
-      <created>1640849921137</created>
+      <changelist id="78529805-a04e-4921-8499-9af8e6795f7f" name="变更" comment="" />
+      <created>1648041219172</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1640849921137</updated>
-      <workItem from="1647797618653" duration="2511000" />
+      <updated>1648041219172</updated>
+      <workItem from="1648041221000" duration="140000" />
+      <workItem from="1648041365040" duration="46000" />
+      <workItem from="1648132110681" duration="155000" />
+      <workItem from="1648203844256" duration="743000" />
+      <workItem from="1648204648205" duration="1444000" />
+      <workItem from="1648311492980" duration="2081000" />
+      <workItem from="1648363625083" duration="22000" />
+      <workItem from="1648638024618" duration="7000" />
+      <workItem from="1648865351650" duration="21467000" />
+      <workItem from="1649144823427" duration="30669000" />
+      <workItem from="1649403691090" duration="15857000" />
     </task>
-    <task id="LOCAL-00001" summary="开拓对matplotlib的学习">
-      <created>1647801915869</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1647801915869</updated>
-    </task>
-    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -167,33 +167,23 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State>
-              <option name="CUSTOM_BOOLEAN_PROPERTIES">
-                <map>
-                  <entry key="Show.Git.Branches" value="false" />
-                </map>
-              </option>
-            </State>
+            <State />
           </value>
         </entry>
       </map>
     </option>
   </component>
-  <component name="VcsManagerConfiguration">
-    <MESSAGE value="开拓对matplotlib的学习" />
-    <option name="LAST_COMMIT_MESSAGE" value="开拓对matplotlib的学习" />
+  <component name="XDebuggerManager">
+    <watches-manager>
+      <configuration name="PythonConfigurationType">
+        <watch expression="kwargs" />
+      </configuration>
+    </watches-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/Script$0319.coverage" NAME="0319 覆盖结果" MODIFIED="1647662458481" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/算法" />
-    <SUITE FILE_PATH="coverage/Script$Animation.coverage" NAME="Animation 覆盖结果" MODIFIED="1647800859162" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/随想" />
-    <SUITE FILE_PATH="coverage/Script$PlotFigure.coverage" NAME="PlotFigure 覆盖结果" MODIFIED="1647801009030" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/随想" />
-    <SUITE FILE_PATH="coverage/Script$0318.coverage" NAME="0318 覆盖结果" MODIFIED="1647521742623" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/算法" />
-    <SUITE FILE_PATH="coverage/Script$4fSystemFftEqConv.coverage" NAME="4fSystemFftEqConv 覆盖结果" MODIFIED="1646733356773" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/随想" />
-    <SUITE FILE_PATH="coverage/Script$0312.coverage" NAME="0312 覆盖结果" MODIFIED="1647331683084" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/随想" />
-    <SUITE FILE_PATH="coverage/Script$ZernikeOptics.coverage" NAME="ZernikeOptics 覆盖结果" MODIFIED="1642322906130" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/随想/ZernikeOpticsSimulation" />
-    <SUITE FILE_PATH="coverage/Script$FreqDomaEqConv.coverage" NAME="FreqDomaEqConv 覆盖结果" MODIFIED="1646127056457" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/随想" />
-    <SUITE FILE_PATH="coverage/Script$_.coverage" NAME="动态规划-最长子序列 覆盖结果" MODIFIED="1643599006062" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/算法" />
-    <SUITE FILE_PATH="coverage/Script$0311.coverage" NAME="0311 覆盖结果" MODIFIED="1647079274098" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/算法" />
-    <SUITE FILE_PATH="coverage/Script$ZernikeSimulation.coverage" NAME="ZernikeSimulation 覆盖结果" MODIFIED="1647146628776" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/随想/ZernikeOpticsSimulation" />
+    <SUITE FILE_PATH="coverage/Script$OpticsConvolutionNet.coverage" NAME="OpticsConvolutionNet 覆盖结果" MODIFIED="1649421928578" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/随想" />
+    <SUITE FILE_PATH="coverage/Script$24.coverage" NAME="24 覆盖结果" MODIFIED="1648922392838" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/练习" />
+    <SUITE FILE_PATH="coverage/Script$ZernikeSimulation.coverage" NAME="ZernikeSimulation 覆盖结果" MODIFIED="1649401072225" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/随想/ZernikeOpticsSimulation" />
+    <SUITE FILE_PATH="coverage/Script$FourierOpticsNet.coverage" NAME="OpticsConvolutionNet 覆盖结果" MODIFIED="1649403670530" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/随想" />
   </component>
 </project>

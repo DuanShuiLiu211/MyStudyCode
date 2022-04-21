@@ -546,8 +546,8 @@ if __name__ == '__main__':
         # no cut and mask of psf
         psf1 = PsfGenerator3D(psf_shape=(95, 256, 256), units=(0.032, 0.016, 0.016),
                               na_detection=1.4, lam_detection=0.775, n=1.518, switch=False)
-        w11 = psf1.incoherent_psf(f11, normed=True)[95 // 2, :, :]  # 有像差
-        w12 = psf1.incoherent_psf(f12, normed=True)[95 // 2, :, :]  # 无像差
+        w11 = psf1.incoherent_psf_abs(f11, normed=True)[95 // 2, :, :]  # 有像差
+        w12 = psf1.incoherent_psf_abs(f12, normed=True)[95 // 2, :, :]  # 无像差
 
         fig1 = plt.figure(num=1, figsize=(20, 8))
         plt.subplot(2, 3, 1)
@@ -591,8 +591,8 @@ if __name__ == '__main__':
         # cut and mask of psf
         psf2 = PsfGenerator3D(psf_shape=(95, 256, 256), units=(0.032, 0.016, 0.016),
                               na_detection=1.4, lam_detection=0.775, n=1.518, switch=True)
-        w21 = psf2.incoherent_psf(f21, normed=True)[95 // 2, :, :]  # 无像差
-        w22 = psf2.incoherent_psf(f22, normed=True)[95 // 2, :, :]  # 有像差
+        w21 = psf2.incoherent_psf_abs(f21, normed=True)[95 // 2, :, :]  # 无像差
+        w22 = psf2.incoherent_psf_abs(f22, normed=True)[95 // 2, :, :]  # 有像差
 
         fig2 = plt.figure(num=2, figsize=(20, 8))
         plt.subplot(2, 3, 1)

@@ -1,7 +1,7 @@
-from pylab import mpl
 import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
+from matplotlib.pylab import mpl
 
 
 def plot_ann(number_input, number_hidden, number_output):

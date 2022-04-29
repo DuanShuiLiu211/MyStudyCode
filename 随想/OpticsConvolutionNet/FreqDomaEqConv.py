@@ -22,10 +22,6 @@ sc_ke_pad = sc + 2 * (ke_sc // 2)
 # 2. 以输入图像中心在周围填充空白
 # -------------------------------------------------------------------------------------------------------------------- #
 # -------------------------------------------------------------------------------------------------------------------- #
-"""
-true：周围填充零的输入图像
-k：频域
-"""
 path = r'/Users/WangHao/工作/纳米光子中心/全光相关/实验-0303/0303.png'
 img_1 = Image.open(path).convert('L')
 img_1 = transforms.Compose([transforms.ToTensor(), transforms.Resize((sc, sc))])(img_1).squeeze(0)
@@ -45,25 +41,46 @@ img_tile_1_k_phase = img_tile_1_k.angle()
 # 3. 设计卷积核
 # -------------------------------------------------------------------------------------------------------------------- #
 # -------------------------------------------------------------------------------------------------------------------- #
-list_kernel = []
-kernel_1 = torch.tensor([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
-list_kernel.append(kernel_1)
-kernel_2 = torch.tensor([[2, 0, 0], [0, -1, 0], [0, 0, -1]])
-list_kernel.append(kernel_2)
-kernel_3 = torch.tensor([[1 / 9, 1 / 9, 1 / 9], [1 / 9, 1 / 9, 1 / 9], [1 / 9, 1 / 9, 1 / 9]])
-list_kernel.append(kernel_3)
-kernel_4 = torch.tensor([[-1, -1, -1], [-1, 9, -1], [-1, -1, -1]])
-list_kernel.append(kernel_4)
-kernel_5 = torch.tensor([[0, -1, 0], [-1, 5, -1], [0, -1, 0]])
-list_kernel.append(kernel_5)
-kernel_6 = torch.tensor([[1, 1, 1], [1, -7, 1], [1, 1, 1]])
-list_kernel.append(kernel_6)
-kernel_7 = torch.tensor([[-1, -1, -1], [-1, 8, -1], [-1, -1, -1]])
-list_kernel.append(kernel_7)
-kernel_8 = torch.tensor([[0, 1, 0], [0, 1, 0], [0, 1, 0]])
-list_kernel.append(kernel_8)
-kernel_9 = torch.tensor([[-1, -1, 0], [-1, 0, 1], [0, 1, 1]])
-list_kernel.append(kernel_9)
+if ke_sc % 2 == 0:
+    list_kernel = []
+    kernel_1 = torch.rand((4, 4))
+    list_kernel.append(kernel_1)
+    kernel_2 = torch.rand((4, 4))
+    list_kernel.append(kernel_2)
+    kernel_3 = torch.rand((4, 4))
+    list_kernel.append(kernel_3)
+    kernel_4 = torch.rand((4, 4))
+    list_kernel.append(kernel_4)
+    kernel_5 = torch.rand((4, 4))
+    list_kernel.append(kernel_5)
+    kernel_6 = torch.rand((4, 4))
+    list_kernel.append(kernel_6)
+    kernel_7 = torch.rand((4, 4))
+    list_kernel.append(kernel_7)
+    kernel_8 = torch.rand((4, 4))
+    list_kernel.append(kernel_8)
+    kernel_9 = torch.rand((4, 4))
+    list_kernel.append(kernel_9)
+else:
+    list_kernel = []
+    kernel_1 = torch.tensor([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+    list_kernel.append(kernel_1)
+    kernel_2 = torch.tensor([[2, 0, 0], [0, -1, 0], [0, 0, -1]])
+    list_kernel.append(kernel_2)
+    kernel_3 = torch.tensor([[1 / 9, 1 / 9, 1 / 9], [1 / 9, 1 / 9, 1 / 9], [1 / 9, 1 / 9, 1 / 9]])
+    list_kernel.append(kernel_3)
+    kernel_4 = torch.tensor([[-1, -1, -1], [-1, 9, -1], [-1, -1, -1]])
+    list_kernel.append(kernel_4)
+    kernel_5 = torch.tensor([[0, -1, 0], [-1, 5, -1], [0, -1, 0]])
+    list_kernel.append(kernel_5)
+    kernel_6 = torch.tensor([[1, 1, 1], [1, -7, 1], [1, 1, 1]])
+    list_kernel.append(kernel_6)
+    kernel_7 = torch.tensor([[-1, -1, -1], [-1, 8, -1], [-1, -1, -1]])
+    list_kernel.append(kernel_7)
+    kernel_8 = torch.tensor([[0, 1, 0], [0, 1, 0], [0, 1, 0]])
+    list_kernel.append(kernel_8)
+    kernel_9 = torch.tensor([[-1, -1, 0], [-1, 0, 1], [0, 1, 1]])
+    list_kernel.append(kernel_9)
 
 # 4. 使每个小卷积核均匀平铺与相应位置的输入中心对齐
 # -------------------------------------------------------------------------------------------------------------------- #
@@ -72,9 +89,14 @@ kernel_tile_1 = torch.zeros((scale * sc_ke_pad, scale * sc_ke_pad))
 k = 0
 for r in range(scale):
     for c in range(scale):
-        kernel_tile_1[(sc_ke_pad // 2 - ke_sc // 2) + sc_ke_pad * r:(sc_ke_pad // 2 + ke_sc // 2 + 1) + sc_ke_pad * r,
-                      (sc_ke_pad // 2 - ke_sc // 2) + sc_ke_pad * c:(sc_ke_pad // 2 + ke_sc // 2 + 1) + sc_ke_pad * c] \
-                      = list_kernel[k]
+        if ke_sc % 2 == 0:
+            kernel_tile_1[(sc_ke_pad // 2 - ke_sc // 2) + sc_ke_pad * r:(sc_ke_pad // 2 + ke_sc // 2) + sc_ke_pad * r,
+                          (sc_ke_pad // 2 - ke_sc // 2) + sc_ke_pad * c:(sc_ke_pad // 2 + ke_sc // 2) + sc_ke_pad * c] \
+                          = list_kernel[k]
+        else:
+            kernel_tile_1[(sc_ke_pad // 2 - ke_sc // 2) + sc_ke_pad * r:(sc_ke_pad // 2 + ke_sc // 2 + 1) + sc_ke_pad * r,
+                          (sc_ke_pad // 2 - ke_sc // 2) + sc_ke_pad * c:(sc_ke_pad // 2 + ke_sc // 2 + 1) + sc_ke_pad * c] \
+                          = list_kernel[k]
         k += 1
 
 # 5. 通过傅里叶变换实现深度学习中的卷积计算以及直接执行深度学习卷积计算
@@ -113,7 +135,7 @@ n = 0
 time_start = time.time_ns()
 while n <= 0:
     result_tile_1_conv = torch.conv2d(img_tile_1.unsqueeze(0).unsqueeze(0), kernel_tile_1.unsqueeze(0).unsqueeze(0),
-                                      padding=kernel_tile_1.shape[-1] // 2).squeeze(0).squeeze(0)
+                                      padding=(kernel_tile_1.shape[-2] // 2, kernel_tile_1.shape[-1] // 2)).squeeze(0).squeeze(0)
     result_tile_1_conv_abs = torch.abs(result_tile_1_conv)
     n += 1
 time_end = time.time_ns()
@@ -230,7 +252,10 @@ if switch4:
     plot.colorbar()
 
     plot.subplot(1, 3, 3)
-    plot.imshow(result_tile_1_fft_conv_abs - result_tile_1_conv_abs, cmap='gray')
+    if sc_ke_pad % 2 == 0:
+        plot.imshow(result_tile_1_fft_conv_abs - result_tile_1_conv_abs[:-1, :-1], cmap='gray')
+    else:
+        plot.imshow(result_tile_1_fft_conv_abs - result_tile_1_conv_abs, cmap='gray')
     plot.axis('off')
     plot.title('fft_conv and conv of error')
     plot.colorbar()
@@ -270,7 +295,7 @@ for i in range(scale):
         kernel_add_1[sc_ke_pad * i + sc_ke_pad // 2, sc_ke_pad * j + sc_ke_pad // 2] = 1.
 
 
-result_add_1_fft_conv = torch.fft.ifftshift(torch.fft.ifft2(torch.fft.fftshift(torch.fft.fft2(result_tile_1_fft_conv)) *
+result_add_1_fft_conv = torch.fft.ifftshift(torch.fft.ifft2(torch.fft.fftshift(torch.fft.fft2(result_tile_1_fft_conv_abs)) *
                                                             torch.fft.fftshift(torch.fft.fft2(kernel_add_1))))
 result_add_1_fft_conv_abs = torch.zeros((scale * sc_ke_pad, scale * sc_ke_pad))
 result_add_1_fft_conv_abs[(scale // 2) * sc_ke_pad + (ke_sc // 2):(scale // 2 + 1) * sc_ke_pad - (ke_sc // 2),

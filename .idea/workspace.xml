@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="78529805-a04e-4921-8499-9af8e6795f7f" name="变更" comment="'0410'">
+      <change afterPath="$PROJECT_DIR$/随想/LetterFlowSense.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/随想/OpticsConvolutionNet/FreqDomaEqConv.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/随想/OpticsConvolutionNet/FreqDomaEqConv.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/随想/OpticsConvolutionNet/FreqDomaEqConv.py" beforeDir="false" afterPath="$PROJECT_DIR$/随想/OpticsConvolutionNet/FreqDomaEqConv.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/随想/OpticsConvolutionNet/OpticsConvolutionNet.py" beforeDir="false" afterPath="$PROJECT_DIR$/随想/OpticsConvolutionNet/OpticsConvolutionNet.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,8 +13,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Python Script" />
         <option value="Jupyter Notebook" />
+        <option value="Python Script" />
       </list>
     </option>
   </component>
@@ -52,7 +50,7 @@
       <recent name="$PROJECT_DIR$/随想/收益" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.OpticsConvolutionNet">
+  <component name="RunManager" selected="Python.LetterFlowSense">
     <configuration name="FreqDomaEqConv (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Script" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -97,6 +95,28 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="LetterFlowSense" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Script" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/随想" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/随想/LetterFlowSense.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="OpticsConvolutionNet" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Script" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -111,28 +131,6 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/随想/OpticsConvolutionNet/OpticsConvolutionNet.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="PlotNetwork" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="Script" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/随想" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/随想/PlotNetwork.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -165,11 +163,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.LetterFlowSense" />
         <item itemvalue="Python.OpticsConvolutionNet" />
         <item itemvalue="Python.FreqDomaEqConv (1)" />
         <item itemvalue="Python.optica_net" />
         <item itemvalue="Python.FreqDomaEqConv" />
-        <item itemvalue="Python.PlotNetwork" />
       </list>
     </recent_temporary>
   </component>
@@ -200,7 +198,7 @@
       <workItem from="1650523645470" duration="612000" />
       <workItem from="1650524621828" duration="3733000" />
       <workItem from="1650534428471" duration="3360000" />
-      <workItem from="1650883172291" duration="64224000" />
+      <workItem from="1650883172291" duration="77622000" />
     </task>
     <task id="LOCAL-00001" summary="'0410'">
       <created>1649573496936</created>
@@ -259,6 +257,7 @@
     <SUITE FILE_PATH="coverage/Script$ZernikeSimulation.coverage" NAME="ZernikeSimulation 覆盖结果" MODIFIED="1649401072225" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/随想/ZernikeOpticsSimulation" />
     <SUITE FILE_PATH="coverage/Script$FourierOpticsNet.coverage" NAME="OpticsConvolutionNet 覆盖结果" MODIFIED="1649403670530" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/随想" />
     <SUITE FILE_PATH="coverage/Script$24.coverage" NAME="24 覆盖结果" MODIFIED="1648922392838" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/练习" />
+    <SUITE FILE_PATH="coverage/Script$1.coverage" NAME="LetterFlowSense 覆盖结果" MODIFIED="1651264034172" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/随想" />
     <SUITE FILE_PATH="coverage/Script$FreqDomaEqConv.coverage" NAME="FreqDomaEqConv 覆盖结果" MODIFIED="1650991150797" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/随想" />
     <SUITE FILE_PATH="coverage/Script$optica_net.coverage" NAME="optica_net 覆盖结果" MODIFIED="1651136598465" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$USER_HOME$/Desktop" />
     <SUITE FILE_PATH="coverage/Script$OpticsConvolutionNet.coverage" NAME="OpticsConvolutionNet 覆盖结果" MODIFIED="1651248239269" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/随想" />

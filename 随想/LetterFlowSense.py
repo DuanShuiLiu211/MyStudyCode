@@ -49,8 +49,8 @@ while True:
 
     # 绘制字母流图像
     for i in range(len(drops)):
-        text = random.choice([font.render(str(letter[i]), True, (0, 255, 0)) for i in range(26)])
-        winSur.blit(text, (i * FONT_px, drops[i] * FONT_px))
+        pixeltext = random.choice([font.render(str(letter[i]), True, (0, 255, 0)) for i in range(26)])
+        winSur.blit(pixeltext, (i * FONT_px, drops[i] * FONT_px))
         drops[i] += 1
         if drops[i] * 10 > current_height or random.random() > 0.95:
             drops[i] = 0

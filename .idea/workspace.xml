@@ -2,16 +2,19 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="78529805-a04e-4921-8499-9af8e6795f7f" name="变更" comment="'0410'">
-      <change afterPath="$PROJECT_DIR$/随想/Cython.ipynb" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/随想/DotCython/DotCython.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/随想/DotCython/DotCython.cpython-38-darwin.so" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/随想/DotCython/DotCython.pyx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/随想/DotCython/build/temp.macosx-11.1-arm64-3.8/DotCython.o" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/随想/DotCython/setup.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/随想/矢量运算.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/visualization/events.out.tfevents.1651645748.WangHao.16060.0" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/visualization/events.out.tfevents.1651647317.WangHao.27219.0" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/visualization/events.out.tfevents.1651647563.WangHao.29026.0" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/visualization/events.out.tfevents.1651652747.WangHao.61333.0" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/visualization/events.out.tfevents.1651658457.WangHao.2774.0" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/visualization/events.out.tfevents.1651658770.WangHao.4934.0" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/visualization/events.out.tfevents.1651659130.WangHao.7401.0" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/visualization/events.out.tfevents.1651659267.WangHao.8339.0" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/visualization/trainloss_ce_loss/events.out.tfevents.1651645784.WangHao.16060.1" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/visualization/trainloss_ce_loss/events.out.tfevents.1651647599.WangHao.29026.1" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/随想/LetterFlowSense.py" beforeDir="false" afterPath="$PROJECT_DIR$/随想/LetterFlowSense.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/随想/Cython.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/随想/Cython.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/随想/OpticsConvolutionNet/OpticsConvolutionNet.py" beforeDir="false" afterPath="$PROJECT_DIR$/随想/OpticsConvolutionNet/OpticsConvolutionNet.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,13 +43,15 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_ADD_EXTERNAL_FILES": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "settings.editor.selected.configurable": "editor.preferences.tabs"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;editor.preferences.tabs&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/随想/ZernikeOpticsSimulation" />
@@ -58,7 +63,7 @@
       <recent name="$PROJECT_DIR$/随想/收益" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.标量运算">
+  <component name="RunManager" selected="Python.OpticsConvolutionNet">
     <configuration name="标量运算" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Script" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -73,28 +78,6 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/随想/标量运算.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="矢量运算" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="Script" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/随想" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/随想/矢量运算.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -169,12 +152,33 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="矢量运算" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Script" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/随想" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/随想/矢量运算.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.标量运算" />
-        <item itemvalue="Python.矢量运算" />
-        <item itemvalue="Python.LetterFlowSense" />
         <item itemvalue="Python.OpticsConvolutionNet" />
+        <item itemvalue="Python.标量运算" />
+        <item itemvalue="Python.LetterFlowSense" />
         <item itemvalue="Python.FreqDomaEqConv (1)" />
       </list>
     </recent_temporary>
@@ -212,6 +216,9 @@
       <workItem from="1651426436826" duration="6680000" />
       <workItem from="1651436110510" duration="1487000" />
       <workItem from="1651437878403" duration="14644000" />
+      <workItem from="1651502988221" duration="872000" />
+      <workItem from="1651505121915" duration="17000" />
+      <workItem from="1651648049864" duration="30360000" />
     </task>
     <task id="LOCAL-00001" summary="'0410'">
       <created>1649573496936</created>
@@ -250,6 +257,15 @@
     <option name="LAST_COMMIT_MESSAGE" value="'0410'" />
   </component>
   <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <default-breakpoints>
+        <breakpoint type="python-exception">
+          <properties notifyOnTerminate="true" exception="BaseException">
+            <option name="notifyOnTerminate" value="true" />
+          </properties>
+        </breakpoint>
+      </default-breakpoints>
+    </breakpoint-manager>
     <watches-manager>
       <configuration name="PythonConfigurationType">
         <watch expression="kwargs" />
@@ -265,7 +281,7 @@
     <SUITE FILE_PATH="coverage/Script$1.coverage" NAME="LetterFlowSense 覆盖结果" MODIFIED="1651264034172" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/随想" />
     <SUITE FILE_PATH="coverage/Script$FreqDomaEqConv.coverage" NAME="FreqDomaEqConv 覆盖结果" MODIFIED="1650991150797" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/随想" />
     <SUITE FILE_PATH="coverage/Script$optica_net.coverage" NAME="optica_net 覆盖结果" MODIFIED="1651136598465" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$USER_HOME$/Desktop" />
-    <SUITE FILE_PATH="coverage/Script$OpticsConvolutionNet.coverage" NAME="OpticsConvolutionNet 覆盖结果" MODIFIED="1651248239269" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/随想" />
+    <SUITE FILE_PATH="coverage/Script$OpticsConvolutionNet.coverage" NAME="OpticsConvolutionNet 覆盖结果" MODIFIED="1651827139269" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/随想" />
     <SUITE FILE_PATH="coverage/Script$ZernikeOptics.coverage" NAME="ZernikeOptics 覆盖结果" MODIFIED="1650525892580" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/随想/ZernikeOpticsSimulation" />
     <SUITE FILE_PATH="coverage/Script$PlotNetwork.coverage" NAME="PlotNetwork 覆盖结果" MODIFIED="1650983983541" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/随想" />
   </component>

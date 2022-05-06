@@ -1,4 +1,7 @@
+from pickletools import optimize
 import sys
+import time
+from sklearn.metrics import log_loss
 import torch
 from torch import pi
 from torch import nn
@@ -7,6 +10,8 @@ import numpy as np
 from PIL import Image
 from torchvision import transforms
 import matplotlib.pyplot as plot
+import torch.optim as optim
+from torch.utils.tensorboard import SummaryWriter
 
 
 def initialize_weight(weight):
@@ -89,6 +94,11 @@ class FourOptConv(nn.Module):
         self.weight_mode = weight_mode
         self.visual = visual
         self.input_kernel_size = np.array(input_size) + 2 * (np.array(kernel_size) // 2)
+        self.kernel_add_softmax = torch.nn.Softmax(-1)(torch.rand(scale**2))
+        self.phase_bn_input = torch.nn.BatchNorm2d(1)
+        self.phase_bn_down = torch.nn.BatchNorm2d(1)
+        self.phase_bn_up = torch.nn.BatchNorm2d(1)
+        self.phase_bn_output = torch.nn.BatchNorm2d(1)
 
         # 0426 增加 plane
         if self.weight_mode == "kernel":
@@ -136,7 +146,6 @@ class FourOptConv(nn.Module):
                     self.input_kernel_size[1] * j + (self.input_kernel_size[1] // 2 - self.kernel_size[1] // 2):
                     self.input_kernel_size[1] * j + (self.input_kernel_size[1] // 2 + self.kernel_size[1] // 2 + 1)] \
                         = kernel_list[k]
-                    k += 1
                     kernel_fetch_mask[
                     self.input_kernel_size[0] * i + (self.input_kernel_size[0] // 2 - self.kernel_size[0] // 2):
                     self.input_kernel_size[0] * i + (self.input_kernel_size[0] // 2 + self.kernel_size[0] // 2 + 1),
@@ -151,7 +160,6 @@ class FourOptConv(nn.Module):
                     self.input_kernel_size[1] * j + (self.input_kernel_size[1] // 2 - self.kernel_size[1] // 2):
                     self.input_kernel_size[1] * j + (self.input_kernel_size[1] // 2 + self.kernel_size[1] // 2)] \
                         = kernel_list[k]
-                    k += 1
                     kernel_fetch_mask[
                     self.input_kernel_size[0] * i + (self.input_kernel_size[0] // 2 - self.kernel_size[0] // 2):
                     self.input_kernel_size[0] * i + (self.input_kernel_size[0] // 2 + self.kernel_size[0] // 2),
@@ -165,11 +173,12 @@ class FourOptConv(nn.Module):
                 kernel_add[
                     self.input_kernel_size[0] * i + self.input_kernel_size[0] // 2,
                     self.input_kernel_size[1] * j + self.input_kernel_size[1] // 2] \
-                    = 1
+                    = self.kernel_add_softmax[k]
                 kernel_add_mask[
                     self.input_kernel_size[0] * i + self.input_kernel_size[0] // 2,
                     self.input_kernel_size[1] * j + self.input_kernel_size[1] // 2] \
-                    = 1
+                    = torch.ones(1)
+                k += 1
 
         return nn.Parameter(kernel_fetch), kernel_fetch_mask, nn.Parameter(kernel_add), kernel_add_mask
 
@@ -179,105 +188,311 @@ class FourOptConv(nn.Module):
 
         return nn.Parameter(plane)
 
-    def forward(self, inputs, factor=2, sample_mode='normal'):
-        """现阶段实验可实现的是纯相位调制，即使用卷积核的相谱制作纯相位的衍射板，相应的只能进行退化版的傅立叶卷积，计算时仅使用 angle()"""
+    def forward(self, inputs, factor=2, sample_mode='input'):
+        """现阶段实验可实现的是纯相位调制，即使用平铺卷积核的相谱制作纯相位的衍射板，相应的只能进行退化版的傅立叶卷积，计算时仅使用 angle()"""
         if self.weight_mode == "kernel":
-            if sample_mode == 'normal':
+            if sample_mode == 'input':
                 # 构造输入
                 inputs = pad_inputs(inputs, self.input_kernel_size, self.kernel_size, self.scale)
                 if self.visual:
                     plot.figure(1)
+                    plot.subplot(121)
                     plot.imshow(np.abs(inputs.detach().numpy().squeeze(0).squeeze(0)))
+                    plot.colorbar()
+                    plot.title("Amplitude")
+                    plot.subplot(122)
+                    plot.imshow(inputs.detach().angle().numpy().squeeze(0).squeeze(0))
+                    plot.colorbar()
+                    plot.title("Phase")
+                    plot.show()
 
                 # 特征提取的4f系统
-                outputs = fourier_transform_right(inputs) * fourier_transform_right(self.kernel_fetch * self.kernel_fetch_mask)
+                kernel_fetch_k = fourier_transform_right(self.kernel_fetch * self.kernel_fetch_mask)
+                # phase_plane = torch.exp(1j * (2 * pi * kernel_fetch_k.angle()))
+                phase_plane = torch.exp(1j * (2 * pi * torch.sigmoid(kernel_fetch_k.angle())))
+                outputs = fourier_transform_right(inputs) * phase_plane
                 outputs = fourier_transform_left(outputs)
                 if self.visual:
                     plot.figure(2)
+                    plot.subplot(121)
                     plot.imshow(np.abs(outputs.detach().numpy().squeeze(0).squeeze(0)))
+                    plot.colorbar()
+                    plot.title("Amplitude")
+                    plot.subplot(122)
+                    plot.imshow(outputs.detach().angle().numpy().squeeze(0).squeeze(0))
+                    plot.colorbar()
+                    plot.title("Phase")
+                    plot.show()
 
                 # 特征融合的4f系统
-                outputs = fourier_transform_right(outputs) * fourier_transform_right(self.kernel_add * self.kernel_add_mask)
+                kernel_add_k = fourier_transform_right(self.kernel_add * self.kernel_add_mask)
+                # phase_plane = torch.exp(1j * (2 * pi * kernel_add_k.angle()))
+                phase_plane = torch.exp(1j * (2 * pi * torch.sigmoid(kernel_add_k.angle())))
+                outputs = fourier_transform_right(outputs) * phase_plane
                 outputs = fourier_transform_left(outputs)
                 if self.visual:
                     plot.figure(3)
+                    plot.subplot(121)
                     plot.imshow(np.abs(outputs.detach().numpy().squeeze(0).squeeze(0)))
+                    plot.colorbar()
+                    plot.title("Amplitude")
+                    plot.subplot(122)
+                    plot.imshow(outputs.detach().angle().numpy().squeeze(0).squeeze(0))
+                    plot.colorbar()
+                    plot.title("Phase")
+                    plot.show()
 
                 # 构造输出
                 outputs = unpad_inputs(outputs, self.input_kernel_size, self.kernel_size, self.scale)
                 if self.visual:
                     plot.figure(4)
+                    plot.subplot(121)
                     plot.imshow(np.abs(outputs.detach().numpy().squeeze(0).squeeze(0)))
+                    plot.colorbar()
+                    plot.title("Amplitude")
+                    plot.subplot(122)
+                    plot.imshow(outputs.detach().angle().numpy().squeeze(0).squeeze(0))
+                    plot.colorbar()
+                    plot.title("Phase")
                     plot.show()
+
             elif sample_mode == 'down':
-                # 输入 k 空间下采样
-                _, _, h, w = inputs.shape
-                inputs_k = fourier_transform_right(inputs)[:, :, h // factor - h // (2 * factor):h // factor + h // (2 * factor),
-                           w // factor - w // (2 * factor):w // factor + w // (2 * factor)]
-                inputs = fourier_transform_left(inputs_k)
+                # 频域下采样，调整 NA 降低分辨率
+                # _, _, h, w = inputs.shape
+                # inputs_k = fourier_transform_right(inputs)[:, :, h // factor - h // (2 * factor):h // factor + h // (2 * factor) + 1,
+                #            w // factor - w // (2 * factor):w // factor + w // (2 * factor) + 1]
+                # inputs = torch.fft.ifft2(inputs_k)
+
+                # 空域下采样，插值或池化
+                inputs = torch.nn.UpsamplingNearest2d(scale_factor=0.5)(torch.abs(inputs))
+                # inputs = torch.max_pool2d(torch.abs(inputs), kernel_size=(2, 2), stride=(2, 2))
                 if self.visual:
                     plot.figure(1)
+                    plot.subplot(121)
                     plot.imshow(np.abs(inputs.detach().numpy().squeeze(0).squeeze(0)))
+                    plot.colorbar()
+                    plot.title("Amplitude")
+                    plot.subplot(122)
+                    plot.imshow(np.abs(inputs.detach().angle().numpy().squeeze(0).squeeze(0)))
+                    plot.colorbar()
+                    plot.title("Phase")
+                    plot.show()
 
                 # 构造输入
                 inputs = pad_inputs(inputs, self.input_kernel_size, self.kernel_size, self.scale)
                 if self.visual:
                     plot.figure(2)
+                    plot.subplot(121)
                     plot.imshow(np.abs(inputs.detach().numpy().squeeze(0).squeeze(0)))
+                    plot.colorbar()
+                    plot.title("Amplitude")
+                    plot.subplot(122)
+                    plot.imshow(np.abs(inputs.detach().angle().numpy().squeeze(0).squeeze(0)))
+                    plot.colorbar()
+                    plot.title("Phase")
+                    plot.show()
 
                 # 特征提取的4f系统
-                outputs = fourier_transform_right(inputs) * fourier_transform_right(self.kernel_fetch * self.kernel_fetch_mask)
+                kernel_fetch_k = fourier_transform_right(self.kernel_fetch * self.kernel_fetch_mask)
+                # phase_plane = torch.exp(1j * (2 * pi * kernel_fetch_k.angle()))
+                phase_plane = torch.exp(1j * (2 * pi * torch.sigmoid(kernel_fetch_k.angle())))
+                outputs = fourier_transform_right(inputs) * phase_plane
                 outputs = fourier_transform_left(outputs)
                 if self.visual:
                     plot.figure(3)
+                    plot.subplot(121)
                     plot.imshow(np.abs(outputs.detach().numpy().squeeze(0).squeeze(0)))
+                    plot.colorbar()
+                    plot.title("Amplitude")
+                    plot.subplot(122)
+                    plot.imshow(outputs.detach().angle().numpy().squeeze(0).squeeze(0))
+                    plot.colorbar()
+                    plot.title("Phase")
+                    plot.show()
 
                 # 特征融合的4f系统
-                outputs = fourier_transform_right(outputs) * fourier_transform_right(self.kernel_add * self.kernel_add_mask)
+                kernel_add_k = fourier_transform_right(self.kernel_add * self.kernel_add_mask)
+                # phase_plane = torch.exp(1j * (2 * pi * kernel_add_k.angle()))
+                phase_plane = torch.exp(1j * (2 * pi * torch.sigmoid(kernel_add_k.angle())))
+                outputs = fourier_transform_right(outputs) * phase_plane
                 outputs = fourier_transform_left(outputs)
                 if self.visual:
                     plot.figure(4)
+                    plot.subplot(121)
                     plot.imshow(np.abs(outputs.detach().numpy().squeeze(0).squeeze(0)))
+                    plot.colorbar()
+                    plot.title("Amplitude")
+                    plot.subplot(122)
+                    plot.imshow(outputs.detach().angle().numpy().squeeze(0).squeeze(0))
+                    plot.colorbar()
+                    plot.title("Phase")
+                    plot.show()
 
                 # 构造输出
                 outputs = unpad_inputs(outputs, self.input_kernel_size, self.kernel_size, self.scale)
                 if self.visual:
                     plot.figure(5)
+                    plot.subplot(121)
                     plot.imshow(np.abs(outputs.detach().numpy().squeeze(0).squeeze(0)))
+                    plot.colorbar()
+                    plot.title("Amplitude")
+                    plot.subplot(122)
+                    plot.imshow(outputs.detach().angle().numpy().squeeze(0).squeeze(0))
+                    plot.colorbar()
+                    plot.title("Phase")
                     plot.show()
+
             elif sample_mode == 'up':
-                # TODO:输入空域上采样(仍然需要研究更合适的方式)
-                inputs = fourier_transform_right(torch.nn.UpsamplingNearest2d(scale_factor=factor)(torch.abs(inputs)))
+                # 空域上采样
+                _, _, h, w = inputs.shape
+                if (h % 2 == 0) & (w % 2 == 0):
+                    inputs = torch.nn.UpsamplingNearest2d(size=(h * factor, w * factor))(torch.abs(inputs))
+                elif (h % 2 == 1) & (w % 2 == 1):
+                    inputs = torch.nn.UpsamplingNearest2d(size=((h + 1) * factor - 1, (w + 1) * factor - 1))(torch.abs(inputs))
+                else:
+                    print("保证输入为方形")
+                    sys.exit()
                 if self.visual:
                     plot.figure(1)
+                    plot.subplot(121)
                     plot.imshow(np.abs(inputs.detach().numpy().squeeze(0).squeeze(0)))
+                    plot.colorbar()
+                    plot.title("Amplitude")
+                    plot.subplot(122)
+                    plot.imshow(np.abs(inputs.detach().angle().numpy().squeeze(0).squeeze(0)))
+                    plot.colorbar()
+                    plot.title("Phase")
+                    plot.show()
 
                 # 构造输入
                 inputs = pad_inputs(inputs, self.input_kernel_size, self.kernel_size, self.scale)
                 if self.visual:
                     plot.figure(2)
+                    plot.subplot(121)
                     plot.imshow(np.abs(inputs.detach().numpy().squeeze(0).squeeze(0)))
+                    plot.colorbar()
+                    plot.title("Amplitude")
+                    plot.subplot(122)
+                    plot.imshow(np.abs(inputs.detach().angle().numpy().squeeze(0).squeeze(0)))
+                    plot.colorbar()
+                    plot.title("Phase")
+                    plot.show()
 
                 # 特征提取的4f系统
-                outputs = fourier_transform_right(inputs) * fourier_transform_right(self.kernel_fetch * self.kernel_fetch_mask)
+                kernel_fetch_k = fourier_transform_right(self.kernel_fetch * self.kernel_fetch_mask)
+                # phase_plane = torch.exp(1j * (2 * pi * kernel_fetch_k.angle()))
+                phase_plane = torch.exp(1j * (2 * pi * torch.sigmoid(kernel_fetch_k.angle())))
+                outputs = fourier_transform_right(inputs) * phase_plane
                 outputs = fourier_transform_left(outputs)
                 if self.visual:
                     plot.figure(3)
+                    plot.subplot(121)
                     plot.imshow(np.abs(outputs.detach().numpy().squeeze(0).squeeze(0)))
+                    plot.colorbar()
+                    plot.title("Amplitude")
+                    plot.subplot(122)
+                    plot.imshow(outputs.detach().angle().numpy().squeeze(0).squeeze(0))
+                    plot.colorbar()
+                    plot.title("Phase")
+                    plot.show()
 
                 # 特征融合的4f系统
-                outputs = fourier_transform_right(outputs) * fourier_transform_right(self.kernel_add * self.kernel_add_mask)
+                kernel_add_k = fourier_transform_right(self.kernel_add * self.kernel_add_mask)
+                # phase_plane = torch.exp(1j * (2 * pi * kernel_add_k.angle()))
+                phase_plane = torch.exp(1j * (2 * pi * torch.sigmoid(kernel_add_k.angle())))
+                outputs = fourier_transform_right(outputs) * phase_plane
                 outputs = fourier_transform_left(outputs)
                 if self.visual:
                     plot.figure(4)
+                    plot.subplot(121)
                     plot.imshow(np.abs(outputs.detach().numpy().squeeze(0).squeeze(0)))
+                    plot.colorbar()
+                    plot.title("Amplitude")
+                    plot.subplot(122)
+                    plot.imshow(outputs.detach().angle().numpy().squeeze(0).squeeze(0))
+                    plot.colorbar()
+                    plot.title("Phase")
+                    plot.show()
 
                 # 构造输出
                 outputs = unpad_inputs(outputs, self.input_kernel_size, self.kernel_size, self.scale)
                 if self.visual:
                     plot.figure(5)
+                    plot.subplot(121)
                     plot.imshow(np.abs(outputs.detach().numpy().squeeze(0).squeeze(0)))
+                    plot.colorbar()
+                    plot.title("Amplitude")
+                    plot.subplot(122)
+                    plot.imshow(outputs.detach().angle().numpy().squeeze(0).squeeze(0))
+                    plot.colorbar()
+                    plot.title("Phase")
                     plot.show()
+
+            elif sample_mode == 'output':
+                # 构造输入
+                inputs = pad_inputs(inputs, self.input_kernel_size, self.kernel_size, self.scale)
+                if self.visual:
+                    plot.figure(1)
+                    plot.subplot(121)
+                    plot.imshow(np.abs(inputs.detach().numpy().squeeze(0).squeeze(0)))
+                    plot.colorbar()
+                    plot.title("Amplitude")
+                    plot.subplot(122)
+                    plot.imshow(inputs.detach().angle().numpy().squeeze(0).squeeze(0))
+                    plot.colorbar()
+                    plot.title("Phase")
+                    plot.show()
+
+                # 特征提取的4f系统
+                kernel_fetch_k = fourier_transform_right(self.kernel_fetch * self.kernel_fetch_mask)
+                # phase_plane = torch.exp(1j * (2 * pi * kernel_fetch_k.angle()))
+                phase_plane = torch.exp(1j * (2 * pi * torch.sigmoid(kernel_fetch_k.angle())))
+                outputs = fourier_transform_right(inputs) * phase_plane
+                outputs = fourier_transform_left(outputs)
+                if self.visual:
+                    plot.figure(2)
+                    plot.subplot(121)
+                    plot.imshow(np.abs(outputs.detach().numpy().squeeze(0).squeeze(0)))
+                    plot.colorbar()
+                    plot.title("Amplitude")
+                    plot.subplot(122)
+                    plot.imshow(outputs.detach().angle().numpy().squeeze(0).squeeze(0))
+                    plot.colorbar()
+                    plot.title("Phase")
+                    plot.show()
+
+                # 特征融合的4f系统
+                kernel_add_k = fourier_transform_right(self.kernel_add * self.kernel_add_mask)
+                # phase_plane = torch.exp(1j * (2 * pi * kernel_add_k.angle()))
+                phase_plane = torch.exp(1j * (2 * pi * torch.sigmoid(kernel_add_k.angle())))
+                outputs = fourier_transform_right(outputs) * phase_plane
+                outputs = fourier_transform_left(outputs)
+                if self.visual:
+                    plot.figure(3)
+                    plot.subplot(121)
+                    plot.imshow(np.abs(outputs.detach().numpy().squeeze(0).squeeze(0)))
+                    plot.colorbar()
+                    plot.title("Amplitude")
+                    plot.subplot(122)
+                    plot.imshow(outputs.detach().angle().numpy().squeeze(0).squeeze(0))
+                    plot.colorbar()
+                    plot.title("Phase")
+                    plot.show()
+
+                # 构造输出
+                outputs = unpad_inputs(outputs, self.input_kernel_size, self.kernel_size, self.scale)
+                if self.visual:
+                    plot.figure(4)
+                    plot.subplot(121)
+                    plot.imshow(np.abs(outputs.detach().numpy().squeeze(0).squeeze(0)))
+                    plot.colorbar()
+                    plot.title("Amplitude")
+                    plot.subplot(122)
+                    plot.imshow(outputs.detach().angle().numpy().squeeze(0).squeeze(0))
+                    plot.colorbar()
+                    plot.title("Phase")
+                    plot.show()
+
             else:
                 print('采样模式错误')
                 sys.exit()
@@ -311,98 +526,140 @@ class OptConvNet(nn.Module):
         self.up_factor = up_factor
         self.visual = visual
         self.layer1_size = np.array(self.input_size)
-        self.layer2_size = self.layer1_size // self.down_factor
-        self.layer3_size = self.layer2_size // self.down_factor
-        self.layer4_size = self.layer3_size * self.up_factor
-        self.layer5_size = self.layer4_size * self.up_factor
-        self.layer6_size = np.array(self.output_size)
-        self.layer1 = FourOptConv(self.layer1_size, (3, 3), 17, "kernel", self.visual)
+        if (self.layer1_size[0] % 2 == 0) & (self.layer1_size[0] % 2 == 0):
+            self.layer2_size = self.layer1_size // self.down_factor
+            self.layer3_size = self.layer2_size // self.down_factor
+            self.layer4_size = self.layer3_size * self.up_factor
+            self.layer5_size = self.layer4_size * self.up_factor
+            self.layer6_size = np.array(self.output_size)
+        elif (self.layer1_size[0] % 2 == 1) & (self.layer1_size[0] % 2 == 1):
+            self.layer2_size = self.layer1_size // self.down_factor
+            self.layer3_size = self.layer2_size // self.down_factor
+            self.layer4_size = (self.layer3_size + 1) * self.up_factor - 1
+            self.layer5_size = (self.layer4_size + 1) * self.up_factor - 1
+            self.layer6_size = np.array(self.output_size)
+        else:
+            print("保证输入层为方")
+            sys.exit()
+        self.layer1 = FourOptConv(self.layer1_size, (3, 3), 5, "kernel", self.visual)
         self.drop1 = nn.Dropout2d(p=0.3)
-        self.layer2 = FourOptConv(self.layer2_size, (3, 3), 33, "kernel", self.visual)
+        self.layer2 = FourOptConv(self.layer2_size, (3, 3), 9, "kernel", self.visual)
         self.drop2 = nn.Dropout2d(p=0.3)
-        self.layer3 = FourOptConv(self.layer3_size, (3, 3), 65, "kernel", self.visual)
+        self.layer3 = FourOptConv(self.layer3_size, (3, 3), 17, "kernel", self.visual)
         self.drop3 = nn.Dropout2d(p=0.3)
-        self.layer4 = FourOptConv(self.layer4_size, (3, 3), 33, "kernel", self.visual)
+        self.layer4 = FourOptConv(self.layer4_size, (3, 3), 9, "kernel", self.visual)
         self.drop4 = nn.Dropout2d(p=0.3)
-        self.layer5 = FourOptConv(self.layer5_size, (3, 3), 17, "kernel", self.visual)
+        self.layer5 = FourOptConv(self.layer5_size, (3, 3), 5, "kernel", self.visual)
         self.drop5 = nn.Dropout2d(p=0.3)
         self.layer6 = FourOptConv(self.layer6_size, (3, 3), 1, "kernel", self.visual)
         self.drop6 = nn.Dropout2d(p=0.3)
+        self.bn_output = torch.nn.BatchNorm2d(1)
 
     def forward(self, inputs):
-        x = self.layer1(inputs, 'normal')
+        x = self.layer1(inputs, sample_mode='input')
+        # plot.figure(1)
+        # plot.imshow(inputs.detach().numpy().squeeze(0).squeeze(0))
+        # plot.colorbar()
+        # plot.title("Amplitude")
+        # plot.show()
         x = self.layer2(x, self.down_factor, 'down')
         x = self.layer3(x, self.down_factor, 'down')
         x = self.layer4(x, self.up_factor, 'up')
         x = self.layer5(x, self.up_factor, 'up')
-        x = self.layer6(x, 'normal')
-
-        return x
+        x = self.layer6(x, sample_mode='output')
+        # outputs = self.bn_output(torch.abs(x))
+        outputs = torch.sigmoid(torch.abs(x))
+        # plot.figure(2)
+        # plot.imshow(outputs.detach().numpy().squeeze(0).squeeze(0))
+        # plot.colorbar()
+        # plot.title("Amplitude")
+        # plot.show()
+        return outputs
 
 
 if __name__ == '__main__':
     """
     path = r'/Users/WangHao/工作/纳米光子中心/全光相关/实验-0303/0303.png'
     img = Image.open(path).convert('L')
-    img = transforms.Compose([transforms.ToTensor(), transforms.Resize((256, 256))])(img).squeeze(0)
+    img_01 = transforms.Compose([transforms.ToTensor(), transforms.Resize((256, 256))])(img).squeeze(0)
+    img_02 = transforms.Compose([transforms.ToTensor(), transforms.Resize((255, 255))])(img).squeeze(0)
     # 1. 读入图片
     plot.figure(1)
-    plot.imshow(img)
-
-    # 2. 生成卷积核
-    kernels = torch.rand((3, 3))
+    plot.imshow(img_01)
     plot.figure(2)
-    plot.imshow(kernels)
+    plot.imshow(img_02)
 
-    # 3. 进行卷积神经网络的空域卷积运算（实质是相关运算）
-    img_conv = torch.conv2d(img.unsqueeze(0).unsqueeze(0), kernels.unsqueeze(0).unsqueeze(0),
-                            padding=kernels.shape[-1] // 2).squeeze(0).squeeze(0)
-    plot.figure(3)
-    plot.imshow(img_conv)
+    # # 2. 生成卷积核
+    # kernels = torch.rand((3, 3))
+    # plot.figure(2)
+    # plot.imshow(kernels)
+    #
+    # # 3. 进行卷积神经网络的空域卷积运算（实质是相关运算）
+    # img_conv = torch.conv2d(img_01.unsqueeze(0).unsqueeze(0), kernels.unsqueeze(0).unsqueeze(0),
+    #                         padding=kernels.shape[-1] // 2).squeeze(0).squeeze(0)
+    # plot.figure(3)
+    # plot.imshow(img_conv)
 
     # 对输入数据与卷积核做傅立叶变换并进行反褶将低频移至中心
-    img_1 = fourier_transform_right(img)
-    kernels_1 = fourier_transform_right(pad(kernels, [127, 126, 127, 126], 'constant', 0))
+    img_11 = fourier_transform_right(img_01)
+    # kernels_11 = fourier_transform_right(pad(kernels, [127, 126, 127, 126], 'constant', 0))
 
+    img_12 = fourier_transform_right(img_02)
+    # kernels_12 = fourier_transform_right(pad(kernels, [126, 126, 126, 126], 'constant', 0))
     # 4. 在频域完成3中等价的卷积后反变换回去并进行反褶
-    img_2 = fourier_transform_left(img_1 * kernels_1)
-    plot.figure(4)
-    plot.imshow(torch.abs(img_2))
+    # img_21 = fourier_transform_left(img_11 * kernels_11)
+    # plot.figure(4)
+    # plot.imshow(torch.abs(img_21))
 
+    # img_22 = fourier_transform_left(img_12 * kernels_12)
+    # plot.figure(5)
+    # plot.imshow(torch.abs(img_22))
     # 取输入数据频谱的一半 -> 降低一倍空间分辨率
-    img_3 = img_1[256 // 2 - 256 // 4:256 // 2 + 256 // 4, 256 // 2 - 256 // 4:256 // 2 + 256 // 4]
+    img_31 = img_11[256 // 2 - 256 // 4:256 // 2 + 256 // 4, 256 // 2 - 256 // 4:256 // 2 + 256 // 4]
+    img_32 = img_12[255 // 2 - 255 // 4:255 // 2 + 255 // 4, 255 // 2 - 255 // 4:255 // 2 + 255 // 4]
 
     # 5. 傅立叶反变换后没有进行反褶，图片正常还原
-    img_4 = torch.fft.ifft2(img_3)
+    img_41 = torch.fft.ifft2(img_31)
     plot.figure(5)
-    plot.imshow(torch.abs(img_4))
+    plot.imshow(torch.abs(img_41))
 
-    # 6. 傅立叶反变换后进行反褶，图片发生颠倒
-    img_5 = fourier_transform_left(img_3)
+    img_42 = torch.fft.ifft2(img_32)
     plot.figure(6)
-    plot.imshow(torch.abs(img_5))
+    plot.imshow(torch.abs(img_42))
 
-    # 取输入数据在频域完成3中等价的卷积后的频谱的一半 -> 降低一倍空间分辨率
-    img_6 = (img_1 * kernels_1)[256 // 2 - 256 // 4:256 // 2 + 256 // 4, 256 // 2 - 256 // 4:256 // 2 + 256 // 4]
-
-    # 7. 傅立叶反变换后不进行反褶，图片发生颠倒
-    img_7 = torch.fft.ifft2(img_6)
+    img_43 = torch.nn.UpsamplingNearest2d(scale_factor=0.5)(torch.abs(img_01.unsqueeze(0).unsqueeze(0))).squeeze(0).squeeze(0)
     plot.figure(7)
-    plot.imshow(torch.abs(img_7))
+    plot.imshow(torch.abs(img_43))
 
-    # 8. 傅立叶反变换后进行反褶，图片正常还原
-    img_8 = fourier_transform_left(img_6)
+    img_44 = torch.nn.UpsamplingNearest2d(scale_factor=0.5)(torch.abs(img_02.unsqueeze(0).unsqueeze(0))).squeeze(0).squeeze(0)
     plot.figure(8)
-    plot.imshow(torch.abs(img_8))
+    plot.imshow(torch.abs(img_44))
+    # # 6. 傅立叶反变换后进行反褶，图片发生颠倒
+    # img_5 = fourier_transform_left(img_13)
+    # plot.figure(6)
+    # plot.imshow(torch.abs(img_5))
 
-    # 频域补一圈一倍的零 -> 提高一倍空间分辨率
-    img_9 = torch.zeros((512, 512), dtype=torch.complex64)
-    img_9[512 // 2 - 512 // 4:512 // 2 + 512 // 4, 512 // 2 - 512 // 4:512 // 2 + 512 // 4] = (img_1 * kernels_1)
+    # # 取输入数据在频域完成3中等价的卷积后的频谱的一半 -> 降低一倍空间分辨率
+    # img_6 = (img_1 * kernels_1)[255 // 2 - 255 // 4:255 // 2 + 255 // 4, 255 // 2 - 255 // 4:255 // 2 + 255 // 4]
+    #
+    # # 7. 傅立叶反变换后不进行反褶，图片发生颠倒
+    # img_7 = torch.fft.ifft2(img_6)
+    # plot.figure(7)
+    # plot.imshow(torch.abs(img_7))
+    #
+    # # 8. 傅立叶反变换后进行反褶，图片正常还原
+    # img_8 = fourier_transform_left(img_6)
+    # plot.figure(8)
+    # plot.imshow(torch.abs(img_8))
 
-    # 9. 傅立叶反变换后进行反褶
-    img_10 = fourier_transform_left(img_9)
-    plot.figure(9)
-    plot.imshow(torch.abs(img_10))
+    # # 频域补一圈一倍的零 -> 提高一倍空间分辨率
+    # img_9 = torch.zeros((512, 512), dtype=torch.complex64)
+    # img_9[512 // 2 - 512 // 4:512 // 2 + 512 // 4, 512 // 2 - 512 // 4:512 // 2 + 512 // 4] = (img_1 * kernels_1)
+
+    # # 9. 傅立叶反变换后进行反褶
+    # img_10 = fourier_transform_left(img_9)
+    # plot.figure(9)
+    # plot.imshow(torch.abs(img_10))
 
     plot.show()
     """
@@ -436,12 +693,30 @@ if __name__ == '__main__':
             print(k, v, id(v))
         """
 
-    models = OptConvNet(visual=False)
+    models1 = OptConvNet(input_size=(255, 255), output_size=(255, 255), down_factor=2, up_factor=2, visual=False)
+    adam_optimize = optim.Adam(models1.parameters(), lr=1e-4, weight_decay=1e-5)
+    ce_loss =nn.BCELoss()
+    visual_writer = SummaryWriter('visualization')
     path = r'/Users/WangHao/工作/纳米光子中心/全光相关/实验-0303/0303.png'
-    input1 = Image.open(path).convert('L')
-    input1 = transforms.Compose([transforms.ToTensor(), transforms.Resize((256, 256))])(input1).unsqueeze(0)
-    outputs1 = models(input1)
-    for parameters in models.named_parameters():
+    inputs1 = Image.open(path).convert('L')
+    inputs1 = transforms.Compose([transforms.ToTensor(), transforms.Resize((255, 255))])(inputs1).unsqueeze(0)
+    epoch = 1000
+    for idx in range(epoch):
+        models1.train()
+        adam_optimize.zero_grad()
+        outputs1 = models1(inputs1)
+        loss_result = ce_loss(outputs1, inputs1)
+        loss_result.backward()
+        adam_optimize.step()
+        if idx == 0:
+            visual_writer.add_graph(models1, inputs1)
+        visual_writer.add_scalars('trainloss', {'ce_loss': loss_result.data.item(), }, idx)
+        visual_writer.add_image('0303_1', inputs1.squeeze(0), idx)
+        visual_writer.add_image('0303_2', outputs1.squeeze(0), idx)
+    
+    visual_writer.close()
+
+    for parameters in models1.named_parameters():
         plot.figure(parameters[0])
         plot.imshow(parameters[1].detach().numpy())
         plot.colorbar()

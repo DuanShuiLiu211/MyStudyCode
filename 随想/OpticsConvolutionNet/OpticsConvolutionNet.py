@@ -1,7 +1,4 @@
-from pickletools import optimize
 import sys
-import time
-from sklearn.metrics import log_loss
 import torch
 from torch import pi
 from torch import nn
@@ -74,7 +71,7 @@ def unpad_inputs(inputs, input_kernel_size, kernel_size, scale):
     dh = kernel_size[0] // 2
     dw = kernel_size[1] // 2
     outputs = inputs[:, :, input_kernel_size[0] * (scale // 2) + dh:input_kernel_size[0] * (scale // 2 + 1) - dh,
-                     input_kernel_size[1] * (scale // 2) + dw:input_kernel_size[1] * (scale // 2 + 1) - dw]
+              input_kernel_size[1] * (scale // 2) + dw:input_kernel_size[1] * (scale // 2 + 1) - dw]
 
     return outputs
 
@@ -94,7 +91,7 @@ class FourOptConv(nn.Module):
         self.weight_mode = weight_mode
         self.visual = visual
         self.input_kernel_size = np.array(input_size) + 2 * (np.array(kernel_size) // 2)
-        self.kernel_add_softmax = torch.nn.Softmax(-1)(torch.rand(scale**2))
+        self.kernel_add_softmax = torch.nn.Softmax(-1)(torch.rand(scale ** 2))
         self.phase_bn_input = torch.nn.BatchNorm2d(1)
         self.phase_bn_down = torch.nn.BatchNorm2d(1)
         self.phase_bn_up = torch.nn.BatchNorm2d(1)
@@ -167,7 +164,7 @@ class FourOptConv(nn.Module):
                     self.input_kernel_size[1] * j + (self.input_kernel_size[1] // 2 + self.kernel_size[1] // 2)] \
                         = torch.ones(size=self.kernel_size)
                 else:
-                    print("请保证卷积核有效区是正方形")
+                    print("请保证卷积核有效区是方形")
                     sys.exit()
 
                 kernel_add[
@@ -264,8 +261,10 @@ class FourOptConv(nn.Module):
                 # inputs = torch.fft.ifft2(inputs_k)
 
                 # 空域下采样，插值或池化
-                inputs = torch.nn.UpsamplingNearest2d(scale_factor=0.5)(torch.abs(inputs))
-                # inputs = torch.max_pool2d(torch.abs(inputs), kernel_size=(2, 2), stride=(2, 2))
+                inputs = torch.nn.UpsamplingNearest2d(scale_factor=0.5)(inputs.abs()) * \
+                         torch.exp(1.j * torch.nn.UpsamplingNearest2d(scale_factor=0.5)(inputs.angle()))
+                # inputs = torch.max_pool2d(torch.abs(inputs), kernel_size=(2, 2), stride=(2, 2)) + \
+                #          1.j * torch.max_pool2d(inputs.angle())
                 if self.visual:
                     plot.figure(1)
                     plot.subplot(121)
@@ -314,7 +313,7 @@ class FourOptConv(nn.Module):
                 kernel_add_k = fourier_transform_right(self.kernel_add * self.kernel_add_mask)
                 # phase_plane = torch.exp(1j * (2 * pi * kernel_add_k.angle()))
                 phase_plane = torch.exp(1j * (2 * pi * torch.sigmoid(kernel_add_k.angle())))
-                outputs = fourier_transform_right(outputs) * phase_plane
+                # outputs = fourier_transform_right(outputs) * phase_plane
                 outputs = fourier_transform_left(outputs)
                 if self.visual:
                     plot.figure(4)
@@ -346,9 +345,13 @@ class FourOptConv(nn.Module):
                 # 空域上采样
                 _, _, h, w = inputs.shape
                 if (h % 2 == 0) & (w % 2 == 0):
-                    inputs = torch.nn.UpsamplingNearest2d(size=(h * factor, w * factor))(torch.abs(inputs))
+                    inputs = torch.nn.UpsamplingNearest2d(size=(h * factor, w * factor))(inputs.abs()) * \
+                             torch.exp(1.j *
+                                       torch.nn.UpsamplingNearest2d(size=(h * factor, w * factor))(inputs.angle()))
                 elif (h % 2 == 1) & (w % 2 == 1):
-                    inputs = torch.nn.UpsamplingNearest2d(size=((h + 1) * factor - 1, (w + 1) * factor - 1))(torch.abs(inputs))
+                    inputs = torch.nn.UpsamplingNearest2d(size=((h + 1) * factor - 1, (w + 1) * factor - 1))(inputs.abs()) * \
+                             torch.exp(1.j *
+                                       torch.nn.UpsamplingNearest2d(size=((h + 1) * factor - 1, (w + 1) * factor - 1))(inputs.angle()))
                 else:
                     print("保证输入为方形")
                     sys.exit()
@@ -557,11 +560,6 @@ class OptConvNet(nn.Module):
 
     def forward(self, inputs):
         x = self.layer1(inputs, sample_mode='input')
-        # plot.figure(1)
-        # plot.imshow(inputs.detach().numpy().squeeze(0).squeeze(0))
-        # plot.colorbar()
-        # plot.title("Amplitude")
-        # plot.show()
         x = self.layer2(x, self.down_factor, 'down')
         x = self.layer3(x, self.down_factor, 'down')
         x = self.layer4(x, self.up_factor, 'up')
@@ -569,11 +567,6 @@ class OptConvNet(nn.Module):
         x = self.layer6(x, sample_mode='output')
         # outputs = self.bn_output(torch.abs(x))
         outputs = torch.sigmoid(torch.abs(x))
-        # plot.figure(2)
-        # plot.imshow(outputs.detach().numpy().squeeze(0).squeeze(0))
-        # plot.colorbar()
-        # plot.title("Amplitude")
-        # plot.show()
         return outputs
 
 
@@ -693,9 +686,9 @@ if __name__ == '__main__':
             print(k, v, id(v))
         """
 
-    models1 = OptConvNet(input_size=(255, 255), output_size=(255, 255), down_factor=2, up_factor=2, visual=False)
+    models1 = OptConvNet(input_size=(255, 255), output_size=(255, 255), down_factor=2, up_factor=2, visual=True)
     adam_optimize = optim.Adam(models1.parameters(), lr=1e-4, weight_decay=1e-5)
-    ce_loss =nn.BCELoss()
+    ce_loss = nn.BCELoss()
     visual_writer = SummaryWriter('visualization')
     path = r'/Users/WangHao/工作/纳米光子中心/全光相关/实验-0303/0303.png'
     inputs1 = Image.open(path).convert('L')
@@ -713,7 +706,7 @@ if __name__ == '__main__':
         visual_writer.add_scalars('trainloss', {'ce_loss': loss_result.data.item(), }, idx)
         visual_writer.add_image('0303_1', inputs1.squeeze(0), idx)
         visual_writer.add_image('0303_2', outputs1.squeeze(0), idx)
-    
+
     visual_writer.close()
 
     for parameters in models1.named_parameters():

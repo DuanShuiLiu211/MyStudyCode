@@ -1,24 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="78529805-a04e-4921-8499-9af8e6795f7f" name="变更" comment="'0410'">
-      <change afterPath="$PROJECT_DIR$/随想/visualization/events.out.tfevents.1651914231.WangHao.32561.0" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/随想/visualization/events.out.tfevents.1651914246.WangHao.32700.0" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/随想/visualization/events.out.tfevents.1651914346.WangHao.33383.0" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/随想/visualization/events.out.tfevents.1651920611.WangHao.75314.0" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/visualization/events.out.tfevents.1651645748.WangHao.16060.0" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/visualization/events.out.tfevents.1651647317.WangHao.27219.0" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/visualization/events.out.tfevents.1651647563.WangHao.29026.0" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/visualization/events.out.tfevents.1651652747.WangHao.61333.0" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/visualization/events.out.tfevents.1651658457.WangHao.2774.0" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/visualization/events.out.tfevents.1651658770.WangHao.4934.0" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/visualization/events.out.tfevents.1651659130.WangHao.7401.0" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/visualization/events.out.tfevents.1651659267.WangHao.8339.0" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/visualization/trainloss_ce_loss/events.out.tfevents.1651645784.WangHao.16060.1" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/visualization/trainloss_ce_loss/events.out.tfevents.1651647599.WangHao.29026.1" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/随想/OpticsConvolutionNet/OpticsConvolutionNet.py" beforeDir="false" afterPath="$PROJECT_DIR$/随想/OpticsConvolutionNet/OpticsConvolutionNet.py" afterDir="false" />
-    </list>
+    <list default="true" id="78529805-a04e-4921-8499-9af8e6795f7f" name="变更" comment="'0507'" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -223,7 +206,7 @@
       <workItem from="1651505121915" duration="17000" />
       <workItem from="1651648049864" duration="31008000" />
       <workItem from="1651893924907" duration="50000" />
-      <workItem from="1651914046435" duration="6723000" />
+      <workItem from="1651914046435" duration="6971000" />
     </task>
     <task id="LOCAL-00001" summary="'0410'">
       <created>1649573496936</created>
@@ -239,7 +222,14 @@
       <option name="project" value="LOCAL" />
       <updated>1649573590920</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="'0507'">
+      <created>1651920845685</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1651920845685</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -259,7 +249,8 @@
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="'0410'" />
-    <option name="LAST_COMMIT_MESSAGE" value="'0410'" />
+    <MESSAGE value="'0507'" />
+    <option name="LAST_COMMIT_MESSAGE" value="'0507'" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

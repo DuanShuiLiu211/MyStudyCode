@@ -207,7 +207,8 @@ class FourOptConv(nn.Module):
                 kernel_fetch_k = fourier_transform_right(self.kernel_fetch * self.kernel_fetch_mask)
                 # phase_plane = torch.exp(1j * (2 * pi * kernel_fetch_k.angle()))
                 phase_plane = torch.exp(1j * (2 * pi * torch.sigmoid(kernel_fetch_k.angle())))
-                outputs = fourier_transform_right(inputs) * phase_plane
+                outputs = fourier_transform_right(inputs) * phase_plane  # a*exp(jx) * exp(jdetlax) = a*exp(j(x+detlax))
+                outputs = fourier_transform_right(outputs).abs() * torch.exp(1j * (2 * pi * torch.sigmoid((outputs).angle())))
                 outputs = fourier_transform_left(outputs)
                 if self.visual:
                     plot.figure(2)
@@ -226,6 +227,7 @@ class FourOptConv(nn.Module):
                 # phase_plane = torch.exp(1j * (2 * pi * kernel_add_k.angle()))
                 phase_plane = torch.exp(1j * (2 * pi * torch.sigmoid(kernel_add_k.angle())))
                 outputs = fourier_transform_right(outputs) * phase_plane
+                outputs = fourier_transform_right(outputs).abs() * torch.exp(1j * (2 * pi * torch.sigmoid((outputs).angle())))
                 outputs = fourier_transform_left(outputs)
                 if self.visual:
                     plot.figure(3)
@@ -296,6 +298,7 @@ class FourOptConv(nn.Module):
                 # phase_plane = torch.exp(1j * (2 * pi * kernel_fetch_k.angle()))
                 phase_plane = torch.exp(1j * (2 * pi * torch.sigmoid(kernel_fetch_k.angle())))
                 outputs = fourier_transform_right(inputs) * phase_plane
+                outputs = fourier_transform_right(outputs).abs() * torch.exp(1j * (2 * pi * torch.sigmoid((outputs).angle())))
                 outputs = fourier_transform_left(outputs)
                 if self.visual:
                     plot.figure(3)
@@ -313,7 +316,8 @@ class FourOptConv(nn.Module):
                 kernel_add_k = fourier_transform_right(self.kernel_add * self.kernel_add_mask)
                 # phase_plane = torch.exp(1j * (2 * pi * kernel_add_k.angle()))
                 phase_plane = torch.exp(1j * (2 * pi * torch.sigmoid(kernel_add_k.angle())))
-                # outputs = fourier_transform_right(outputs) * phase_plane
+                outputs = fourier_transform_right(outputs) * phase_plane
+                outputs = fourier_transform_right(outputs).abs() * torch.exp(1j * (2 * pi * torch.sigmoid((outputs).angle())))
                 outputs = fourier_transform_left(outputs)
                 if self.visual:
                     plot.figure(4)
@@ -386,6 +390,7 @@ class FourOptConv(nn.Module):
                 # phase_plane = torch.exp(1j * (2 * pi * kernel_fetch_k.angle()))
                 phase_plane = torch.exp(1j * (2 * pi * torch.sigmoid(kernel_fetch_k.angle())))
                 outputs = fourier_transform_right(inputs) * phase_plane
+                outputs = fourier_transform_right(outputs).abs() * torch.exp(1j * (2 * pi * torch.sigmoid((outputs).angle())))
                 outputs = fourier_transform_left(outputs)
                 if self.visual:
                     plot.figure(3)
@@ -404,6 +409,7 @@ class FourOptConv(nn.Module):
                 # phase_plane = torch.exp(1j * (2 * pi * kernel_add_k.angle()))
                 phase_plane = torch.exp(1j * (2 * pi * torch.sigmoid(kernel_add_k.angle())))
                 outputs = fourier_transform_right(outputs) * phase_plane
+                outputs = fourier_transform_right(outputs).abs() * torch.exp(1j * (2 * pi * torch.sigmoid((outputs).angle())))
                 outputs = fourier_transform_left(outputs)
                 if self.visual:
                     plot.figure(4)
@@ -451,6 +457,7 @@ class FourOptConv(nn.Module):
                 # phase_plane = torch.exp(1j * (2 * pi * kernel_fetch_k.angle()))
                 phase_plane = torch.exp(1j * (2 * pi * torch.sigmoid(kernel_fetch_k.angle())))
                 outputs = fourier_transform_right(inputs) * phase_plane
+                outputs = fourier_transform_right(outputs).abs() * torch.exp(1j * (2 * pi * torch.sigmoid((outputs).angle())))
                 outputs = fourier_transform_left(outputs)
                 if self.visual:
                     plot.figure(2)
@@ -469,6 +476,7 @@ class FourOptConv(nn.Module):
                 # phase_plane = torch.exp(1j * (2 * pi * kernel_add_k.angle()))
                 phase_plane = torch.exp(1j * (2 * pi * torch.sigmoid(kernel_add_k.angle())))
                 outputs = fourier_transform_right(outputs) * phase_plane
+                outputs = fourier_transform_right(outputs).abs() * torch.exp(1j * (2 * pi * torch.sigmoid((outputs).angle())))
                 outputs = fourier_transform_left(outputs)
                 if self.visual:
                     plot.figure(3)

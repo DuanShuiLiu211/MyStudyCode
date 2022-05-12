@@ -441,17 +441,9 @@ class PsfGenerator3D:
 
         return self.my_ifftshift(psf)
 
-    def incoherent_psf_abs(self, phi, normed=True, masked=True):
-        """
-        Returns the incoherent psf for a given wavefront phi
-           (which is just the squared absolute value of the coherent one)
-           The psf is normalized such that the sum intensity on each plane equals one
-        :param phi: Zernike/ZernikeWavefront object
-        :param normed: boolean, multiplied by normalization factor, e.g. True
-        :param masked: boolean, limit frequency domain, e.g. True
-        :return: incoherent psf, 3d array
-        """
-        psf = np.abs(self.coherent_psf(phi, normed=normed, masked=masked)) ** 2  # 取模的平方
+    def incoherent_psf_intensity(self, phi, normed=True, masked=True):
+        # 取模的平方
+        psf = np.abs(self.coherent_psf(phi, normed=normed, masked=masked)) ** 2  
 
         return self.my_ifftshift(psf)
 
@@ -546,8 +538,8 @@ if __name__ == '__main__':
         # no cut and mask of psf
         psf1 = PsfGenerator3D(psf_shape=(95, 256, 256), units=(0.032, 0.016, 0.016),
                               na_detection=1.4, lam_detection=0.775, n=1.518, switch=False)
-        w11 = psf1.incoherent_psf_abs(f11, normed=True)[95 // 2, :, :]  # 有像差
-        w12 = psf1.incoherent_psf_abs(f12, normed=True)[95 // 2, :, :]  # 无像差
+        w11 = psf1.incoherent_psf_intensity(f11, normed=True)[95 // 2, :, :]  # 有像差
+        w12 = psf1.incoherent_psf_intensity(f12, normed=True)[95 // 2, :, :]  # 无像差
 
         fig1 = plt.figure(num=1, figsize=(20, 8))
         plt.subplot(2, 3, 1)
@@ -591,8 +583,8 @@ if __name__ == '__main__':
         # cut and mask of psf
         psf2 = PsfGenerator3D(psf_shape=(95, 256, 256), units=(0.032, 0.016, 0.016),
                               na_detection=1.4, lam_detection=0.775, n=1.518, switch=True)
-        w21 = psf2.incoherent_psf_abs(f21, normed=True)[95 // 2, :, :]  # 无像差
-        w22 = psf2.incoherent_psf_abs(f22, normed=True)[95 // 2, :, :]  # 有像差
+        w21 = psf2.incoherent_psf_intensity(f21, normed=True)[95 // 2, :, :]  # 无像差
+        w22 = psf2.incoherent_psf_intensity(f22, normed=True)[95 // 2, :, :]  # 有像差
 
         fig2 = plt.figure(num=2, figsize=(20, 8))
         plt.subplot(2, 3, 1)

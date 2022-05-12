@@ -278,7 +278,7 @@ if __name__ == '__main__':
     # 设置程序工作模式
     # -------------------------------------------------------------------------------------------------------------- #
     """
-    模式1：生成最大、零和最小像差的系统 Psf
+    模式1：生成 Aberration, Psf 和卷积图像后的 Psf Object
     模式2：最大最小像差范围均匀采样生成系统 Psf
     模式3：最大最小像差范围随机均匀采样生成 Psf 与输入物体的成像结果
     模式4：生成 Psf 焦面上的结果
@@ -289,77 +289,109 @@ if __name__ == '__main__':
     # 设置数据存储路径
     # -------------------------------------------------------------------------------------------------------------- #
 
-    file_db = 'Data'
+    file_db = '/Volumes/昊大侠/工作/上海理工大学/论文/小论文/超分辨成像/数据集/data_label'
     if not os.path.exists(file_db):
         os.makedirs(file_db)
-    file_db1 = 'Data/Aberration'
+    file_db1 = f'{file_db}/Aberration_data'
     if not os.path.exists(file_db1):
         os.makedirs(file_db1)
-    file_db2 = 'Data/Psf'
+    file_db2 = f'{file_db}/Psf_data'
     if not os.path.exists(file_db2):
         os.makedirs(file_db2)
 
     # 程序各个模式的执行逻辑
     # -------------------------------------------------------------------------------------------------------------- #
     if mode == 1:
-        object_params = {'object_name': 'images',
-                         'shape': (11, 502, 502),
-                         'filepath': '/Users/WangHao/工作/纳米光子中心/全光相关/数据-0325/F-actin_Nonlinear_Uint16/training_wf/0009.tif'}
-        the_object = Object3D.instantiate(**object_params)
-        obj = the_object.get()
+        data_folder = "/Volumes/昊大侠/工作/上海理工大学/论文/小论文/超分辨成像/数据集/F-actin_Nonlinear_Uint16"
+        folderList = os.listdir(data_folder)
 
-        nm_amp = {v: [-0.775 / 4, 0, 0.775 / 4] for k, v in zernike_nm.items()}
-        start1 = time.time()
-        for i, (key, value) in enumerate(nm_amp.items()):
-            mode_name = list(all_mode_name)[i]
-            start2 = time.time()
-            for j, v in enumerate(value):
-                zwf = ZernikeWavefront({key: v}, order='ansi')
-                psf = PsfGenerator3D(psf_shape=(11, 502, 502), units=(0.16, 0.0313, 0.0313),
-                                     na_detection=1.7, lam_detection=0.488, n=1.518)
+        try:
+            folderList.remove('.DS_Store')
+        except:
+            pass
+        try:
+            folderList.remove('._.DS_Store')
+        except:
+            pass
 
-                zwf_xy = zwf.polynomial(502, normed=True, outside=0)
-                psf_zxy = psf.incoherent_psf_abs(zwf, normed=True)
-                psf_obj = []
-                for idx in range(11):
-                    psf_obj.append(convolve(obj[idx] ** 2, psf_zxy[idx], 'same'))
+        sample_all_dict = {}
 
-                index_news = list(zwf.zernikes.keys())
+        for folder in folderList:
+            sample_list = []
+            data_list = os.listdir(os.path.join(data_folder, folder))
+            print(f'the number of {folder} is: {len(data_list)}.')
 
-                zwf_save_dir_base = os.path.join(file_db1,
-                                                 f'{mode_name}_'
-                                                 f'{index_news[0].n, index_news[0].m}_'
-                                                 f'{index_news[0].index_noll}_'
-                                                 f'{index_news[0].index_ansi}')
-                if not os.path.exists(zwf_save_dir_base):
-                    os.makedirs(zwf_save_dir_base)
-                zwf_xy_save_dir = os.path.join(zwf_save_dir_base, f'{mode_name}_{v:.4f}_zwf_xy')
+            for datas_fn in data_list:
+                sample_list.append(os.path.join(data_folder, folder, datas_fn))
 
-                np.save(zwf_xy_save_dir, zwf_xy)
-                plt.imsave(f'{zwf_xy_save_dir}.png', zwf_xy, dpi=300)
+            sample_all_dict[f'{folder}'] = sample_list
 
-                psf_save_dir_base = os.path.join(file_db2,
-                                                 f'{mode_name}_'
-                                                 f'{index_news[0].n, index_news[0].m}_'
-                                                 f'{index_news[0].index_noll}_'
-                                                 f'{index_news[0].index_ansi}')
-                if not os.path.exists(psf_save_dir_base):
-                    os.makedirs(psf_save_dir_base)
-                psf_zxy_save_dir = os.path.join(psf_save_dir_base, f'{mode_name}_{v:.4f}_psf_zxy')
+        for folder, sample_list in sample_all_dict.items():
+            for sample in sample_list:
+                if "gt" in folder:
+                    dshape = (15, 1506, 1506)
+                    object_params = {'object_name': 'images',
+                                    'shape': dshape,
+                                    'filepath': sample}
+                    dsize = (0.1, 0.02013, 0.02013)       
+                else:
+                    dshape = (15, 502, 502)
+                    object_params = {'object_name': 'images',
+                                'shape': dshape,
+                                'filepath': sample}
+                    dsize = (0.1, 0.0604, 0.0604) 
 
-                np.save(psf_zxy_save_dir, psf_zxy)
-                for k, img in enumerate(psf_zxy):
-                    plt.imsave(f'{psf_zxy_save_dir}_{k}.png', img, dpi=300)
+                the_object = Object3D.instantiate(**object_params)
+                obj = the_object.get()
 
-                psf_obj_save_dir = os.path.join(psf_save_dir_base,
-                                                f'{mode_name}_{v:.4f}_{index_news[0].index_noll}_{j}_psf_obj')
-                for k, img in enumerate(psf_obj):
-                    plt.imsave(f'{psf_obj_save_dir}_{k}.png', img, dpi=300)
+                nm_amp = {v: np.arange(np.round(-0.488 / 4, 3), np.round(0.488 / 4, 3), 0.0244) for _, v in zernike_nm.items()}
+                start1 = time.time()
+                for i, (key, value) in enumerate(nm_amp.items()):
+                    mode_name = list(all_mode_name)[i]
+                    start2 = time.time()
+                    for j, v in enumerate(value):
+                        zwf = ZernikeWavefront({key: v}, order='ansi')
+                        psf = PsfGenerator3D(psf_shape=dshape, units=dsize, na_detection=1.7, lam_detection=0.488, n=1.518)
 
-            end2 = time.time()
-            print("运行时间:%.2f秒" % (end2 - start2))
-        end1 = time.time()
-        print("运行时间:%.2f秒" % (end1 - start1))
+                        zwf_xy = zwf.polynomial(dshape[-1], normed=True, outside=0)
+                        psf_zxy = psf.incoherent_psf_intensity(zwf, normed=True)
+
+                        psf_obj = []
+                        for idx in range(dshape[0]):
+                            psf_obj.append(convolve(obj[idx] ** 2, psf_zxy[idx], 'same'))
+
+                        index_news = list(zwf.zernikes.keys())
+
+                        zwf_save_dir_base = os.path.join(file_db1, folder)
+                        if not os.path.exists(zwf_save_dir_base):
+                            os.makedirs(zwf_save_dir_base)
+                        zwf_xy_save_dir = os.path.join(zwf_save_dir_base,
+                                                       f'{mode_name}_{v:.4f}_{index_news[0].index_ansi}_{j}_zwf_xy')
+
+                        np.save(zwf_xy_save_dir, zwf_xy)
+                        # plt.imsave(f'{zwf_xy_save_dir}.png', zwf_xy, dpi=300)
+
+                        psf_save_dir_base = os.path.join(file_db2, folder)
+                        if not os.path.exists(psf_save_dir_base):
+                            os.makedirs(psf_save_dir_base)
+                        psf_zxy_save_dir = os.path.join(psf_save_dir_base,
+                                                        f'{mode_name}_{v:.4f}_{index_news[0].index_ansi}_{j}_psf_zxy')
+
+                        np.save(psf_zxy_save_dir, psf_zxy)
+                        # for k, img in enumerate(psf_zxy):
+                        #     plt.imsave(f'{psf_zxy_save_dir}_{k}.png', img, dpi=300)
+
+                        psf_obj_save_dir = os.path.join(psf_save_dir_base,
+                                                        f'{mode_name}_{v:.4f}_{index_news[0].index_ansi}_{j}_psf_obj')
+                        
+                        np.save(psf_obj_save_dir, psf_obj)
+                        # for k, img in enumerate(psf_obj):
+                        #     plt.imsave(f'{psf_obj_save_dir}_{k}.png', img, dpi=300)
+
+                    end2 = time.time()
+                    print("运行时间:%.2f秒" % (end2 - start2))
+                end1 = time.time()
+                print("运行时间:%.2f秒" % (end1 - start1))
 
     elif mode == 2:
         # # 按照 Sted 显微镜的精度设置 (-0.5π， 0.5π) 的像差
@@ -427,7 +459,7 @@ if __name__ == '__main__':
                 np.round(0.775 / 4 * 1. / np.sqrt((1. + (v[1] == 0)) / (2. * v[0] + 2)) / np.sqrt(np.pi), 3),
                 0.00025) for k, v in zernike_nm.items()}
         start1 = time.time()
-        index_save_dir = os.path.join(file_db, 'nine_mode_index')
+        index_save_dir = os.path.join(file_db, 'seventeen_mode_index')
         np.save(index_save_dir, nm_amp)
         for i, (key, value) in enumerate(nm_amp.items()):
             mode_name = list(all_mode_name)[i]

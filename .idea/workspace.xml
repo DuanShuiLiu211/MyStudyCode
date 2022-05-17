@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="78529805-a04e-4921-8499-9af8e6795f7f" name="变更" comment="'0507'" />
+    <list default="true" id="78529805-a04e-4921-8499-9af8e6795f7f" name="变更" comment="'0507'">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/随想/OpticsConvolutionNet/FreqDomaEqConv.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/随想/OpticsConvolutionNet/FreqDomaEqConv.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/随想/ZernikeOpticsSimulation/ZernikeOptics.py" beforeDir="false" afterPath="$PROJECT_DIR$/随想/ZernikeOpticsSimulation/ZernikeOptics.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/随想/ZernikeOpticsSimulation/ZernikeSimulation.py" beforeDir="false" afterPath="$PROJECT_DIR$/随想/ZernikeOpticsSimulation/ZernikeSimulation.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -35,7 +40,8 @@
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;editor.preferences.tabs&quot;
+    &quot;last_opened_file_path&quot;: &quot;/Users/WangHao/学习/PyCharm/Script&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;org.jetbrains.plugins.notebooks.jupyter.connections.configuration.JupyterServerConfigurable&quot;
   }
 }</component>
   <component name="RecentsManager">
@@ -162,8 +168,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.OpticsConvolutionNet" />
         <item itemvalue="Python.标量运算" />
+        <item itemvalue="Python.OpticsConvolutionNet" />
         <item itemvalue="Python.LetterFlowSense" />
         <item itemvalue="Python.FreqDomaEqConv (1)" />
       </list>
@@ -207,6 +213,10 @@
       <workItem from="1651648049864" duration="31008000" />
       <workItem from="1651893924907" duration="50000" />
       <workItem from="1651914046435" duration="6971000" />
+      <workItem from="1652793885586" duration="3000" />
+      <workItem from="1652793921228" duration="169000" />
+      <workItem from="1652794501193" duration="615000" />
+      <workItem from="1652795128117" duration="883000" />
     </task>
     <task id="LOCAL-00001" summary="'0410'">
       <created>1649573496936</created>

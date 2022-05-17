@@ -23,7 +23,7 @@ def nm_polynomial(zn, zm, rho, theta, normed=True):
         z_nm(1,1)  = 1/sqrt(pi)* 2r sin(phi)
         z_nm(2,0)  = 1/sqrt(pi)* sqrt(3)(2 r^2 - 1)
         ...
-        z_nm(4,0)  = 1/sqrt(pi)* sqrt(5)(6 r^4 - 6 r^2 +1)
+        z_nm(4,0)  = 1/sqrt(pi)* sqrt(5)(6 r^4 - 6 r^2 + 1)
         ...
 
     if normed =False, then they follow the Born/Wolf convention (i.e. min/max is always -1/1)
@@ -35,7 +35,7 @@ def nm_polynomial(zn, zm, rho, theta, normed=True):
         z_nm(1,1)  = r sin(phi)
         z_nm(2,0)  = (2 r^2 - 1)
         ...
-        z_nm(4,0)  = (6 r^4 - 6 r^2 +1)
+        z_nm(4,0)  = (6 r^4 - 6 r^2 + 1)
         ...
     """
     rn = zn
@@ -234,19 +234,17 @@ class Zernike:
 
 
 # third: combination zernike mode application
-# 结构化为索引值：输入振幅的字典
+# 结构化为像差类型与像差振幅的字典
 def ensure_dict(values, order='noll'):
     if isinstance(values, dict):
-
         return values  # 字典数据无需处理
     if isinstance(values, np.ndarray):
-        values = tuple(values.ravel())  # 将值拉成一维
-    if isinstance(values, (tuple, list)):  # 确认值是元组或者列表
+        values = tuple(values.ravel())  # 将阵列值拉成一维
+    if isinstance(values, (tuple, list)):  # 确认值是元组或列表其中每个值都是振幅且按索引规则顺序对应像差类型
         order = str(order).lower()
         order in ('noll', 'ansi') or present(ValueError("Could not identify the Zernike nomenclature/order"))
         offset = 1 if order == 'noll' else 0
         indices = range(offset, offset + len(values))
-
         return dict(zip(indices, values))  # 把索引值和振幅值聚合成字典
     raise ValueError("Could not identify the data type for dictionary formation")
 
@@ -261,11 +259,11 @@ def dict_to_list(kv):
     return out
 
 
-# 计算给定振幅的 zernike 多项式，振幅不能是标量，默认索引模式 noll
+# 计算给定振幅的 zernike 多项式，振幅值默认按照索引模式顺序也可指定类型得到像差模式及其对应振幅的字典
 class ZernikeWavefront:
     """
         Encapsulates the wavefront defined by zernike polynomials
-        :param amplitudes: dictionary, nd array, tuple or list, Amplitudes of Zernike polynomials
+        :param amplitudes: aberration amplitudes[ndarray, tuple, list and dictionary key of aberration types(int, char, tuple, list) and value of aberration amplitude(number or char)] 
         :param order: string, Zernike nomenclature, e.g .noll or ansi, default is noll
     """
     def __init__(self, amplitudes, order='noll'):
@@ -294,7 +292,7 @@ class ZernikeWavefront:
         """
 
         return np.sum([a * z.polynomial(size=size, normed=normed, outside=outside) for z, a in self.zernikes.items()],
-                      axis=0)
+                       axis=0)
 
     def phase(self, rho, theta, normed=True, outside=None):
         """
@@ -306,25 +304,23 @@ class ZernikeWavefront:
             :return: 2D array, wavefront computed for rho and theta
         """
 
-        return np.sum(
-            [a * z.phase(rho=rho, theta=theta, normed=normed, outside=outside) for z, a in self.zernikes.items()],
-            axis=0)
+        return np.sum([a * z.phase(rho=rho, theta=theta, normed=normed, outside=outside) for z, a in self.zernikes.items()],
+                       axis=0)
 
-    # TODO: 给定振幅范围并随机产生振幅，计算 zernike 多项式，其中部分代码需要调整
     @staticmethod
     def random_wavefront(amplitude_ranges, order='noll'):
         """
             Creates random wavefront with random amplitudes drawn from a uniform distribution
-            :param amplitude_ranges: dictionary, nd array, tuple or list, amplitude bounds
+            :param amplitude_ranges: dictionary, ndarray, tuple or list, amplitude bounds
             :param order: string, to define the Zernike nomenclature if index is an integer, e.g. noll or ansi,
                                   default is noll
             :return: Zernike wavefront object
         """
         ranges = np.random
         amplitude_ranges = ensure_dict(amplitude_ranges, order)
-        all((np.isscalar(v) and v >= 0) or (isinstance(v, (tuple, list)) and len(v) == 2) for v in
-            amplitude_ranges.values()) or present(ValueError('false in one elements of the iterable'))  # 必须全部跌倒迭代都正确
-        amplitude_ranges = {k: ((-v, v) if np.isscalar(v) else v) for k, v in amplitude_ranges.items()}
+        all((np.isscalar(v)) or (isinstance(v, (tuple, list)) and len(v) == 2) for v in
+            amplitude_ranges.values()) or present(ValueError('false in one elements of the iterable'))  # 必须全部迭代都正确
+        amplitude_ranges = {k: ((-int(abs(v)), int(abs(v))) if np.isscalar(v) else v) for k, v in amplitude_ranges.items()}
         all(v[0] <= v[1] for v in amplitude_ranges.values()) or present(
             ValueError("Lower bound is expected to be less than the upper bound"))
 
@@ -398,7 +394,7 @@ class PsfGenerator3D:
 
         # xoy 频域的傅里叶逆变换
         self.my_ifftn = lambda x: np.fft.ifftn(x, axes=(1, 2))
-        self.my_ifftshift = lambda x: np.fft.fftshift(x, axes=(1, 2))
+        self.my_ifftshift = lambda x: np.fft.ifftshift(x, axes=(1, 2))
 
     def masked_phase(self, phi, normed=True, masked=True):
         """
@@ -413,15 +409,15 @@ class PsfGenerator3D:
         else:
             return phi.phase(self.k_rho, self.k_phi, normed=normed, outside=None)
 
-    def coherent_psf(self, phi, normed=True, masked=True):
+    def aberration_psf(self, phi, normed=True, masked=True):
         """
-        Returns the coherent psf for a given wavefront phi and no shift
+        Returns the aberration psf for a given wavefront phi and no shift
         :param phi: Zernike/ZernikeWavefront object
         :param normed: boolean, multiplied by normalization factor, e.g. True
         :param masked: boolean, limit frequency domain, e.g. True
-        :return: coherent psf, 3d array
+        :return: aberration psf, 3d array
         """
-        # 引入像差后的光场：p(kx, ky) * exp(-j2πz * sqrt((n/λ)^2 - (kx^2 + ky^2))) * exp(-j2π * φ(kx, ky)/λ)
+        # 引入像差后的光场：p(kx, ky) * exp(-j2πz * sqrt((n/λ)^2 - (kx^2 + ky^2))) * exp(j2π * φ(kx, ky)/λ)
         phi = self.masked_phase(phi, normed=normed, masked=masked)
         ku = self.k_base * np.exp(2.j * np.pi * phi / self.lam_detection)
 
@@ -430,20 +426,26 @@ class PsfGenerator3D:
     def incoherent_psf(self, phi, normed=True, masked=True):
         """
         Returns the incoherent psf for a given wavefront phi
-           (which is just the squared absolute value of the coherent one)
-           The psf is normalized such that the sum intensity on each plane equals one
         :param phi: Zernike/ZernikeWavefront object
         :param normed: boolean, multiplied by normalization factor, e.g. True
         :param masked: boolean, limit frequency domain, e.g. True
         :return: incoherent psf, 3d array
         """
-        psf = self.coherent_psf(phi, normed=normed, masked=masked)
+        psf = self.aberration_psf(phi, normed=normed, masked=masked)
 
         return self.my_ifftshift(psf)
 
     def incoherent_psf_intensity(self, phi, normed=True, masked=True):
-        # 取模的平方
-        psf = np.abs(self.coherent_psf(phi, normed=normed, masked=masked)) ** 2  
+        """
+        Returns the incoherent psf intensity for a given wavefront phi is just the squared absolute value
+        The psf is normalized such that the sum intensity on each plane equals one
+        :param phi: Zernike/ZernikeWavefront object
+        :param normed: boolean, multiplied by normalization factor, e.g. True
+        :param masked: boolean, limit frequency domain, e.g. True
+        :return: incoherent psf, 3d array
+        """
+        psf = np.abs(self.aberration_psf(phi, normed=normed, masked=masked)) ** 2  
+        psf = np.array([p/np.sum(p) for p in psf])
 
         return self.my_ifftshift(psf)
 
@@ -466,19 +468,27 @@ if __name__ == '__main__':
         plt.axis('off')
         plt.show()
 
-        f3 = f2.random_wavefront([(0, 0), (-1, 1), (1, 2)], order='ansi')
+        amp = {(2, 0): 0.4, (2, 2): 0.2, (4, 2): 0.3}
+        f3 = ZernikeWavefront(amp, order='ansi')
         aberration3 = f3.polynomial(512)
         plt.imshow(aberration3)
         plt.colorbar()
         plt.axis('off')
         plt.show()
 
+        f4 = f3.random_wavefront([(0, 0), (-1, 1), (1, 2)], order='ansi')
+        aberration4 = f4.polynomial(512)
+        plt.imshow(aberration4)
+        plt.colorbar()
+        plt.axis('off')
+        plt.show()
+
     elif mode == 2:
         start = time.time()
-        psf1 = PsfGenerator3D(psf_shape=(95, 256, 256), units=(0.032, 0.016, 0.016),
-                              na_detection=1.4, lam_detection=0.775, n=1.518, switch=False)
-        wf1 = ZernikeWavefront({(3, -3): -0.775 / 4}, order='ansi')
-        h1 = psf1.incoherent_psf(wf1, normed=True)
+        psf1 = PsfGenerator3D(psf_shape=(15, 256, 256), units=(0.1, 0.1, 0.1),
+                              na_detection=1.7, lam_detection=0.488, n=1.518)
+        wf1 = ZernikeWavefront({(3, -3): 0.3}, order='ansi')
+        h1 = psf1.incoherent_psf_intensity(wf1, normed=True)
         for idx, img in enumerate(h1):
             print(idx, np.max(img))
             print(idx, img.sum())
@@ -487,34 +497,82 @@ if __name__ == '__main__':
         w1 = wf1.polynomial(256)
         phase1 = wf1.phase(psf1.k_rho, psf1.k_phi, normed=True, outside=0)
 
+        import tifffile
+        from scipy.signal import convolve
+        from torchvision import transforms
+        path = r'/Users/WangHao/Desktop/label_4_20/ER/1.tif'
+        img = tifffile.imread(path)
+        img = (img - img.min()) / (img.max() - img.min()) 
+        img = transforms.Compose([transforms.ToTensor(), transforms.Resize((256, 256))])(img)
+        img = img.squeeze(0)
+
+        plt.figure(0)
+        plt.imshow(img, cmap="hot")
+        plt.title('Image')
+        plt.colorbar()
+
+        obj = convolve(img**2, h1[h1.shape[0] // 2,:,:], "same")
+
         plt.figure(figsize=(20, 8))
         plt.subplot(2, 3, 1)
         plt.imshow(w1, cmap="hot")
-        plt.title('Aberration_xy')
+        plt.title('Aberration')
         plt.colorbar()
 
         plt.subplot(2, 3, 2)
         plt.imshow(phase1, cmap="hot")
-        plt.title('Aberration_ifftkxky')
+        plt.title('Aberration_focus')
+        plt.colorbar()
+
+        plt.subplot(2, 3, 3)
+        plt.imshow(obj, cmap="hot")
+        plt.title('Object_focus')
         plt.colorbar()
 
         plt.subplot(2, 3, 4)
-        plt.imshow(h1[h1.shape[0] // 2], cmap="hot")
-        plt.title('psf_xoy')
+        plt.imshow(h1[h1.shape[0] // 2,:,:], cmap="hot")
+        plt.title('Psf_xoy')
         plt.colorbar()
 
         plt.subplot(2, 3, 5)
         plt.imshow(h1[:, h1.shape[1] // 2, :], cmap="hot")
-        plt.title('psf_xoz')
+        plt.title('Psf_xoz')
         plt.colorbar()
 
         plt.subplot(2, 3, 6)
         plt.imshow(h1[:, :, h1.shape[2] // 2], cmap="hot")
-        plt.title('psf_yoz')
+        plt.title('Psf_yoz')
         plt.colorbar()
         plt.show()
 
     elif mode == 3:
+        amp = {
+            (2, 0): 0.1,
+            (2, -2): 0.1,
+            (2, 2): 0.1,
+            (4, -2):0.1,
+            (4, 2):0.1,
+            (3, -1):0.1,
+            (3, 1):0.1,
+            (5, -1):0.1,
+            (5, 1):0.1,
+            (4, 0):0.1,
+            (6, 0):0.1,
+            (8, 0):0.1,
+            (10, 0):0.1,
+            (3, -3):0.1,
+            (3, 3):0.1,
+            (4, -4):0.1,
+            (4, 4):0.1
+            }
+        f = ZernikeWavefront(amp, order='ansi')
+        aberration3 = f.polynomial(512)
+        plt.imshow(aberration3)
+        plt.colorbar()
+        plt.axis('off')
+        plt.show()
+
+    elif mode == 4:
         ky1 = np.fft.fftshift(np.fft.fftfreq(256, 0.016))
         kx1 = np.fft.fftshift(np.fft.fftfreq(256, 0.016))
 
@@ -630,15 +688,4 @@ if __name__ == '__main__':
         plt.imshow(aberration2, cmap="hot")
         plt.colorbar()
         plt.title('trefo_obli_0.775')
-        plt.show()
-
-    elif mode == 4:
-        save_path = 'W:/桌面/1229/归一化/'
-        amp = 1
-        wf2 = ZernikeWavefront({(3, 3): amp}, order='ansi')
-        w2 = wf2.polynomial(177, normed=True)
-        io.savemat(f'{save_path}3,3,{amp}.mat', {'data': w2})
-        plt.imshow(w2)
-        plt.colorbar()
-        plt.axis('off')
         plt.show()

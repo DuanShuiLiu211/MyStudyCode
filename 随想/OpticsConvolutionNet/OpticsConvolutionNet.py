@@ -1,3 +1,4 @@
+from re import A
 import sys
 import torch
 from torch import pi
@@ -18,15 +19,27 @@ def initialize_weight(weight):
     nn.init.kaiming_uniform_(weight, a=0, mode='fan_in', nonlinearity='relu')
 
 
-def fourier_transform_right(inputs):
+def normalized_tensor(inputs):
     """
-    对xy平面的空间域做傅立叶正变换并将低频移到中心
+    将张量归一化
     """
-    outputs = torch.fft.fftshift(torch.fft.fft2(inputs, dim=(-2, -1)), dim=(-2, -1))
+    h, w = inputs.shape[-2:]
+    inputs_max = torch.max_pool2d(inputs, (h, w))
+    inputs_min = inputs.min(-2, True)[0].min(-1, True)[0]
+    outputs = (inputs - inputs_min) / (inputs_max - inputs_min)
 
     return outputs
 
 
+def fourier_transform_right(inputs):
+    """
+    对xy平面的空间域做傅立叶正变换并将低频移到中心
+    """
+    outputs = torch.fft.fft2(inputs, dim=(-2, -1))
+
+    return outputs
+
+torch.max
 def fourier_transform_left(inputs):
     """
     对xy平面的频域做傅立叶逆变换，还原xy平面空间域结果
@@ -701,6 +714,10 @@ if __name__ == '__main__':
     path = r'/Users/WangHao/工作/纳米光子中心/全光相关/实验-0303/0303.png'
     inputs1 = Image.open(path).convert('L')
     inputs1 = transforms.Compose([transforms.ToTensor(), transforms.Resize((255, 255))])(inputs1).unsqueeze(0)
+    
+    a = torch.rand(4,4,2,2)
+    b = normalized_tensor(a)
+    
     epoch = 1000
     for idx in range(epoch):
         models1.train()

@@ -1,7 +1,8 @@
 # encoding:utf-8
 import tensorflow as tf
-from tensorflow.keras import Model
+from keras import Model
 import matplotlib.pyplot as plt
+import time
 
 # 2，tensorflow2.x时期定义模型的规范
 # 构建神经网络并训练，使模型对图片分类
@@ -102,6 +103,7 @@ def test_step(image, label):
 # 第三阶段运行策略
 num_epochs = 200
 for epoch in range(num_epochs):
+    start_time = time.time_ns()
     train_loss_mean.reset_states()
     train_accuracy.reset_states()
     test_loss_mean.reset_states()
@@ -113,10 +115,13 @@ for epoch in range(num_epochs):
     for test_images, test_labels in train_ds:
         test_step(test_images, test_labels)
 
+    end_time = time.time_ns()
+
     print(
         f'Epoch {epoch + 1}, '
-        f'Loss:{train_loss_mean.result() : .8f},'
-        f'Accuracy:{train_accuracy.result() * 100 : .2f}%,'
-        f'Test Loss:{test_loss_mean.result() : .8f},'
-        f'Test Accuracy:{test_accuracy.result() * 100 : .2f}%'
+        f'Loss:{train_loss_mean.result() : .8f}, '
+        f'Accuracy:{train_accuracy.result() * 100 : .2f}%, '
+        f'Test Loss:{test_loss_mean.result() : .8f}, '
+        f'Test Accuracy:{test_accuracy.result() * 100 : .2f}%, '
+        f'Take time:{(end_time-start_time) / 1e9 : .4f}s'
     )

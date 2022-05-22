@@ -82,7 +82,7 @@ def numba_dot_2(a, b):
 if __name__ == "__main__":
     a = [[0 for i in range(1000)] for j in range(500)]
     b = [[0 for i in range(500)] for j in range(1000)]
-    # python_dot(a, b)
+    python_dot(a, b)
 
     a = np.random.rand(1000, 500)
     b = np.random.rand(500, 1000)

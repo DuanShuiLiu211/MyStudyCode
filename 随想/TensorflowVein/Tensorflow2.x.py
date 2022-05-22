@@ -4,9 +4,8 @@ from keras import Model
 import matplotlib.pyplot as plt
 import time
 
-# 2，tensorflow2.x时期定义模型的规范
-# 构建神经网络并训练，使模型对图片分类
 
+# 构建神经网络并训练，使模型对图片分类
 # 第一阶段数据准备
 # 导入数据集
 fashion_mnist = tf.keras.datasets.fashion_mnist
@@ -23,6 +22,11 @@ train_images = train_images[..., tf.newaxis].astype("float32")
 test_images = test_images[..., tf.newaxis].astype("float32")
 train_ds = tf.data.Dataset.from_tensor_slices((train_images, train_labels)).shuffle(buffer_size=60000).batch(32)
 test_ds = tf.data.Dataset.from_tensor_slices((test_images, test_labels)).batch(32)
+
+for X, y in test_ds:
+    print(f"Shape of X [N, H, W, C]: {X.shape}")
+    print(f"Shape of y: {y.shape} {y.dtype}")
+    break
 
 # 数据可视化
 visual_data = False
@@ -51,7 +55,7 @@ class MyModel(Model):
         self.d1 = tf.keras.layers.Dense(128, activation='relu')
         self.d2 = tf.keras.layers.Dense(10, activation='softmax')
 
-    def call(self, inputs, training=None, mask=None):
+    def call(self, inputs, training=None):
         x = self.conv1(inputs)
         x = self.flatten(x)
         x = self.d1(x)
@@ -59,7 +63,6 @@ class MyModel(Model):
         output = x
 
         return output
-
 
 # 实例化模型
 model = MyModel()
@@ -76,7 +79,6 @@ train_accuracy = tf.keras.metrics.SparseCategoricalAccuracy(name='train_accuracy
 test_loss_mean = tf.keras.metrics.Mean(name='test_loss')
 test_accuracy = tf.keras.metrics.SparseCategoricalAccuracy(name='test_accuracy')
 
-
 # 计算训练集的梯度和损失
 @tf.function
 def train_step(image, label):
@@ -89,7 +91,6 @@ def train_step(image, label):
     train_loss_mean(train_loss)
     train_accuracy(label, predictions)
 
-
 # 计算测试集的损失
 @tf.function
 def test_step(image, label):
@@ -100,28 +101,28 @@ def test_step(image, label):
     test_accuracy(label, predictions)
 
 
-# 第三阶段运行策略
-num_epochs = 200
-for epoch in range(num_epochs):
-    start_time = time.time_ns()
-    train_loss_mean.reset_states()
-    train_accuracy.reset_states()
-    test_loss_mean.reset_states()
-    test_accuracy.reset_states()
+if __name__ == "__main__":
+    # 第三阶段运行策略
+    num_epochs = 200
+    for epoch in range(num_epochs):
+        start_time = time.time_ns()
+        train_loss_mean.reset_states()
+        train_accuracy.reset_states()
+        test_loss_mean.reset_states()
+        test_accuracy.reset_states()
 
-    for images, labels in train_ds:
-        train_step(images, labels)
+        for images, labels in train_ds:
+            train_step(images, labels)
 
-    for test_images, test_labels in train_ds:
-        test_step(test_images, test_labels)
+        for test_images, test_labels in train_ds:
+            test_step(test_images, test_labels)
 
-    end_time = time.time_ns()
-
-    print(
-        f'Epoch {epoch + 1}, '
-        f'Loss:{train_loss_mean.result() : .8f}, '
-        f'Accuracy:{train_accuracy.result() * 100 : .2f}%, '
-        f'Test Loss:{test_loss_mean.result() : .8f}, '
-        f'Test Accuracy:{test_accuracy.result() * 100 : .2f}%, '
-        f'Take time:{(end_time-start_time) / 1e9 : .4f}s'
-    )
+        end_time = time.time_ns()
+        print(
+            f'Epoch {epoch + 1}, '
+            f'Loss:{train_loss_mean.result() : .8f}, '
+            f'Accuracy:{train_accuracy.result() * 100 : .2f}%, '
+            f'Test Loss:{test_loss_mean.result() : .8f}, '
+            f'Test Accuracy:{test_accuracy.result() * 100 : .2f}%, '
+            f'Take time:{(end_time-start_time) / 1e9 : .4f}s'
+        )

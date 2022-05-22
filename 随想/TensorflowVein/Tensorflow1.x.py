@@ -2,9 +2,8 @@
 import tensorflow as tf
 import numpy as np
 
-# 1，tensorflow1.x时期定义模型的规范
-# 构建神经网络并训练，使模型拟合 y=x^2+1
 
+# 构建神经网络并训练，使模型拟合 y=x^2+1
 # 创建输入数据与标签数据
 x_data = np.linspace(-1, 1, 300)[:, np.newaxis]
 y_data = np.square(x_data) + 1 + np.random.normal(0, 0.05, x_data.shape)

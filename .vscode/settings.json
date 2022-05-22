@@ -1,6 +1,18 @@
 {
     "jupyter.jupyterServerType": "remote",
     "python.formatting.provider": "yapf",
-    "jupyter.kernels.filter": [],
-    "jupyter.jupyterCommandLineArguments": [],
+    "jupyter.kernels.filter": [
+        {
+            "path": "/opt/homebrew/Caskroom/miniconda/base/bin/python",
+            "type": "pythonEnvironment"
+        },
+        {
+            "path": "/usr/bin/python3",
+            "type": "pythonEnvironment"
+        },
+        {
+            "path": "/opt/homebrew/bin/python3",
+            "type": "pythonEnvironment"
+        }
+    ],
 }

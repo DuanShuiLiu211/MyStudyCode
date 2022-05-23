@@ -2,7 +2,6 @@ import time
 import numpy as np
 import torch
 import tensorflow as tf
-from numba import jit
 
 
 def execute_time(func):
@@ -169,25 +168,28 @@ def tensorflow_div(a=tf.constant(1), b=tf.constant(2), m=int(1e6), mode="for"):
     return c
 
 
-@execute_time
-@jit(nopython=True)
-# Function is compiled to machine code when called the first time
-# Numba 可以加速循环但是循环状态必须是 int32 int64 uint64
-# Numba 可以加速 NumPy function
-# Numba 可以加速 NumPy broadcasting
-# 对代码中的变量类型有要求，当无法静态确定函数的返回类型时无法正常编译代码，例如，返回类型取决于仅在运行时可用的值的情况
-def numba_div(a=1, b=2, m=int(1e6), mode="for"):
-    i = 0
-    c = 0
-    if mode == "for":
-        for _ in range(m):
-            c = np.divide(a, b)
-            c = np.tanh(c)
-    else:
-        while i < m:
-            c = np.divide(a, b)
-            i = np.add(i, np.array(1))
-    return c
+# from numba import jit
+# @execute_time
+# @jit(nopython=True)
+# # Function is compiled to machine code when called the first time
+# # Numba 可以加速循环但是循环状态必须是 int32 int64 uint64
+# # Numba 可以加速 NumPy function
+# # Numba 可以加速 NumPy broadcasting
+# # 对代码中的变量类型有要求，当无法静态确定函数的返回类型时无法正常编译代码，例如，返回类型取决于仅在运行时可用的值的情况
+# def numba_div(a=1, b=2, m=int(1e6), mode="for"):
+#     i = 0
+#     c = 0
+#     if mode == "for":
+#         for _ in range(m):
+#             c = np.divide(a, b)
+#             c = np.tanh(c)
+#     else:
+#         while i < m:
+#             c = np.divide(a, b)
+#             i = np.add(i, np.array(1))
+#     return c
+
+# numba_div()  # 运行总时间0.169949秒
 
 
 if __name__ == "__main__":
@@ -202,8 +204,6 @@ if __name__ == "__main__":
     numpy_div()  # 运行总时间0.452664秒
     torch_div()  # 运行总时间1.878211秒
     tensorflow_div()  # 运行总时间29.529989秒
-    numba_div()  # 运行总时间0.169949秒
 
     # Cython编译 运行总时间9.2e-05秒
     # 使用纯c编写 运行总时间0.001738秒
-

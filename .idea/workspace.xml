@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="78529805-a04e-4921-8499-9af8e6795f7f" name="变更" comment="'0507'" />
+    <list default="true" id="78529805-a04e-4921-8499-9af8e6795f7f" name="变更" comment="'0507'">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.vscode/c_cpp_properties.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.vscode/launch.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.vscode/settings.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/练习/12.py" beforeDir="false" afterPath="$PROJECT_DIR$/练习/12.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/练习/27.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/练习/27.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/随想/DotCython/Cython.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/随想/DotCython/Cython.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/随想/OpticsConvolutionNet/OpticsConvolutionNet.py" beforeDir="false" afterPath="$PROJECT_DIR$/随想/OpticsConvolutionNet/OpticsConvolutionNet.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -230,7 +240,7 @@
       <workItem from="1652794501193" duration="615000" />
       <workItem from="1652795128117" duration="883000" />
       <workItem from="1653192783888" duration="2949000" />
-      <workItem from="1653289940561" duration="5209000" />
+      <workItem from="1653289940561" duration="8248000" />
     </task>
     <task id="LOCAL-00001" summary="'0410'">
       <created>1649573496936</created>

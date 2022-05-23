@@ -1,11 +1,12 @@
 import numpy as np
-from cv2 import *
+import cv2
 import matplotlib.pyplot as plt
 
 
 def myImread(path):
-    img = imdecode(np.fromfile(path, dtype=np.uint8), -1)
+    img = cv2.imdecode(np.fromfile(path, dtype=np.uint8), -1)
     return img
+
 
 if __name__ == '__main__':
     path = 'X:\图片\Saved Pictures\雪山1.JPG'

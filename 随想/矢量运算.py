@@ -107,8 +107,8 @@ def tensorflow_dot(a, b):
 if __name__ == "__main__":
     a = [[0 for i in range(1000)] for j in range(500)]
     b = [[0 for i in range(500)] for j in range(1000)]
-    # python_dot(a, b)
-    # cython_dot(a, b)
+    python_dot(a, b)
+    cython_dot(a, b)
 
     a = np.random.rand(1000, 500)
     b = np.random.rand(500, 1000)
@@ -121,3 +121,4 @@ if __name__ == "__main__":
     a = tf.random.normal((1000, 500))
     b = tf.random.normal((500, 1000))
     tensorflow_dot(a, b)
+

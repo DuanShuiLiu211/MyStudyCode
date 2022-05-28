@@ -1,6 +1,7 @@
 {
-    "jupyter.jupyterServerType": "remote",
     "python.formatting.provider": "yapf",
+    "jupyter.jupyterServerType": "local",  
+    "jupyter.sendSelectionToInteractiveWindow": true,
     "jupyter.kernels.filter": [
         {
             "path": "/opt/homebrew/Caskroom/miniconda/base/bin/python",

@@ -1,6 +1,6 @@
 print('下载通道命令')
-'''
 
+'''
 阿里云
 http://mirrors.aliyun.com/pypi/simple
 
@@ -21,5 +21,4 @@ http://mirrors.aliyun.com/pypi/simple/tensorflow-gpu/
 
 或特定网址
 https://download.pytorch.org/whl/torch_stable.html
-
 '''

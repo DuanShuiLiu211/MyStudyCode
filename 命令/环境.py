@@ -1,7 +1,6 @@
 print('基础命令')
 
 '''  
-
 更新命令
 conda update conda,先把conda更新到最新版
 conda update anaconda,把anaconda更新到最新版
@@ -78,5 +77,4 @@ print(torch.cuda.device(0))
 print(torch.cuda.device_count())
 print(torch.cuda.get_device_name(0))
 print(torch.empty(3, 3))
-
 '''

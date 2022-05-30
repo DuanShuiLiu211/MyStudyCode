@@ -1,2 +1,5 @@
 .DS_Store
+.idea
+.ipynb_checkpoints
+.vscode
 随想/ZernikeOpticsSimulation/Data/*

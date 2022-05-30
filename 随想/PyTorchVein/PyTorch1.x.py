@@ -8,14 +8,14 @@ from torchvision.transforms import ToTensor
 
 """定义数据"""
 training_data = datasets.FashionMNIST(
-    root="data",
+    root="/Users/WangHao/.torch/dataset",
     train=True,
     download=True,
     transform=ToTensor(),
 )
 
 test_data = datasets.FashionMNIST(
-    root="data",
+    root="/Users/WangHao/.torch/dataset",
     train=False,
     download=True,
     transform=ToTensor(),
@@ -78,7 +78,7 @@ def train(dataloader, model, loss_fn, optimizer):
         if batch % 100 == 0:
             loss, current = loss.item(), batch * len(X)
             print(f"loss: {loss:>7f}  [{current:>5d}/{size:>5d}]")
-            
+
 
 def test(dataloader, model, loss_fn):
     size = len(dataloader.dataset)
@@ -94,7 +94,7 @@ def test(dataloader, model, loss_fn):
     test_loss /= num_batches
     correct /= size
     print(f"Test Error: \n Accuracy: {(100*correct):>0.1f}%, Avg loss: {test_loss:>8f} \n")
-    
+
 
 if __name__ == "__main__":
     """执行训练"""

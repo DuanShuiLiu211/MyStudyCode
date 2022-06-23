@@ -104,25 +104,26 @@ def test_step(image, label):
 if __name__ == "__main__":
     # 第三阶段运行策略
     num_epochs = 200
-    for epoch in range(num_epochs):
-        start_time = time.time_ns()
-        train_loss_mean.reset_states()
-        train_accuracy.reset_states()
-        test_loss_mean.reset_states()
-        test_accuracy.reset_states()
+    with tf.device('/GPU:0'):
+        for epoch in range(num_epochs):
+            start_time = time.time_ns()
+            train_loss_mean.reset_states()
+            train_accuracy.reset_states()
+            test_loss_mean.reset_states()
+            test_accuracy.reset_states()
 
-        for images, labels in train_ds:
-            train_step(images, labels)
+            for images, labels in train_ds:
+                train_step(images, labels)
 
-        for test_images, test_labels in train_ds:
-            test_step(test_images, test_labels)
+            for test_images, test_labels in train_ds:
+                test_step(test_images, test_labels)
 
-        end_time = time.time_ns()
-        print(
-            f'Epoch {epoch + 1}, '
-            f'Loss:{train_loss_mean.result() : .8f}, '
-            f'Accuracy:{train_accuracy.result() * 100 : .2f}%, '
-            f'Test Loss:{test_loss_mean.result() : .8f}, '
-            f'Test Accuracy:{test_accuracy.result() * 100 : .2f}%, '
-            f'Take time:{(end_time-start_time) / 1e9 : .4f}s'
-        )
+            end_time = time.time_ns()
+            print(
+                f'Epoch {epoch + 1}, '
+                f'Loss:{train_loss_mean.result() : .8f}, '
+                f'Accuracy:{train_accuracy.result() * 100 : .2f}%, '
+                f'Test Loss:{test_loss_mean.result() : .8f}, '
+                f'Test Accuracy:{test_accuracy.result() * 100 : .2f}%, '
+                f'Take time:{(end_time-start_time) / 1e9 : .4f}s'
+            )

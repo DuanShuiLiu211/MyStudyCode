@@ -15,6 +15,7 @@ class Toy(object):  # 此处此类可理解为设计一个Toy的蓝图
         self.name = name
         # 类属性 +1
         Toy.count += 1
+        print(self.count)
 
     @classmethod  # 此装饰器表示是类方法，类方法无需创建实例对象即可调用，最为灵活
     def show_toy_count(cls):

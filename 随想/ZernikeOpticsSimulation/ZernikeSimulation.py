@@ -553,14 +553,14 @@ if __name__ == '__main__':
 
                     psf_obj = []
                     for idx in np.arange(dshape[0]):
-                        psf_obj.append(
-                            convolve(obj[idx]**2, psf_zxy[idx], 'same'))
+                        psf_obj.append(convolve(obj[idx], psf_zxy[idx],
+                                                'same'))
 
                     zwf_save_dir_base = os.path.join(file_db1, folder)
                     if not os.path.exists(zwf_save_dir_base):
                         os.makedirs(zwf_save_dir_base)
                     zwf_xy_save_dir = os.path.join(
-                        zwf_save_dir_base, f'zwf_xy_{key:.4f}_{index}_{i}')
+                        zwf_save_dir_base, f'zwf_xy_{key:.6f}_{index}_{i+1}')
 
                     np.save(zwf_xy_save_dir, zwf_xy)
                     # plt.imsave(f'{zwf_xy_save_dir}.png', zwf_xy, dpi=300)
@@ -569,14 +569,14 @@ if __name__ == '__main__':
                     if not os.path.exists(psf_save_dir_base):
                         os.makedirs(psf_save_dir_base)
                     psf_zxy_save_dir = os.path.join(
-                        psf_save_dir_base, f'psf_zxy_{key:.4f}_{index}_{i}')
+                        psf_save_dir_base, f'psf_zxy_{key:.6f}_{index}_{i+1}')
 
-                    # np.save(psf_zxy_save_dir, psf_zxy)
+                    np.save(psf_zxy_save_dir, psf_zxy)
                     # for k, img in enumerate(psf_zxy):
                     #     plt.imsave(f'{psf_zxy_save_dir}_{k}.png', img, dpi=300)
 
                     psf_obj_save_dir = os.path.join(
-                        psf_save_dir_base, f'psf_obj_{key:.4f}_{index}_{i}')
+                        psf_save_dir_base, f'psf_obj_{key:.6f}_{index}_{i+1}')
 
                     np.save(psf_obj_save_dir, psf_obj)
                     # for k, img in enumerate(psf_obj):

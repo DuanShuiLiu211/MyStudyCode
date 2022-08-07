@@ -275,8 +275,8 @@ class FourOptConv(nn.Module):
                 # inputs = torch.fft.ifft2(inputs_k)
 
                 # 空域下采样，插值或池化
-                inputs = torch.nn.UpsamplingNearest2d(scale_factor=0.5)(inputs.abs()) * \
-                         torch.exp(1.j * torch.nn.UpsamplingNearest2d(scale_factor=0.5)(inputs.angle()))
+                inputs = torch.nn.UpsamplingNearest2d(scale_factor=(1/factor))(inputs.abs()) * \
+                         torch.exp(1.j * torch.nn.UpsamplingNearest2d(scale_factor=(1/factor))(inputs.angle()))
                 # inputs = torch.max_pool2d(torch.abs(inputs), kernel_size=(2, 2), stride=(2, 2)) + \
                 #          1.j * torch.max_pool2d(inputs.angle())
                 if self.visual:
@@ -706,32 +706,33 @@ if __name__ == '__main__':
             print(k, v, id(v))
         """
 
-    models1 = OptConvNet(input_size=(255, 255), output_size=(255, 255), down_factor=2, up_factor=2, visual=True)
+    models1 = OptConvNet(input_size=(255, 255), output_size=(255, 255), down_factor=2, up_factor=2, visual=False)
     adam_optimize = optim.Adam(models1.parameters(), lr=1e-4, weight_decay=1e-5)
     ce_loss = nn.BCELoss()
-    visual_writer = SummaryWriter('visualization')
+    # visual_writer = SummaryWriter('visualization')
     path = r'/Users/WangHao/工作/纳米光子中心/全光相关/实验-0303/0303.png'
     inputs1 = Image.open(path).convert('L')
     inputs1 = transforms.Compose([transforms.ToTensor(), transforms.Resize((255, 255))])(inputs1).unsqueeze(0)
-    
+
     a = torch.rand(4,4,2,2)
     b = normalized_tensor(a)
-    
+
     epoch = 1000
     for idx in range(epoch):
         models1.train()
         adam_optimize.zero_grad()
         outputs1 = models1(inputs1)
         loss_result = ce_loss(outputs1, inputs1)
+        print(loss_result.data.item())
         loss_result.backward()
         adam_optimize.step()
-        if idx == 0:
-            visual_writer.add_graph(models1, inputs1)
-        visual_writer.add_scalars('trainloss', {'ce_loss': loss_result.data.item(), }, idx)
-        visual_writer.add_image('0303_1', inputs1.squeeze(0), idx)
-        visual_writer.add_image('0303_2', outputs1.squeeze(0), idx)
+        # if idx == 0:
+        #     visual_writer.add_graph(models1, inputs1)
+        # visual_writer.add_scalars('trainloss', {'ce_loss': loss_result.data.item(), }, idx)
+        # visual_writer.add_image('0303_1', inputs1.squeeze(0), idx)
+        # visual_writer.add_image('0303_2', outputs1.squeeze(0), idx)
 
-    visual_writer.close()
+    # visual_writer.close()
 
     for parameters in models1.named_parameters():
         plot.figure(parameters[0])

@@ -34,6 +34,6 @@ else:
     def python_capture(filename, *place):
         screen = ImageGrab.grab()
         print("显示分辨率:{}".format(screen.size))
-        img = ImageGrab.grab(bbox = place)
+        img = ImageGrab.grab(bbox=place)
         img.save(filename)
     python_capture("./2.png", 0, 0, 1980, 1024)

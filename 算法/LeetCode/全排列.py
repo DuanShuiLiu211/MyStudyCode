@@ -2,7 +2,6 @@
 题目：
 给定一个不含重复数字的数组 nums，返回其所有可能的全排列。你可以按任意顺序返回答案。
 
-
 示例：
 输入：nums = [1,2,3]
 输出：[[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]
@@ -25,12 +24,16 @@ import itertools
 
 
 class Solution1:
+
     def permute(self, nums: List[int]):
         return list(itertools.permutations(nums))
 
+
 class Solution2:
+
     def permute(self, nums: List[int]) -> List[List[int]]:
-        def backtrack(first = 0):
+
+        def backtrack(first=0):
             # 所有数都填完了
             if first == n:
                 res.append(nums[:])
@@ -61,6 +64,7 @@ def dfs(arr, depth, result):
 
 
 class Solution3:
+
     def permute(self, nums: List[int]) -> List[List[int]]:
         if nums is None or len(nums) == 0:
             return []
@@ -69,7 +73,8 @@ class Solution3:
         dfs(nums, 0, result)
         return result
 
-a = Solution3()
-b = [3,2,1,6,8,9,44,66,11,8,9,33]
-print(a.permute(b))
-print(b)
+
+a = Solution1()
+b = [3, 2, 1, 6, 8, 9, 11, 13, 15]
+c = a.permute(b)
+print(c)

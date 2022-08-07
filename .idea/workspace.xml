@@ -2,15 +2,52 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="78529805-a04e-4921-8499-9af8e6795f7f" name="变更" comment="'0507'">
+      <change afterPath="$PROJECT_DIR$/算法/LeetCode/零钱找整.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/算法/笔试/聚时科技实习0628/subject01.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/算法/笔试/聚时科技实习0628/subject02.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/算法/笔试/聚时科技实习0628/subject03.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/算法/笔试/聚时科技实习0628/subject04.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/练习/微创/9.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/Script.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Script.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.vscode/c_cpp_properties.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.vscode/launch.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.vscode/settings.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/练习/12.py" beforeDir="false" afterPath="$PROJECT_DIR$/练习/12.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/练习/27.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/练习/27.ipynb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/随想/DotCython/Cython.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/随想/DotCython/Cython.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/算法/LeetCode/tempCodeRunnerFile.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/算法/LeetCode/全排列.py" beforeDir="false" afterPath="$PROJECT_DIR$/算法/LeetCode/全排列.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/算法/图遍历算法.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/算法/图遍历算法.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/算法/排序算法.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/算法/排序算法.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/练习/1.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/练习/10.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/练习/11.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/练习/12.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/练习/13.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/练习/14.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/练习/15.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/练习/16.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/练习/17.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/练习/18.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/练习/19.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/练习/2.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/练习/20.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/练习/21.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/练习/22.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/练习/23.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/练习/24.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/练习/25.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/练习/26.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/练习/27.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/练习/28.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/练习/29.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/练习/3.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/练习/30.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/练习/4.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/练习/5.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/练习/6.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/练习/7.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/练习/8.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/练习/9.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/练习/Python备忘录.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/随想/OpticsConvolutionNet/OpticsConvolutionNet.py" beforeDir="false" afterPath="$PROJECT_DIR$/随想/OpticsConvolutionNet/OpticsConvolutionNet.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/随想/ZernikeOpticsSimulation/ZernikeSimulation.py" beforeDir="false" afterPath="$PROJECT_DIR$/随想/ZernikeOpticsSimulation/ZernikeSimulation.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/随想/截图.py" beforeDir="false" afterPath="$PROJECT_DIR$/随想/截图.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,10 +76,13 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
-  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;
+  }
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/随想/ZernikeOpticsSimulation" />
@@ -54,8 +94,8 @@
       <recent name="$PROJECT_DIR$/随想/收益" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.DotCython.pyx">
-    <configuration name="标量运算" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+  <component name="RunManager" selected="Python.9">
+    <configuration name="9" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Script" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -63,12 +103,12 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/随想" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/练习/微创" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/随想/标量运算.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/练习/微创/9.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -99,7 +139,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="Tensorflow2.x" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="subject01" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Script" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -107,12 +147,12 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/随想/TensorflowVein" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/算法/笔试/聚时科技0628" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/随想/TensorflowVein/Tensorflow2.x.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/算法/笔试/聚时科技0628/subject01.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -121,7 +161,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="矢量运算" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="subject02" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Script" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -129,12 +169,12 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/随想" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/算法/笔试/聚时科技0628" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/随想/矢量运算.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/算法/笔试/聚时科技0628/subject02.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -143,7 +183,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="setup (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="subject03" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="Script" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -151,34 +191,12 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/算法/笔试/聚时科技0628" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/setup.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="setup" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="Script" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/随想/DotCython" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/随想/DotCython/setup.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/算法/笔试/聚时科技0628/subject03.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -189,11 +207,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.9" />
+        <item itemvalue="Python.subject02" />
+        <item itemvalue="Python.subject03" />
+        <item itemvalue="Python.subject01" />
         <item itemvalue="Python.DotCython.pyx" />
-        <item itemvalue="Python.setup (1)" />
-        <item itemvalue="Python.setup" />
-        <item itemvalue="Python.Tensorflow2.x" />
-        <item itemvalue="Python.标量运算" />
       </list>
     </recent_temporary>
   </component>
@@ -241,6 +259,16 @@
       <workItem from="1652795128117" duration="883000" />
       <workItem from="1653192783888" duration="2949000" />
       <workItem from="1653289940561" duration="8248000" />
+      <workItem from="1656403897515" duration="12923000" />
+      <workItem from="1656551890534" duration="4049000" />
+      <workItem from="1656842438650" duration="3265000" />
+      <workItem from="1659514107086" duration="7992000" />
+      <workItem from="1659612308429" duration="3932000" />
+      <workItem from="1659690164158" duration="43000" />
+      <workItem from="1659774248461" duration="1941000" />
+      <workItem from="1659788335784" duration="7787000" />
+      <workItem from="1659842268604" duration="31000" />
+      <workItem from="1659857279134" duration="672000" />
     </task>
     <task id="LOCAL-00001" summary="'0410'">
       <created>1649573496936</created>
@@ -303,20 +331,24 @@
     </watches-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/Script$PlotNetwork.coverage" NAME="PlotNetwork 覆盖结果" MODIFIED="1650983983541" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/随想" />
-    <SUITE FILE_PATH="coverage/Script$setup.coverage" NAME="setup 覆盖结果" MODIFIED="1653291948402" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/随想/DotCython" />
-    <SUITE FILE_PATH="coverage/Script$DotCython_pyx.coverage" NAME="DotCython.pyx 覆盖结果" MODIFIED="1653293655025" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/随想/DotCython" />
-    <SUITE FILE_PATH="coverage/Script$.coverage" NAME="标量运算 覆盖结果" MODIFIED="1651448790344" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/随想" />
-    <SUITE FILE_PATH="coverage/Script$FreqDomaEqConv__1_.coverage" NAME="FreqDomaEqConv (1) 覆盖结果" MODIFIED="1651228374207" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/随想/OpticsConvolutionNet" />
-    <SUITE FILE_PATH="coverage/Script$FreqDomaEqConv.coverage" NAME="FreqDomaEqConv 覆盖结果" MODIFIED="1650991150797" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/随想" />
-    <SUITE FILE_PATH="coverage/Script$ZernikeOptics.coverage" NAME="ZernikeOptics 覆盖结果" MODIFIED="1650525892580" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/随想/ZernikeOpticsSimulation" />
-    <SUITE FILE_PATH="coverage/Script$24.coverage" NAME="24 覆盖结果" MODIFIED="1648922392838" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/练习" />
-    <SUITE FILE_PATH="coverage/Script$ZernikeSimulation.coverage" NAME="ZernikeSimulation 覆盖结果" MODIFIED="1649401072225" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/随想/ZernikeOpticsSimulation" />
-    <SUITE FILE_PATH="coverage/Script$optica_net.coverage" NAME="optica_net 覆盖结果" MODIFIED="1651136598465" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$USER_HOME$/Desktop" />
-    <SUITE FILE_PATH="coverage/Script$1.coverage" NAME="LetterFlowSense 覆盖结果" MODIFIED="1651264034172" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/随想" />
     <SUITE FILE_PATH="coverage/Script$setup__1_.coverage" NAME="setup (1) 覆盖结果" MODIFIED="1653292451374" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/Script$Tensorflow2_x.coverage" NAME="Tensorflow2.x 覆盖结果" MODIFIED="1653194936849" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/随想/TensorflowVein" />
+    <SUITE FILE_PATH="coverage/Script$24.coverage" NAME="24 覆盖结果" MODIFIED="1648922392838" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/练习" />
+    <SUITE FILE_PATH="coverage/Script$9.coverage" NAME="9 覆盖结果" MODIFIED="1659520436399" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/练习/微创" />
+    <SUITE FILE_PATH="coverage/Script$.coverage" NAME="标量运算 覆盖结果" MODIFIED="1651448790344" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/随想" />
+    <SUITE FILE_PATH="coverage/Script$subject03.coverage" NAME="subject03 覆盖结果" MODIFIED="1656411544720" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/算法/笔试/聚时科技0628" />
+    <SUITE FILE_PATH="coverage/Script$optica_net.coverage" NAME="optica_net 覆盖结果" MODIFIED="1651136598465" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$USER_HOME$/Desktop" />
+    <SUITE FILE_PATH="coverage/Script$FreqDomaEqConv.coverage" NAME="FreqDomaEqConv 覆盖结果" MODIFIED="1650991150797" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/随想" />
     <SUITE FILE_PATH="coverage/Script$OpticsConvolutionNet.coverage" NAME="OpticsConvolutionNet 覆盖结果" MODIFIED="1651920605734" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/随想" />
+    <SUITE FILE_PATH="coverage/Script$1.coverage" NAME="LetterFlowSense 覆盖结果" MODIFIED="1651264034172" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/随想" />
+    <SUITE FILE_PATH="coverage/Script$DotCython_pyx.coverage" NAME="DotCython.pyx 覆盖结果" MODIFIED="1653293655025" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/随想/DotCython" />
+    <SUITE FILE_PATH="coverage/Script$subject02.coverage" NAME="subject02 覆盖结果" MODIFIED="1656416652472" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/算法/笔试/聚时科技0628" />
+    <SUITE FILE_PATH="coverage/Script$setup.coverage" NAME="setup 覆盖结果" MODIFIED="1653291948402" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/随想/DotCython" />
+    <SUITE FILE_PATH="coverage/Script$FreqDomaEqConv__1_.coverage" NAME="FreqDomaEqConv (1) 覆盖结果" MODIFIED="1651228374207" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/随想/OpticsConvolutionNet" />
+    <SUITE FILE_PATH="coverage/Script$subject01.coverage" NAME="subject01 覆盖结果" MODIFIED="1656409968054" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/算法/笔试/聚时科技0628" />
+    <SUITE FILE_PATH="coverage/Script$ZernikeOptics.coverage" NAME="ZernikeOptics 覆盖结果" MODIFIED="1650525892580" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/随想/ZernikeOpticsSimulation" />
+    <SUITE FILE_PATH="coverage/Script$ZernikeSimulation.coverage" NAME="ZernikeSimulation 覆盖结果" MODIFIED="1649401072225" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/随想/ZernikeOpticsSimulation" />
     <SUITE FILE_PATH="coverage/Script$FourierOpticsNet.coverage" NAME="OpticsConvolutionNet 覆盖结果" MODIFIED="1649403670530" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/随想" />
+    <SUITE FILE_PATH="coverage/Script$PlotNetwork.coverage" NAME="PlotNetwork 覆盖结果" MODIFIED="1650983983541" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/随想" />
+    <SUITE FILE_PATH="coverage/Script$Tensorflow2_x.coverage" NAME="Tensorflow2.x 覆盖结果" MODIFIED="1653194936849" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/随想/TensorflowVein" />
   </component>
 </project>

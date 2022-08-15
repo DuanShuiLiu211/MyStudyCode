@@ -78,62 +78,65 @@ def count_place(data, path):
 
     y_sum = np.sum(data_gray, axis=1)
     x_sum = np.sum(data_gray, axis=0)
+
+    up = 0
+    down = data.shape[0]
+    left = 0
+    right = data.shape[1]
     try:
         up = min(np.where(y_sum != 0)[0]) - 20 if min(np.where(y_sum != 0)[0]) > 20 else 0
         down = max(np.where(y_sum != 0)[0]) + 20 if max(np.where(y_sum != 0)[0]) < data.shape[0] - 20 else data.shape[0]
         left = min(np.where(x_sum != 0)[0]) - 20 if min(np.where(x_sum != 0)[0]) > 20 else 0
         right = max(np.where(x_sum != 0)[0]) + 20 if min(np.where(x_sum != 0)[0]) < data.shape[1] - 20 else data.shape[1]
-        flag = 0
+        flag = False
     except ValueError:
-        flag = 1
-        print(path)
+        flag = True
+        print(f"no get {path} roi")
 
     return up, down, left, right, flag
 
 
-file_path = '/Volumes/昊大侠/工作/实习相关/微创卜算子医疗科技有限公司/陈嘉懿组/数据/短轴动态狭窄率/dataset_0802'
-path_1 = os.listdir(file_path)
-file_remove(path_1)
-for dir_path in path_1:
-    if dir_path == 'label':
-        label_dir_path = os.path.join(file_path, dir_path)
-        path_2 = os.listdir(label_dir_path)
-        file_remove(path_2)
-        for label_path in path_2:
-            if "._" not in label_path:
-                # up, down, left, right = count_list_place(label_dir_path, label_path)
+file_path = r"/Volumes/昊大侠/工作/实习相关/微创卜算子医疗科技有限公司/陈嘉懿组/数据/短轴动态狭窄率/王昊数据_0801"
+save_base = r"/Volumes/昊大侠/工作/实习相关/微创卜算子医疗科技有限公司/陈嘉懿组/数据/短轴动态狭窄率/dataset"
+if not os.path.exists(save_base):
+    os.mkdir(save_base)
+save_base_label = r"/Volumes/昊大侠/工作/实习相关/微创卜算子医疗科技有限公司/陈嘉懿组/数据/短轴动态狭窄率/dataset/label"
+if not os.path.exists(save_base_label):
+    os.mkdir(save_base_label)
+save_base_image = r"/Volumes/昊大侠/工作/实习相关/微创卜算子医疗科技有限公司/陈嘉懿组/数据/短轴动态狭窄率/dataset/image"
+if not os.path.exists(save_base_image):
+    os.mkdir(save_base_image)
 
-                label_dir = f"{label_dir_path}/{label_path}"
-                image_dir = label_dir.replace("label", "image")
+for root, dirs, files in os.walk(file_path):
+    if not dirs:
+        keywords = ["label"]
+        dir_name = root.split("/")[-1]
+        keys = [key for key in keywords if key in dir_name]
+        if keys:
+            ext = ".png"
+            for file_name in files:
+                if ext in file_name and "._" not in file_name:
+                    file_path_label = os.path.join(root, file_name)
+                    label = cv2.imdecode(np.fromfile(file_path_label, dtype=np.uint8), -1)
+                    label = remove_isolate(label)
+                    file_path_image = file_path_label.replace("_label", "")
+                    image = cv2.imdecode(np.fromfile(file_path_image, dtype=np.uint8), -1)
 
-                save_label_path = label_dir.replace('dataset_0802', 'dataset_roi_0802')
-                if not os.path.exists(save_label_path):
-                    os.mkdir(save_label_path)
+                    up, down, left, right, flag = count_place(label, file_path_label)
+                    if flag:
+                        break
 
-                save_image_path = image_dir.replace('dataset_0802', 'dataset_roi_0802')
-                if not os.path.exists(save_image_path):
-                    os.mkdir(save_image_path)
+                    crop_image, crop_label = crop_array(image, label, up, down, left, right)
+                    save_path_label = os.path.join(save_base_label, dir_name.replace("_label", ""))
+                    if not os.path.exists(save_path_label):
+                        os.mkdir(save_path_label)
+                    save_path_image = os.path.join(save_base_image, dir_name.replace("_label", ""))
+                    if not os.path.exists(save_path_image):
+                        os.mkdir(save_path_image)
 
-                path_3 = os.listdir(label_dir)
-                file_remove(path_3)
-                for file_name in path_3:
-                    if "._" not in file_name:
-                        label = cv2.imdecode(
-                            np.fromfile(f"{label_dir}/{file_name}", dtype=np.uint8), -1)
-                        label = remove_isolate(label)
-                        image = cv2.imdecode(
-                            np.fromfile(f"{image_dir}/{file_name}", dtype=np.uint8), -1)
-
-                        up, down, left, right, flag = count_place(label, image_dir)
-
-                        if flag:
-                            break
-
-                        crop_image, crop_label = crop_array(image, label, up, down, left, right)
-
-                        cv2.imencode('.png', crop_image)[1].tofile(
-                            os.path.join(save_image_path, file_name))
-                        cv2.imencode('.png', crop_label)[1].tofile(
-                            os.path.join(save_label_path, file_name))
+                    cv2.imencode('.png', crop_label)[1].tofile(
+                        os.path.join(save_path_label, file_name))
+                    cv2.imencode('.png', crop_image)[1].tofile(
+                        os.path.join(save_path_image, file_name))
 
 print("运行结束")

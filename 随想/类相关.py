@@ -9,7 +9,8 @@
 # 类举例
 class Toy(object):  # 此处此类可理解为设计一个Toy的蓝图
     # 赋值定义类属性，记录所有玩具数量
-    count = 0
+    count = 2
+    print(count)
 
     def __init__(self, name):  # 用于实例初始化
         self.name = name
@@ -62,6 +63,7 @@ fll1.hi()
 fll1.show_toy_count()
 fll1.beybey()
 
+
 # 类方法与静态方法辨析
 class Cat:  # 或者class Cat()不写父对象形式定义类对象，会默认继承祖先object对象
     name = '小敏'
@@ -108,3 +110,24 @@ dog1.yyy()
 print(dog1.name, dog1.age)
 # 祖先对象中包含的基本方法
 print(dir(object))
+
+
+class Vector:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def __add__(self, other):
+        return Vector(self.x + other.x , self.y + other.y)
+
+    def __repr__(self):
+        return f'Vector({self.x}, {self.y})'
+
+    def __eq__(self, other):
+        return self.x == other.x and self.y == other.y
+
+
+v1 = Vector(3, 4)
+v2 = Vector(5, 6)
+print(Vector(3, 4) + Vector(3, 4))
+print(v1 == v2)

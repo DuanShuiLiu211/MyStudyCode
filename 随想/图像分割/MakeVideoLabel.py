@@ -30,6 +30,7 @@ def rect_pts_order(pts_2ds):
 
 def json_plot_label(file_path, save_path):
     with open(file_path, 'r') as f:
+        print(f"load {file_path}")
         label_dict = json.load(f)
     shapes = label_dict['shapes']
 
@@ -90,10 +91,11 @@ def json_plot_label(file_path, save_path):
         os.makedirs(save_path)
     cv2.imencode('.png', label_img)[1].tofile(
         os.path.join(save_path, label_dict['imagePath']))
+    print(f"label {os.path.join(save_path, label_dict['imagePath'])} fixed")
 
 
 if __name__ == "__main__":
-    path = r"/Users/WangHao/工作/实习相关/微创卜算子医疗科技有限公司/陈嘉懿组/数据/王昊数据_0801/"
+    path = r"/Volumes/昊大侠/工作/实习相关/微创卜算子医疗科技有限公司/陈嘉懿组/数据/短轴动态狭窄率/王昊数据_0801"
 
     # 通过DFS实现统一逻辑处理同一层次的文件对象
     for root, dirs, files in os.walk(path):
@@ -104,7 +106,7 @@ if __name__ == "__main__":
             if not keys:
                 ext = ".json"
                 for file_name in files:
-                    if ext in file_name:
+                    if ext in file_name and "._" not in file_name:
                         file_path = os.path.join(root, file_name)
                         save_path = f"{root}_label"
                         json_plot_label(file_path, save_path)

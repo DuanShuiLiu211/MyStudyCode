@@ -19,7 +19,7 @@ if __name__ == '__main__':
     # 调用labelme库中原有的 labelme_json_to_dataset 为核心
     # 批量将文件夹中的 json 文件转换，并抽取对应图片至各自文件夹
     _args = GetArgs()
-    _basepath = "/Users/WangHao/工作/实习相关/微创卜算子医疗科技有限公司/陈嘉懿组/数据/王昊数据_0801/颈总动脉视频_第1批/LMM_5_未处理/202203241107360023VAS/"
+    _basepath = "/Users/WangHao/Desktop/1"
     _args.input = _basepath
     _args.out_mask = f"{_basepath}/mask"
     _args.out_img = f"{_basepath}/img"
@@ -28,7 +28,7 @@ if __name__ == '__main__':
     _jsonFolder = _args.input
     input_files = os.listdir(_jsonFolder)
     for sfn in input_files:  # single file name
-        if (os.path.splitext(sfn)[1] == ".json"):  # 是否为 json 文件
+        if os.path.splitext(sfn)[1] == ".json":  # 是否为 json 文件
 
             # 调用 labelme 的 labelme_json_to_dataset 方法执行转换并输出到 temp 文件夹
             os.system(

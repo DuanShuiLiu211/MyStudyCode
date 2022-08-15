@@ -15,7 +15,7 @@ if __name__ == '__main__':
     label_list = os.listdir(label_folder)
 
     for i in range(len(label_list)):
-        img = label_list[i].replace('.json','.Jpg')
+        img = label_list[i].replace('.json', '.jpg')
         
         label = label_list[i]
 

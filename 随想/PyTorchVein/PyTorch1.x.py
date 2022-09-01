@@ -8,14 +8,14 @@ from torchvision.transforms import ToTensor
 
 """定义数据"""
 training_data = datasets.FashionMNIST(
-    root="/Users/WangHao/.torch/dataset",
+    root="随想/PyTorchVein/dataset",
     train=True,
     download=True,
     transform=ToTensor(),
 )
 
 test_data = datasets.FashionMNIST(
-    root="/Users/WangHao/.torch/dataset",
+    root="随想/PyTorchVein/dataset",
     train=False,
     download=True,
     transform=ToTensor(),

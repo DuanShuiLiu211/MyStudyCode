@@ -95,12 +95,12 @@ def json_plot_label(file_path, save_path):
 
 
 if __name__ == "__main__":
-    path = r"/Volumes/昊大侠/工作/实习相关/微创卜算子医疗科技有限公司/陈嘉懿组/数据/短轴动态狭窄率/王昊数据_0801"
+    path = r"/Volumes/昊大侠/工作/实习相关/微创卜算子医疗科技有限公司/陈嘉懿组/数据/短轴动态狭窄率/王昊数据_0801/第二次返修/11 HSF 返修视频-20220816"
 
     # 通过DFS实现统一逻辑处理同一层次的文件对象
     for root, dirs, files in os.walk(path):
         if not dirs:
-            keywords = ["label", "visual"]
+            keywords = ["label", "visual", "roi"]
             dir_name = root.split("/")[-1]
             keys = [key for key in keywords if key in dir_name]
             if not keys:
@@ -108,7 +108,7 @@ if __name__ == "__main__":
                 for file_name in files:
                     if ext in file_name and "._" not in file_name:
                         file_path = os.path.join(root, file_name)
-                        save_path = f"{root}_label"
+                        save_path = root.replace("image", "label")
                         json_plot_label(file_path, save_path)
 
     print("运行结束")

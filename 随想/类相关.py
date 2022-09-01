@@ -28,6 +28,7 @@ class Toy(object):  # 此处此类可理解为设计一个Toy的蓝图
 
     # 实例方法
     def beybey(self):
+        self.hi()
         print('Sad！', self)
 
 

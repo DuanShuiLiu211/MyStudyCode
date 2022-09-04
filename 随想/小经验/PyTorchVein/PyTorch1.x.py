@@ -1,3 +1,4 @@
+import platform
 import time
 import torch
 from torch import nn
@@ -8,14 +9,14 @@ from torchvision.transforms import ToTensor
 
 """定义数据"""
 training_data = datasets.FashionMNIST(
-    root="随想/PyTorchVein/dataset",
+    root="./dataset",
     train=True,
     download=True,
     transform=ToTensor(),
 )
 
 test_data = datasets.FashionMNIST(
-    root="随想/PyTorchVein/dataset",
+    root="./dataset",
     train=False,
     download=True,
     transform=ToTensor(),
@@ -33,8 +34,12 @@ for X, y in test_dataloader:
 
 
 """定义模型"""
-device = "cuda" if torch.cuda.is_available() else "cpu"
+if platform.system() == 'Darwin':
+    device = "mps" if torch.backends.mps.is_available() else "cpu"
+else:
+    device = "cuda" if torch.cuda.is_available() else "cpu"
 print(f"Using {device} device")
+
 
 class NeuralNetwork(nn.Module):
     def __init__(self):

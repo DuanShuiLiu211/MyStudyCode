@@ -1,6 +1,5 @@
 {
     "python.formatting.provider": "yapf",
-    "jupyter.jupyterServerType": "local",  
     "jupyter.sendSelectionToInteractiveWindow": true,
     "jupyter.kernels.filter": [
         {
@@ -16,5 +15,4 @@
             "type": "pythonEnvironment"
         }
     ],
-    "commentTranslate.source": "Bing",
 }

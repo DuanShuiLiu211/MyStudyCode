@@ -6,6 +6,7 @@
 # 其中方法是在对象语境下的函数，实例调用实例方法即调用方法，类调用实例方法即调用函数
 # super(C, self).init()等价super().init()
 
+
 # 类举例
 class Toy(object):  # 此处此类可理解为设计一个Toy的蓝图
     # 赋值定义类属性，记录所有玩具数量
@@ -33,6 +34,7 @@ class Toy(object):  # 此处此类可理解为设计一个Toy的蓝图
 
 
 class Fll(Toy):
+
     def gugugug(self):
         pass
 
@@ -55,6 +57,7 @@ toy2.hi()
 # 实例对象调用实例方法,Python的解释器内部，当我们调用toy3.beybey()时，实际上Python解释成Toy.beybey(toy3)
 toy3.beybey()
 # Toy.beybey()  # 错误语法，self必须指向实例对象，此处实例方法指向类对象而不是实例对象
+Toy('okboy').beybey()  # 调用 init 方法隐式实例化
 Toy.beybey(toy3)
 # 类与其实例的类型和内存地址
 print(type(Toy), id(Toy), type(toy3), id(toy3))
@@ -99,7 +102,6 @@ class Dog(Cat):
         print('打%s' % Dog.name)
 
 
-
 Cat.www()
 Cat.call()
 # 没有定义实例方法可以创建实例对象继承并使用其中方法
@@ -114,12 +116,13 @@ print(dir(object))
 
 
 class Vector:
+
     def __init__(self, x, y):
         self.x = x
         self.y = y
 
     def __add__(self, other):
-        return Vector(self.x + other.x , self.y + other.y)
+        return Vector(self.x + other.x, self.y + other.y)
 
     def __repr__(self):
         return f'Vector({self.x}, {self.y})'

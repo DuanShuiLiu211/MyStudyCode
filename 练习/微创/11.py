@@ -142,10 +142,9 @@ if __name__ == '__main__':
     test_list = sorted(os.listdir(root_dir))
     print(f"test list len:{len(test_list)}")
 
-    #
     # dataset_loader
     print(f'Creating dataset...')
-    test_set = HengqieDataset(root_dir, test_list)
+    test_set = Dataset(root_dir, test_list)
     test_loader = DataLoader(test_set,
                              batch_size=batch_size,
                              shuffle=False,

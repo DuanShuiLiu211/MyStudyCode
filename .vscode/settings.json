@@ -17,5 +17,6 @@
             "type": "pythonEnvironment"
         }
     ],
-    "code-runner.cwd": "${fileDirname}"
+    // "code-runner.cwd": "${fileDirname}",
+    "debug.allowBreakpointsEverywhere": true
 }

@@ -1,15 +1,12 @@
 class Solution:
-    def get_subset(self, array):
-        """
-        :type originArray:list
-        :rtype :listlist
-        """
+    def get_subsets(self, string):
+        # 全部子集
         result = [[]]
-        size = len(array)
+        size = len(string)
         for i in range(size):
             for j in range(len(result)):
-                # 现有每个子集中添加新元素，作为新子集加入结果集中
-                result.append(result[j]+[array[i]])
+                # 现有的每个子集中都添加新元素，作为新子集加入结果集中
+                result.append(result[j] + [string[i]])
 
         return result
 
@@ -17,7 +14,7 @@ class Solution:
         n = samples[0][0]
         k = samples[0][1]
         nums = samples[1]
-        subset = self.get_subset(nums)
+        subset = self.get_subsets(nums)
         ans = []
         for set in subset:
             if set:

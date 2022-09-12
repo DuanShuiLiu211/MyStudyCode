@@ -18,5 +18,6 @@
         }
     ],
     // "code-runner.cwd": "${fileDirname}",
-    "debug.allowBreakpointsEverywhere": true
+    "debug.allowBreakpointsEverywhere": true,
+    "sqltools.connections": []
 }

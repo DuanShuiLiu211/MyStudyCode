@@ -64,6 +64,7 @@ class MyModel(Model):
 
         return output
 
+
 # 实例化模型
 model = MyModel()
 

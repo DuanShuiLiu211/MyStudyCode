@@ -59,6 +59,7 @@ class NeuralNetwork(nn.Module):
         logits = self.linear_relu_stack(x)
         return logits
 
+
 model = NeuralNetwork().to(device)
 print(model)
 
@@ -66,6 +67,7 @@ print(model)
 """优化模型"""
 loss_fn = nn.CrossEntropyLoss()
 optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
+
 
 def train(dataloader, model, loss_fn, optimizer):
     size = len(dataloader.dataset)
@@ -116,7 +118,6 @@ if __name__ == "__main__":
             torch.save(model.state_dict(), "model.pth")
             print("Saved PyTorch Model State to model.pth")
     print("Done!")
-
 
     """验证模型"""
     verify_model = False

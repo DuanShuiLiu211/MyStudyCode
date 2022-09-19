@@ -39,7 +39,8 @@ if platform.system() == "Windows":
         saveDC.SelectObject(saveBitMap)
         # 截取从左上角（0，0）长宽为（w，h）的图片
         saveDC.BitBlt((0, 0), (w, h), mfcDC, (r, c), win32con.SRCCOPY)
-        # saveBitMap.SaveBitmapFile(saveDC, filename)
+        # 保存截取的图片
+        saveBitMap.SaveBitmapFile(saveDC, filename)
 
     window_capture("./2.png", 0, 0, 1980, 1024)
 

@@ -19,7 +19,7 @@ if __name__ == '__main__':
     # 调用labelme库中原有的 labelme_json_to_dataset 为核心
     # 批量将文件夹中的 json 文件转换，并抽取对应图片至各自文件夹
     _args = GetArgs()
-    _basepath = "/Users/WangHao/Desktop/1"
+    _basepath = "/Users/WangHao/Desktop/TODO/Data/动态测试集_avi/剩下正常的22个/未命名文件夹"
     _args.input = _basepath
     _args.out_mask = f"{_basepath}/mask"
     _args.out_img = f"{_basepath}/img"

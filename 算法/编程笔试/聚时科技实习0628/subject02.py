@@ -46,8 +46,9 @@ class Solution:
 
 
 if __name__ == '__main__':
+    # 有问题
     a = [2, 3, 1, 4, 7, 8, 5, 0, -1]
     b = Solution()
     c = b.subject02(a)
     print(c)
-    """暂未完美解决"""
+

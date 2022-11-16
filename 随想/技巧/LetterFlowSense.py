@@ -18,8 +18,8 @@ FONT_px = 20
 letter = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'z', 'x', 'c',
           'v', 'b', 'n', 'm']
 font = pygame.font.SysFont('/Users/WangHao/Library/Fonts/timr45w.ttf', FONT_px)
-# 根据字号与屏幕窗口画布宽度计算总列数并设置行起始值
-drops = [0 for i in range(int(PANEL_width / FONT_px))]
+# 根据字号与屏幕窗口画布宽度计算总列数并设置行初始值
+drops = [0 for i in range(int(PANEL_width / FONT_px) + 1)]
 
 # 程序主循环
 while True:
@@ -41,18 +41,19 @@ while True:
     winSur.blit(bg_suface, (0, 0))
     # 获取当前屏幕窗口画布尺寸并相应调整
     current_width, current_height = pygame.display.Info().current_w, pygame.display.Info().current_h
-    if PANEL_width != current_width:
-        drops = [0 for i in range(int(current_width / FONT_px))]
+    if PANEL_width != current_width or PANEL_height != current_height:
         bg_suface = pygame.Surface((current_width, current_height), flags=pygame.SRCALPHA)
         bg_suface.fill(pygame.Color(0, 0, 0, 25))
         PANEL_width = current_width
+        PANEL_height = current_height
+        drops = [0 for i in range(int(current_width / FONT_px) + 1)]
 
     # 绘制字母流图像
     for i in range(len(drops)):
         pixeltext = random.choice([font.render(str(letter[i]), True, (0, 255, 0)) for i in range(26)])
         winSur.blit(pixeltext, (i * FONT_px, drops[i] * FONT_px))
         drops[i] += 1
-        if drops[i] * 10 > current_height or random.random() > 0.95:
+        if drops[i] * 20 > current_height or random.random() > 0.95:
             drops[i] = 0
     # 更新待显示的画布到屏幕
     pygame.display.flip()

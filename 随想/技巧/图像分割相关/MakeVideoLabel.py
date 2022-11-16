@@ -95,20 +95,35 @@ def json_plot_label(file_path, save_path):
 
 
 if __name__ == "__main__":
-    path = r"/Volumes/昊大侠/工作/实习相关/微创卜算子医疗科技有限公司/陈嘉懿组/数据/短轴动态狭窄率/王昊数据_0801/第二次返修/11 HSF 返修视频-20220816"
+    path = r"/Volumes/昊大侠/工作/实习相关/微创卜算子医疗科技有限公司/陈嘉懿组/数据/短轴动态狭窄率/result/狭窄率图表_0920/测试集去除分叉帧数据及结果/狭窄帧_AI选图_人工标注"
 
     # 通过DFS实现统一逻辑处理同一层次的文件对象
-    for root, dirs, files in os.walk(path):
-        if not dirs:
-            keywords = ["label", "visual", "roi"]
-            dir_name = root.split("/")[-1]
-            keys = [key for key in keywords if key in dir_name]
-            if not keys:
+    mode = 1
+    if mode == 0:
+        for root, dirs, files in os.walk(path):
+            if not dirs:
+                keywords = ["label", "visual", "roi"]
+                dir_name = root.split("/")[-1]
+                keys = [key for key in keywords if key in dir_name]
+                if not keys:
+                    ext = ".json"
+                    for file_name in files:
+                        if ext in file_name and "._" not in file_name:
+                            file_path = os.path.join(root, file_name)
+                            save_path = root.replace("image", "label")
+                            json_plot_label(file_path, save_path)
+    elif mode == 1:
+        for root, dirs, files in os.walk(path):
+            if not dirs:
                 ext = ".json"
                 for file_name in files:
                     if ext in file_name and "._" not in file_name:
                         file_path = os.path.join(root, file_name)
-                        save_path = root.replace("image", "label")
+                        save_path = os.path.join(root, "label")
+                        os.makedirs(save_path, exist_ok=True)
                         json_plot_label(file_path, save_path)
+    else:
+        print("mode设置为0或1")
+
 
     print("运行结束")

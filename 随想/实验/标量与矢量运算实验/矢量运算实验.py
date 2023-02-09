@@ -1,6 +1,9 @@
 import time
 import numpy as np
+<<<<<<< HEAD
 from numba import jit, njit
+=======
+>>>>>>> a98794fef118e4fbd47d0348edb5f8b3154dd000
 import cython
 import torch
 import tensorflow as tf
@@ -58,6 +61,7 @@ def numpy_dot(a, b):
 
 
 @execute_time
+<<<<<<< HEAD
 @jit(nopython=True)
 def numba_dot_1(a, b):
     if a.shape[1] != b.shape[0]:
@@ -71,15 +75,53 @@ def numba_dot_1(a, b):
                 s += a[i, k] * b[k, j]
             c[i, j] = s
     return c
+=======
+def torch_dot(a, b):
+    if a.shape[1] != b.shape[0]:
+        raise ValueError('shape not matched')
+    c = torch.matmul(a, b)
+    return c
 
 
 @execute_time
-@njit
-def numba_dot_2(a, b):
+def tensorflow_dot(a, b):
     if a.shape[1] != b.shape[0]:
         raise ValueError('shape not matched')
-    c = np.dot(a, b)
+    c = tf.matmul(a, b)
     return c
+
+
+# from numba import jit, njit
+# @execute_time
+# @jit(nopython=True)
+# def numba_dot_1(a, b):
+#     if a.shape[1] != b.shape[0]:
+#         raise ValueError('shape not matched')
+#     n, p, m = a.shape[0], a.shape[1], b.shape[1]
+#     c = np.zeros((n, m), dtype=np.float32)
+#     for i in range(n):
+#         for j in range(m):
+#             s = 0
+#             for k in range(p):
+#                 s += a[i, k] * b[k, j]
+#             c[i, j] = s
+#     return c
+>>>>>>> a98794fef118e4fbd47d0348edb5f8b3154dd000
+
+# @execute_time
+# @njit
+# def numba_dot_2(a, b):
+#     if a.shape[1] != b.shape[0]:
+#         raise ValueError('shape not matched')
+#     c = np.dot(a, b)
+#     return c
+
+# a = np.ones((1000, 500))
+# b = np.ones((500, 1000))
+# numba_dot_1(a, b)
+# numba_dot_1(a, b)
+# numba_dot_2(a, b)
+# numba_dot_2(a, b)
 
 
 @execute_time
@@ -101,7 +143,8 @@ def tensorflow_dot(a, b):
 if __name__ == "__main__":
     a = [[0 for i in range(1000)] for j in range(500)]
     b = [[0 for i in range(500)] for j in range(1000)]
-    # python_dot(a, b)
+    python_dot(a, b)
+    cython_dot(a, b)
 
     a = np.random.rand(1000, 500)
     b = np.random.rand(500, 1000)
@@ -129,8 +172,12 @@ if __name__ == "__main__":
     a = tf.random.normal((1000, 500))
     b = tf.random.normal((500, 1000))
     tensorflow_dot(a, b)
+<<<<<<< HEAD
     
     with tf.device('gpu:0'):
         a = tf.random.normal((1000, 500))
         b = tf.random.normal((500, 1000))
         tensorflow_dot(a, b)
+=======
+
+>>>>>>> a98794fef118e4fbd47d0348edb5f8b3154dd000

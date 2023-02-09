@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # encoding:utf-8
 # tensorflow1.x时期的模型
 # 创建神经网络并训练
@@ -61,3 +62,10 @@ for i in range(1000):
 
 # 关闭sess
 sess.close()
+=======
+import numpy as np
+from scipy import io
+data = np.random.random(3)
+np.save('W:\桌面\{}.mat'.format('PSD95 647 RIM 594 M1'), data)
+io.savemat('W:\桌面\{}.mat'.format('PSD95 647 RIM 594 M1'), {'data':data})
+>>>>>>> a98794fef118e4fbd47d0348edb5f8b3154dd000

@@ -12,7 +12,11 @@ class Net(nn.Module):
     def __init__(self, in_dim, n_hidden_1, n_hidden_2, out_dim):
         super().__init__()
 
+<<<<<<< HEAD
         self.layer1 = nn.Sequential(
+=======
+        self.layer = nn.Sequential(
+>>>>>>> a98794fef118e4fbd47d0348edb5f8b3154dd000
             nn.Linear(in_dim, n_hidden_1),
             nn.ReLU(True)
         )

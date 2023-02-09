@@ -11,3 +11,7 @@ def get_args():
 if __name__ == '__main__':
     _args = get_args()
     print(_args.local_rank, type(_args.local_rank))
+<<<<<<< HEAD
+=======
+
+>>>>>>> a98794fef118e4fbd47d0348edb5f8b3154dd000

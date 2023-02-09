@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="78529805-a04e-4921-8499-9af8e6795f7f" name="变更" comment="'0507'">
+      <change afterPath="$PROJECT_DIR$/随想/小技巧/2.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/随想/小技巧/屏幕截图.py" beforeDir="false" afterPath="$PROJECT_DIR$/随想/小技巧/屏幕截图.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+        <option value="Jupyter Notebook" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="26mujjZ7tuhT0ojxT60bzAopZec" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;ssh.settings&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/随想/ZernikeOpticsSimulation" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/随想/小经验/TensorFlowVein/utils" />
+      <recent name="$PROJECT_DIR$/随想/小经验/PyTorchVein/skills" />
+      <recent name="$PROJECT_DIR$/随想/小经验/JaxVein/dataset" />
+      <recent name="$PROJECT_DIR$/算法/编程笔试" />
+      <recent name="$PROJECT_DIR$/算法" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python.屏幕截图">
+    <configuration name="屏幕截图" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Script" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/随想/小技巧" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/随想/小技巧/屏幕截图.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="美团秋招0910" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Script" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/练习/上理" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/算法/编程笔试/美团秋招0910.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="小米秋招0914" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Script" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/随想" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/算法/编程笔试/小米秋招0914.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Jax0.x" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Script" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/随想/小经验/JaxVein" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/随想/小经验/JaxVein/Jax0.x.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="TensorFlow2.x" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Script" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/随想/小经验/TensorFlowVein" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/随想/小经验/TensorFlowVein/TensorFlow2.x.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.屏幕截图" />
+        <item itemvalue="Python.TensorFlow2.x" />
+        <item itemvalue="Python.Jax0.x" />
+        <item itemvalue="Python.小米秋招0914" />
+        <item itemvalue="Python.美团秋招0910" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="应用程序级" UseSingleDictionary="true" transferred="true" />
+  <component name="SvnConfiguration">
+    <configuration>$USER_HOME$/.subversion</configuration>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="默认任务">
+      <changelist id="78529805-a04e-4921-8499-9af8e6795f7f" name="变更" comment="" />
+      <created>1648041219172</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1648041219172</updated>
+      <workItem from="1648041221000" duration="140000" />
+      <workItem from="1648041365040" duration="46000" />
+      <workItem from="1648132110681" duration="155000" />
+      <workItem from="1648203844256" duration="743000" />
+      <workItem from="1648204648205" duration="1444000" />
+      <workItem from="1648311492980" duration="2081000" />
+      <workItem from="1648363625083" duration="22000" />
+      <workItem from="1648638024618" duration="7000" />
+      <workItem from="1648865351650" duration="21467000" />
+      <workItem from="1649144823427" duration="30669000" />
+      <workItem from="1649403691090" duration="18538000" />
+      <workItem from="1649735886338" duration="80000" />
+      <workItem from="1650447678419" duration="612000" />
+      <workItem from="1650459377489" duration="609000" />
+      <workItem from="1650463225525" duration="602000" />
+      <workItem from="1650468291016" duration="649000" />
+      <workItem from="1650523645470" duration="612000" />
+      <workItem from="1650524621828" duration="3733000" />
+      <workItem from="1650534428471" duration="3360000" />
+      <workItem from="1650883172291" duration="80676000" />
+      <workItem from="1651390892673" duration="2872000" />
+      <workItem from="1651395574855" duration="19629000" />
+      <workItem from="1651426436826" duration="6680000" />
+      <workItem from="1651436110510" duration="1487000" />
+      <workItem from="1651437878403" duration="14644000" />
+      <workItem from="1651502988221" duration="872000" />
+      <workItem from="1651505121915" duration="17000" />
+      <workItem from="1651648049864" duration="31008000" />
+      <workItem from="1651893924907" duration="50000" />
+      <workItem from="1651914046435" duration="6971000" />
+      <workItem from="1652793885586" duration="3000" />
+      <workItem from="1652793921228" duration="169000" />
+      <workItem from="1652794501193" duration="615000" />
+      <workItem from="1652795128117" duration="883000" />
+      <workItem from="1653192783888" duration="2949000" />
+      <workItem from="1653289940561" duration="8248000" />
+      <workItem from="1656403897515" duration="12923000" />
+      <workItem from="1656551890534" duration="4049000" />
+      <workItem from="1656842438650" duration="3265000" />
+      <workItem from="1659514107086" duration="7992000" />
+      <workItem from="1659612308429" duration="3932000" />
+      <workItem from="1659690164158" duration="43000" />
+      <workItem from="1659774248461" duration="1941000" />
+      <workItem from="1659788335784" duration="7787000" />
+      <workItem from="1659842268604" duration="31000" />
+      <workItem from="1659857279134" duration="61359000" />
+      <workItem from="1660813015692" duration="596000" />
+      <workItem from="1660820138217" duration="6266000" />
+      <workItem from="1661155964233" duration="597000" />
+      <workItem from="1661171995079" duration="21077000" />
+      <workItem from="1661595808467" duration="437000" />
+      <workItem from="1661607179378" duration="30440000" />
+      <workItem from="1661822307171" duration="7461000" />
+      <workItem from="1662347506486" duration="206000" />
+      <workItem from="1662797796476" duration="5971000" />
+      <workItem from="1663134931985" duration="18805000" />
+      <workItem from="1663209767569" duration="535000" />
+    </task>
+    <task id="LOCAL-00001" summary="'0410'">
+      <created>1649573496936</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1649573496937</updated>
+    </task>
+    <task id="LOCAL-00002" summary="'0410'">
+      <created>1649573590920</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1649573590920</updated>
+    </task>
+    <task id="LOCAL-00003" summary="'0507'">
+      <created>1651920845685</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1651920845685</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <MESSAGE value="'0410'" />
+    <MESSAGE value="'0507'" />
+    <option name="LAST_COMMIT_MESSAGE" value="'0507'" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/随想/小经验/TensorFlowVein/TensorFlow2.x.py</url>
+          <line>10</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+      <default-breakpoints>
+        <breakpoint type="python-exception">
+          <properties notifyOnTerminate="true" exception="BaseException">
+            <option name="notifyOnTerminate" value="true" />
+          </properties>
+        </breakpoint>
+      </default-breakpoints>
+    </breakpoint-manager>
+    <watches-manager>
+      <configuration name="PythonConfigurationType">
+        <watch expression="kwargs" />
+      </configuration>
+    </watches-manager>
+  </component>
+</project>

@@ -29,7 +29,11 @@ class ResNetBlock(nn.Module):
         y = self.norm()(y)
         y = self.act(y)
         y = self.conv(self.filters, (3, 3))(y)
+<<<<<<< HEAD
         y = self.norm(scale_init=jax.nn.initializers.zeros)(y)
+=======
+        y = self.norm(scale_init=nn.initializers.zeros)(y)
+>>>>>>> a98794fef118e4fbd47d0348edb5f8b3154dd000
 
         if residual.shape != y.shape:
             residual = self.conv(self.filters, (1, 1),
@@ -59,7 +63,11 @@ class BottleneckResNetBlock(nn.Module):
         y = self.norm()(y)
         y = self.act(y)
         y = self.conv(self.filters * 4, (1, 1))(y)
+<<<<<<< HEAD
         y = self.norm(scale_init=jax.nn.initializers.zeros)(y)
+=======
+        y = self.norm(scale_init=nn.initializers.zeros)(y)
+>>>>>>> a98794fef118e4fbd47d0348edb5f8b3154dd000
 
         if residual.shape != y.shape:
             residual = self.conv(self.filters * 4, (1, 1),
@@ -201,19 +209,33 @@ def train_model(state, epoch, batch_size, prng):
     with tqdm(data_flow(dataset=train_dataset,
                         batch_size=batch_size,
                         prng=prng),
+<<<<<<< HEAD
               total=total_batch) as train_dataset_bar:
         for batch_data in train_dataset_bar:
             state, metrics = train_step(state, batch_data)
+=======
+              total=total_batch) as run_bar_set:
+        for batch in run_bar_set:
+            state, metrics = train_step(state, batch)
+>>>>>>> a98794fef118e4fbd47d0348edb5f8b3154dd000
             batch_metrics.append(metrics)
             batch_metrics_jnp = jax.device_get(batch_metrics)
             epoch_metrics = {
                 k: np.mean([metrics[k] for metrics in batch_metrics_jnp])
                 for k in metrics.keys()
             }
+<<<<<<< HEAD
             train_dataset_bar.set_description(
                 f"train epoch: {epoch+1}, "
                 f"loss: {epoch_metrics['loss']:.4f}, "
                 f"accuracy: {(epoch_metrics['accuracy'] * 100):.2f}")
+=======
+            run_bar_set.set_description(
+                f"train epoch: {epoch+1}, "
+                f"loss: {epoch_metrics['loss']:.4f}, "
+                f"accuracy: {(epoch_metrics['accuracy'] * 100):.2f}")
+
+>>>>>>> a98794fef118e4fbd47d0348edb5f8b3154dd000
     return state
 
 
@@ -228,8 +250,12 @@ def test_step(params, batch_data):
     logits, _ = ResNet18_c10().apply({'params': params},
                                      batch_data['image'],
                                      mutable=['batch_stats'])
+<<<<<<< HEAD
     metrics = compute_metrics(logits=logits, labels=batch_data['label'])
     return metrics
+=======
+    return compute_metrics(logits=logits, labels=batch_data['label'])
+>>>>>>> a98794fef118e4fbd47d0348edb5f8b3154dd000
 
 
 # 定义测试执行逻辑
@@ -237,22 +263,38 @@ def test_model(params, epoch, batch_size):
     batch_metrics = []
     test_dataset = dataset_mnist['test']
     total_batch = len(test_dataset) // batch_size
+<<<<<<< HEAD
     
     epoch_metrics = {}
     with tqdm(data_flow(dataset=test_dataset, batch_size=batch_size),
               total=total_batch) as test_dataset_bar:
         for batch_data in test_dataset_bar:
             metrics = test_step(params, batch_data)
+=======
+
+    with tqdm(data_flow(dataset=test_dataset, batch_size=batch_size),
+              total=total_batch) as run_bar_set:
+        for batch in run_bar_set:
+            metrics = test_step(params, batch)
+>>>>>>> a98794fef118e4fbd47d0348edb5f8b3154dd000
             batch_metrics.append(metrics)
             batch_metrics_jnp = jax.device_get(batch_metrics)
             epoch_metrics = {
                 k: np.mean([metrics[k] for metrics in batch_metrics_jnp])
                 for k in metrics.keys()
             }
+<<<<<<< HEAD
             test_dataset_bar.set_description(
                 f"train epoch: {epoch+1}, "
                 f"loss: {epoch_metrics['loss']:.4f}, "
                 f"accuracy: {(epoch_metrics['accuracy'] * 100):.2f}")
+=======
+            run_bar_set.set_description(
+                f"train epoch: {epoch+1}, "
+                f"loss: {epoch_metrics['loss']:.4f}, "
+                f"accuracy: {(epoch_metrics['accuracy'] * 100):.2f}")
+
+>>>>>>> a98794fef118e4fbd47d0348edb5f8b3154dd000
     return epoch_metrics
 
 
@@ -269,6 +311,7 @@ state = create_train_state(prng=init_prng,
                            learning_rate=learning_rate,
                            momentum=momentum)
 
+<<<<<<< HEAD
 for train_batch_data in data_flow(dataset=dataset_mnist['train'],
                                     batch_size=batch_size,
                                     prng=prng):
@@ -284,6 +327,22 @@ for test_batch_data in data_flow(dataset=dataset_mnist['test'],
 for epoch in range(num_epochs):
     # 定义用于打乱数据顺序的伪随机数生成器
     prng, data_prng = jax.random.split(prng)
+=======
+for epoch in range(num_epochs):
+    # 定义用于打乱数据顺序的伪随机数生成器
+    prng, data_prng = jax.random.split(prng)
+    for train_batch_data in data_flow(dataset=dataset_mnist['train'],
+                                      batch_size=batch_size,
+                                      prng=data_prng):
+        print(train_batch_data['image'].shape, train_batch_data['image'].dtype)
+        print(train_batch_data['label'].shape, train_batch_data['label'].dtype)
+        break
+    for test_batch_data in data_flow(dataset=dataset_mnist['test'],
+                                     batch_size=batch_size):
+        print(test_batch_data['image'].shape, test_batch_data['image'].dtype)
+        print(test_batch_data['label'].shape, test_batch_data['label'].dtype)
+        break
+>>>>>>> a98794fef118e4fbd47d0348edb5f8b3154dd000
     # 训练模型
     state = train_model(state, epoch, batch_size, data_prng)
     # 测试模型

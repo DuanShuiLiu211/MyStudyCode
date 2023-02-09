@@ -80,3 +80,7 @@ if __name__ == '__main__':
     print(sum(10, 20))
 
     t(25000)
+<<<<<<< HEAD
+=======
+    pass
+>>>>>>> a98794fef118e4fbd47d0348edb5f8b3154dd000

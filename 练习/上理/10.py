@@ -1,3 +1,9 @@
+<<<<<<< HEAD
+=======
+# Copyright 2017 Google Inc
+
+
+>>>>>>> a98794fef118e4fbd47d0348edb5f8b3154dd000
 import struct
 from struct import unpack
 from PIL import Image, ImageDraw

@@ -4,6 +4,7 @@ from keras.layers import Conv2D, MaxPooling2D, Activation, Dropout, Flatten, Den
 from keras import backend
 from keras.callbacks import ModelCheckpoint
 from keras.preprocessing.image import ImageDataGenerator
+import numpy as np
 import argparse
 import glob
 import sys
@@ -15,7 +16,7 @@ class Setting:
     def __init__(self):
         self.data_dir = 'mnist_data/'
         self.train_dir = self.data_dir + 'train'
-        self.test_dir = self.data_dir + 'test'
+        self.eval_dir = self.data_dir + 'eval'
         self.img_width = 28
         self.img_height = 28
         if backend.image_data_format() == 'channels_first':
@@ -26,7 +27,7 @@ class Setting:
 
         self.restore_model = None
         self.is_restore = False
-        self.imp_dir = self.data_dir + 'tmp'
+        self.pred_dir = self.data_dir + 'pred'
 
         # 模型训练的配置
         self.lebel_nums = 10
@@ -41,7 +42,7 @@ class MNISTClassifier:
         self.setting = setting
 
     def data_generator(self, setting: Setting):
-        """图像数据生成器，对生成的字体图像划分训练集和验证集，同时进行数据增强，提高模型泛化能力。"""
+        """图像数据生成器，按8:2划分"""
         datagen = ImageDataGenerator(
             rescale=1.0 / 255,
             validation_split=0.2
@@ -87,7 +88,7 @@ class MNISTClassifier:
         return model
 
     def checkpoint_callbacks(self):
-        """保存模型的回调函数"""
+        """保存模型"""
         setting = self.setting
         checkpoint = ModelCheckpoint(
             setting.checkpoint_path, monitor='val_acc',
@@ -98,9 +99,9 @@ class MNISTClassifier:
 
     def train(self):
         """训练模型"""
-        print(':::Tring model:::')
+        print(':::Training model:::')
         setting = self.setting
-        train_generator, validation_generator = self.data_generator(setting) # 可以只从少量数据进行训练
+        train_generator, validation_generator = self.data_generator(setting)
         train_samples = train_generator.samples
         steps_per_epoch = max(125, train_samples // setting.batch_size)
 
@@ -127,7 +128,7 @@ class MNISTClassifier:
 
     def evaluate(self):
         """评估模型"""
-        print(':::Evaluating:::')
+        print(':::Evaluating model:::')
         setting = self.setting
 
         models_weights = glob.glob(setting.data_dir + 'model_weight/*.hdf5')
@@ -141,7 +142,7 @@ class MNISTClassifier:
         model.load_weights(restore_model)
         test_data_gen = ImageDataGenerator(rescale=1.0 / 255)
         test_generator = test_data_gen.flow_from_directory(
-            setting.test_dir,
+            setting.eval_dir,
             target_size=(setting.img_width, setting.img_height),
             batch_size=setting.batch_size,
             class_mode='categorical',
@@ -151,7 +152,7 @@ class MNISTClassifier:
         print("val_loss:{}, val_acc:{}.".format(ret[0], ret[1]))
 
     def predict(self):
-        """应用模型进行预测"""
+        """模型预测"""
         print(':::Applying predicting:::')
         setting = self.setting
         model = self.build_model()
@@ -166,30 +167,31 @@ class MNISTClassifier:
         restore_model = models_weights[-1]
         model.load_weights(restore_model)
 
-        input_shape = [1, setting.img_width, setting.img_height, 3]
-        for name in os.listdir(setting.imp_dir):
+        input_shape = self.setting.input_shape
+        for name in os.listdir(setting.pred_dir):
             if name == '.DS_Store':
                 continue
-            img_file = os.path.join(setting.imp_dir, name)
+            img_file = os.path.join(setting.pred_dir, name)
             print(img_file)
             img = Image.open(img_file)
-            imarr = img.reshape(input_shape)
-            imarr = imarr / 255
-            ret_np = model.predict(imarr)
+            img = np.array(img)
+            img = img.reshape(input_shape)
+            img = img / 255
+            ret_np = model.predict(img)
             parser_val = ret_np.argmax()
             print('预测结果为：{}'.format(parser_val))
 
 
 def args_parser():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--mode', required=True, help='must be train|evaluate|predict')
+    parser.add_argument('--mode', required=False, default='train', help='must be train|evaluate|predict')
     parser.add_argument('--is_restore', required=False, default=False)
     parser.add_argument('--restore_model', required=False)
-    return vars(parser.parse_args())
+    return parser.parse_args()
 
 
 if __name__ == '__main__':
-    args = args_parser()
+    args = vars(args_parser())
     setting = Setting()
     setting.is_restore = args['is_restore']
     setting.restore_model = args['restore_model']

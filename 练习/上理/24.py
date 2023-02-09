@@ -4,6 +4,7 @@ import matplotlib.pyplot as plot
 from PIL import Image
 from torchvision import transforms
 
+
 # 1. 基础参数设置
 # -------------------------------------------------------------------------------------------------------------------- #
 # -------------------------------------------------------------------------------------------------------------------- #
@@ -25,7 +26,7 @@ ke_pad_sc = sc + 2 * (ke_sc // 2)
 true：周围补零的输入图像
 k：频域
 """
-path = r'E:\桌面\0303.png'
+path = r'数据/图片1.png'
 img = Image.open(path).convert('L')
 img = transforms.Compose([transforms.ToTensor(), transforms.Resize((sc, sc))])(img).squeeze(0)
 

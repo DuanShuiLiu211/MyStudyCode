@@ -1,5 +1,7 @@
 import time
 import numpy as np
+from numba import jit
+import cython
 import torch
 import tensorflow as tf
 
@@ -10,7 +12,7 @@ def execute_time(func):
         func(*args, **kwargs)
         time_end = time.time_ns()
         sum_time = (time_end - time_start) / 1e9
-        print(f"运行总时间{sum_time}秒")
+        print(f"{func.__name__}运行总时间{sum_time}秒")
     return func_new
 
 
@@ -139,6 +141,49 @@ def numpy_div(a=np.array(1), b=np.array(2), m=int(1e6), mode="for"):
 
 
 @execute_time
+@jit(nopython=True)
+# Function is compiled to machine code when called the first time
+# Numba 可以加速循环但是循环状态必须是 int32 int64 uint64
+# Numba 可以加速 NumPy function
+# Numba 可以加速 NumPy broadcasting
+# 对代码中的变量类型有要求，当无法静态确定函数的返回类型时无法正常编译代码，例如，返回类型取决于仅在运行时可用的值的情况
+def numba_div(a=1, b=2, m=int(1e6), mode="for"):
+    i = 0
+    c = 0
+    if mode == "for":
+        for _ in range(m):
+            c = np.divide(a, b)
+            c = np.tanh(c)
+    else:
+        while i < m:
+            c = np.divide(a, b)
+            i = np.add(i, np.array(1))
+    return c
+
+
+
+import time
+
+
+@execute_time
+@cython.cfunc
+def cython_div(a=1, b=2, m=int(1e6), mode="for"):
+    a: cython.int = a
+    b: cython.int = b
+    m: cython.int = m
+    i: cython.int = 0
+    c: cython.int = 0
+    if mode == "for":
+        for i in range(m):
+            c = a / b
+    else:
+        while i < m:
+            c = a / b
+            i += 1
+    return c
+
+
+@execute_time
 def torch_div(a=torch.tensor(1), b=torch.tensor(2), m=int(1e6), mode="for"):
     m = torch.tensor(m, dtype=torch.int64)
     c = torch.tensor(0)
@@ -168,30 +213,6 @@ def tensorflow_div(a=tf.constant(1), b=tf.constant(2), m=int(1e6), mode="for"):
     return c
 
 
-# from numba import jit
-# @execute_time
-# @jit(nopython=True)
-# # Function is compiled to machine code when called the first time
-# # Numba 可以加速循环但是循环状态必须是 int32 int64 uint64
-# # Numba 可以加速 NumPy function
-# # Numba 可以加速 NumPy broadcasting
-# # 对代码中的变量类型有要求，当无法静态确定函数的返回类型时无法正常编译代码，例如，返回类型取决于仅在运行时可用的值的情况
-# def numba_div(a=1, b=2, m=int(1e6), mode="for"):
-#     i = 0
-#     c = 0
-#     if mode == "for":
-#         for _ in range(m):
-#             c = np.divide(a, b)
-#             c = np.tanh(c)
-#     else:
-#         while i < m:
-#             c = np.divide(a, b)
-#             i = np.add(i, np.array(1))
-#     return c
-
-# numba_div()  # 运行总时间0.169949秒
-
-
 if __name__ == "__main__":
     # 标量计算
     python_add()  # 运行总时间0.020576秒
@@ -202,8 +223,10 @@ if __name__ == "__main__":
     numpy_mul()  # 运行总时间0.272244秒
     python_div()  # 运行总时间0.023047秒
     numpy_div()  # 运行总时间0.452664秒
+    numba_div()  # 运行总时间0.169949秒
+    numba_div()  # 运行总时间0.000141秒
+    cython_div()  # 运行总时间0.019132秒
     torch_div()  # 运行总时间1.878211秒
     tensorflow_div()  # 运行总时间29.529989秒
 
-    # Cython编译 运行总时间9.2e-05秒
     # 使用纯c编写 运行总时间0.001738秒

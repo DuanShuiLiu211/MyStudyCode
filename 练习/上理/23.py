@@ -1,12 +1,13 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import numpy.fft as nf
+
+
 """
 三角函数 合成方波
 傅里叶变换与逆傅里叶变换
 绘制频域图
 """
-import numpy as np
-import matplotlib.pyplot as plt
-import numpy.fft as nf
-
 # 准备x值与y值
 x = np.linspace(0, np.pi * 4, 1000)
 y1 = 4 * np.pi * np.sin(x)

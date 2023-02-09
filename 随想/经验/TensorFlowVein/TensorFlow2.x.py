@@ -1,7 +1,7 @@
 # encoding:utf-8
-import gzip
 import os
 import time
+import gzip
 import numpy as np
 import tensorflow as tf
 from keras import Model

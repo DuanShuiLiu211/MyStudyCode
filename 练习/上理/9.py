@@ -1,6 +1,5 @@
 # encoding:utf-8
 import urllib.request as ur
-import os
 from urllib.parse import unquote
 
 with open(r"W:\桌面\urls.txt", "r") as fd:

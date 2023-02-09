@@ -1,4 +1,3 @@
-from email.mime import base
 import json
 import os
 import cv2

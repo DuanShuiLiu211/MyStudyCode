@@ -6,6 +6,6 @@ sys.stderr = open('errorlog.txt', 'w')
 
 # 使用traceback函数定位错误信息
 try:
-    1 / 0
+    result = 1 / 0
 except:
     traceback.print_exc()

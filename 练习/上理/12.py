@@ -9,10 +9,12 @@ def myImread(path):
 
 
 if __name__ == '__main__':
-    path = 'X:\图片\Saved Pictures\雪山1.JPG'
+    path = '数据/图片1.png'
     img = myImread(path)
     plt.figure(0)
     plt.imshow(img)
-    image = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+    img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
     plt.figure(1)
-    plt.imshow(image)
+    plt.imshow(img)
+    plt.show()
+    

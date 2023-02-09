@@ -52,7 +52,7 @@ def DBSCAN(data, eps, minPts):
 
 
 # 将分类后的数据可视化显示
-def plotFeature(data, labels):
+def plot_feature(data, labels):
     clusterNum = len(set(labels))
     fig = plt.figure()
     scatterColors = ['black', 'blue', 'green', 'yellow', 'red', 'purple', 'orange', 'brown']
@@ -62,17 +62,17 @@ def plotFeature(data, labels):
         subCluster = data[np.where(labels == i)]
         ax.scatter(subCluster[:, 0], subCluster[:, 1], c=colorSytle, s=12, alpha=0.6)
     plt.show()
-
+    
 
 # 加载数据
-# data, _ = datasets.make_moons(500, noise=0.1, random_state=1)
-file = 'W:\Study Flies\MTALAB\Data\MyData1.mat'
-data1 = loadmat(file, mat_dtype=True)
-data = data1['Test']
-print(data)
+data, _ = datasets.make_moons(500, noise=0.1, random_state=1)
+plt.scatter(data[:, 0], data[:, 1], s=6, alpha=0.6)
+
+# DBSCAN聚类并返回标识，eps=0.25，且MinPts=12
 start = time.time()
-# DBSCAN聚类并返回标识,eps=0.25，且MinPts=12
-labels = DBSCAN(data, 10, 12)
+labels = DBSCAN(data, 0.25, 12)
 end = time.time()
 print('Time Cost: %s' % str(end - start))
-plotFeature(data, labels)
+
+# 可视化
+plot_feature(data, labels)

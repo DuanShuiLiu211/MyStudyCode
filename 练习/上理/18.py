@@ -42,4 +42,3 @@ print('将w归0后', out2)
 
 out2.sum().backward()  # out2在计算图中数据被篡改in-place将报告给autograd使方向传播打断
 print(q.grad)
-pass

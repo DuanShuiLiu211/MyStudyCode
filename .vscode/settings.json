@@ -1,6 +1,7 @@
 {
-    "python.formatting.provider": "yapf",
     "python.terminal.executeInFileDir": true,
+    "python.analysis.typeCheckingMode": "basic",
+    "python.formatting.provider": "yapf",
     "jupyter.exportWithOutputEnabled": true,
     "jupyter.sendSelectionToInteractiveWindow": true,
     "jupyter.kernels.filter": [
@@ -9,15 +10,21 @@
             "type": "pythonEnvironment"
         },
         {
-            "path": "/usr/bin/python3",
+            "path": "/opt/homebrew/Caskroom/miniconda/base/envs/tensor",
             "type": "pythonEnvironment"
         },
         {
             "path": "/opt/homebrew/bin/python3",
             "type": "pythonEnvironment"
+        },
+        {
+            "path": "/opt/homebrew/bin/python3.9",
+            "type": "pythonEnvironment"
+        },
+        {
+            "path": "/usr/bin/python3",
+            "type": "pythonEnvironment"
         }
     ],
-    // "code-runner.cwd": "${fileDirname}",
     "debug.allowBreakpointsEverywhere": true,
-    "sqltools.connections": []
 }

@@ -9,8 +9,10 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "cwd": "${fileDirname}",
-            "purpose": ["debug-in-terminal"],
-            "justMyCode": false
+            "purpose": [
+                "debug-in-terminal"
+            ],
+            "justMyCode": true
         }
     ]
 }

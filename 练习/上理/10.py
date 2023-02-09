@@ -1,6 +1,3 @@
-# Copyright 2017 Google Inc
-
-
 import struct
 from struct import unpack
 from PIL import Image, ImageDraw

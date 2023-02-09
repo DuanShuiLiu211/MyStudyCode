@@ -11,12 +11,11 @@ def cv_imread(filepath):
 
 
 if __name__ == '__main__':
-    path = 'W:\\桌面\\图改\\1.jpg'
+    path = '数据/图片1.png'
     img = cv_imread(path)
     cv2.namedWindow('Example', cv2.WINDOW_AUTOSIZE)
-    cv2.imshow('Example', img)
     # cv2.imshow按照rgb来显示图像
-    k = cv2.waitKey(0)
+    cv2.imshow('Example', img) 
+    cv2.waitKey(5000)
     # 这样是保存到了和当前运行目录下
     cv2.imencode('.jpg', img)[1].tofile('1.jpg')
-

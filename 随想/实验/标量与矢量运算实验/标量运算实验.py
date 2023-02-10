@@ -161,10 +161,6 @@ def numba_div(a=1, b=2, m=int(1e6), mode="for"):
     return c
 
 
-
-import time
-
-
 @execute_time
 @cython.cfunc
 def cython_div(a=1, b=2, m=int(1e6), mode="for"):
@@ -199,6 +195,21 @@ def torch_div(a=torch.tensor(1), b=torch.tensor(2), m=int(1e6), mode="for"):
 
 
 @execute_time
+def torch_div_gpu(a=torch.tensor(1, device='mps'), b=torch.tensor(2, device='mps'), m=int(1e6), mode="for"):
+    m = torch.tensor(m, dtype=torch.int64)
+    c = torch.tensor(0)
+    i = torch.tensor(0)
+    if mode == "for":
+        for _ in range(m):
+            c = torch.divide(a, b)
+    else:
+        while i < m:
+            c = torch.divide(a, b)
+            i = torch.add(i, torch.tensor(1))
+    return c
+
+
+@execute_time
 def tensorflow_div(a=tf.constant(1), b=tf.constant(2), m=int(1e6), mode="for"):
     m = tf.constant(m, dtype=tf.int64)
     c = tf.constant(0)
@@ -213,33 +224,6 @@ def tensorflow_div(a=tf.constant(1), b=tf.constant(2), m=int(1e6), mode="for"):
     return c
 
 
-<<<<<<< HEAD
-=======
-# from numba import jit
-# @execute_time
-# @jit(nopython=True)
-# # Function is compiled to machine code when called the first time
-# # Numba 可以加速循环但是循环状态必须是 int32 int64 uint64
-# # Numba 可以加速 NumPy function
-# # Numba 可以加速 NumPy broadcasting
-# # 对代码中的变量类型有要求，当无法静态确定函数的返回类型时无法正常编译代码，例如，返回类型取决于仅在运行时可用的值的情况
-# def numba_div(a=1, b=2, m=int(1e6), mode="for"):
-#     i = 0
-#     c = 0
-#     if mode == "for":
-#         for _ in range(m):
-#             c = np.divide(a, b)
-#             c = np.tanh(c)
-#     else:
-#         while i < m:
-#             c = np.divide(a, b)
-#             i = np.add(i, np.array(1))
-#     return c
-
-# numba_div()  # 运行总时间0.169949秒
-
-
->>>>>>> a98794fef118e4fbd47d0348edb5f8b3154dd000
 if __name__ == "__main__":
     # 标量计算
     python_add()  # 运行总时间0.020576秒
@@ -254,6 +238,10 @@ if __name__ == "__main__":
     numba_div()  # 运行总时间0.000141秒
     cython_div()  # 运行总时间0.019132秒
     torch_div()  # 运行总时间1.878211秒
-    tensorflow_div()  # 运行总时间29.529989秒
+    torch_div_gpu()  # 运行总时间24.878211秒
+    with tf.device('cpu:0'):
+        tensorflow_div()  # 运行总时间24.869914秒
+    with tf.device('gpu:0'):
+        tensorflow_div()  # 运行总时间24.809914秒
 
     # 使用纯c编写 运行总时间0.001738秒

@@ -7,113 +7,116 @@
 # super(C, self).init()等价super().init()
 
 
-# 类举例
-class Toy(object):  # 此处此类可理解为设计一个Toy的蓝图
-    # 赋值定义类属性，记录所有玩具数量
-    count = 2
-    print(count)
-
-    def __init__(self, name):  # 用于实例初始化
-        self.name = name
-        # 类属性 +1
-        Toy.count += 1
-        print(self.count)
-
-    @classmethod  # 此装饰器表示是类方法，类方法无需创建实例对象即可调用，最为灵活
+# %%
+class Toy(object):
+    count = 0
+    
+    def who_toy(*args):
+        print(Toy)
+        
+    @classmethod
     def show_toy_count(cls):
         print('玩具对象的数量 %d' % cls.count, cls)
 
-    @staticmethod  # 此装饰器表示是静态方法，静态方法本质上是封装在类对象内的的函数，常用于测试
+    @staticmethod
     def hi():
         print('Hello!')
 
-    # 实例方法
+    def __init__(self, name):
+        self.name = name
+        Toy.count += 1
+
     def beybey(self):
         self.hi()
         print('Sad！', self)
 
 
-class Fll(Toy):
-
-    def gugugug(self):
-        pass
-
-
-# 创建实例对象
-toy1 = Toy('乐高')
-toy1.hand = 2
-toy2 = Toy('泰迪熊')
-toy3 = Toy('哥斯拉')
-print(toy1.name, toy2.name, toy3.name)
-
-# 点语法调用类方法与静态方法，如：类名.方法
+# 类对象
+print(Toy.count)
+Toy.who_toy()
 Toy.show_toy_count()
 Toy.hi()
+# Toy.beybey()  # 错误语法，self必须指向实例对象，此处实例方法指向类对象而不是实例对象
+
+# 实例对象
+toy1 = Toy('泰迪熊')
+toy1.hand = 2
+toy1.who_toy()
+print(toy1.name)
+print(toy1.hand)
 # 实例对象调用类方法时，与类对象调用类方法无异，但实际上调用仍通过实例对象继承的类对象
 toy1.show_toy_count()
-print(toy1.hand)
 # 实例对象调用静态方法时，与类对象调用静态方法无异，但实际上调用仍通过实例对象继承的类对象
-toy2.hi()
-# 实例对象调用实例方法,Python的解释器内部，当我们调用toy3.beybey()时，实际上Python解释成Toy.beybey(toy3)
-toy3.beybey()
-# Toy.beybey()  # 错误语法，self必须指向实例对象，此处实例方法指向类对象而不是实例对象
-Toy('okboy').beybey()  # 调用 init 方法隐式实例化
-Toy.beybey(toy3)
+toy1.hi()
+# 实例对象调用实例方法，Python的解释器内部，当我们调用toy1.beybey()时，实际上Python解释成Toy.beybey(toy1)
+toy1.beybey()
+Toy.beybey(toy1)
+# 隐式实例化掉用实例方法
+Toy('哥斯拉').beybey() 
+# print(Toy.hand)  # AttributeError: type object 'Toy' has no attribute 'hand'
+
 # 类与其实例的类型和内存地址
-print(type(Toy), id(Toy), type(toy3), id(toy3))
-# 子类继承父类的全部属性与方法
-fll1 = Fll('芭比娃娃')
-fll1.hi()
-fll1.show_toy_count()
-fll1.beybey()
+print(type(Toy), id(Toy), type(toy1), id(toy1))
 
-
+# %%
 # 类方法与静态方法辨析
 class Cat:  # 或者class Cat()不写父对象形式定义类对象，会默认继承祖先object对象
     name = '小敏'
-
-    def __init__(self, weight):
-        self.weight = weight
-        print(self.weight)
+        
+    def smile():
+        print('哈哈～')
+      
+    def sad():
+        print('呜呜～')
+        Cat.run()
+        Cat.set()
 
     @classmethod
-    def www(cls):
-        print('%s 干嘛！' % cls.name)
-        # cls.call()  # 类方法可以调用静态方法
-
+    def run(cls):
+        print('起飞～')
+    
+    @classmethod   
+    def say(cls):
+        print('%s，你好！' % cls.name)
+        cls.set()  # 类方法可以调用静态方法
+        
     @staticmethod
-    def call():
-        print('喵喵～')
-        Cat.name = '小敏臭弟弟'
-        print(Cat.name)
-        # Cat.www()  # 静态方法可以调用类方法
+    def stand():
+        print('{}，站着！'.format(Cat.name))
+        Cat.run()  # 静态方法可以调用类方法
+    
+    @staticmethod
+    def set():
+        print('{}，坐下！'.format(Cat.name))
+                   
+    def __init__(self):
+        print(self.name)
+        self.name = '胖虎'
 
+    def sleep(self):
+        print('呼呼～') 
+   
 
-class Dog(Cat):
-    # def __init__(self, name):
-    #     Cat.__init__(self, 120)
-    #     self.name = '啊三'
-    #     print(self.name)
-    def __init__(self, age, weight):
-        super().__init__(weight)
-        self.age = age
+print(Cat.name)
+Cat.smile()
+Cat.sad()
+Cat.run()
+Cat.say()
+Cat.stand()
+Cat.set()
+# Cat.sleep() TypeError: sleep() missing 1 required positional argument: 'self'
 
-    def yyy(self):
-        print('打%s' % Dog.name)
+cat1 = Cat()
+print(cat1.name)
+# cat1.smile() TypeError: smile() takes 0 positional arguments but 1 was given
+# cat1.sad() TypeError: sad() takes 0 positional arguments but 1 was given
+cat1.run()
+cat1.say()
+cat1.stand()
+cat1.set()
+cat1.sleep()
 
-
-Cat.www()
-Cat.call()
-# 没有定义实例方法可以创建实例对象继承并使用其中方法
-cat1 = Cat(120)
-cat1.www()
-cat1.call()
-dog1 = Dog(6, 120)
-dog1.yyy()
-print(dog1.name, dog1.age)
-# 祖先对象中包含的基本方法
-print(dir(object))
-
+# %%
 
 class Vector:
 
@@ -135,3 +138,5 @@ v1 = Vector(3, 4)
 v2 = Vector(5, 6)
 print(Vector(3, 4) + Vector(3, 4))
 print(v1 == v2)
+
+# %%

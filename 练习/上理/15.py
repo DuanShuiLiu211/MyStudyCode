@@ -1,13 +1,8 @@
 import cv2 as cv
 import numpy as np
 
-<<<<<<< HEAD
 path = np.fromfile(r"数据/图片1.png")
 src = cv.imdecode(path, -1)  # 此法可读取中文路径图片，读取后为RGB模式
-=======
-path = np.fromfile(r"E:\桌面\1.jpg")
-src = cv.imdecode(path, -1)     # 此法可读取中文路径图片，读取后为RGB模式
->>>>>>> a98794fef118e4fbd47d0348edb5f8b3154dd000
 # src = cv.cvtColor(src, cv.COLOR_RGB2BGR)
 cv.namedWindow("input", cv.WINDOW_AUTOSIZE)
 cv.imshow("input", src)
@@ -26,9 +21,5 @@ cv.putText(result, "sharpen image", (w+10, 30), cv.FONT_ITALIC, 1.0, (0, 0, 255)
 cv.imshow("sharpen_image", result)
 cv.imwrite("E:/result.png", usm)
 
-<<<<<<< HEAD
 cv.waitKey(5)
-=======
-cv.waitKey(0)
->>>>>>> a98794fef118e4fbd47d0348edb5f8b3154dd000
 cv.destroyAllWindows()

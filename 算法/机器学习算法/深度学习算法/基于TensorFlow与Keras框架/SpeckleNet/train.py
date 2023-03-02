@@ -80,8 +80,6 @@ if __name__ == '__main__':
     config = generate_config()
     epochs = config['epochs']
     model = get_model_deep_speckle(config)
-    # model = get_model_deep_speckle_sam(config)
-    # model = get_model_deep_speckle_adj(config)
 
     optimizer = generate_optimizer(config)
 

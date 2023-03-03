@@ -20,36 +20,28 @@ def chatbot_interaction_1st(question, messages):
 
 def reset_session_1st():
     model.reset_messages()
-    text = ""
     messages = None
+    text = ""
     
     return text, text, messages
 
 
-def render_markdown(text):
-    markdown_text = markdown.markdown(text)
-    
-    return markdown_text
-
-
 def chatbot_interaction_2st(question):
-    text = ""
     answer = model(question)[0]
-    
+    # TODO: Latex渲染问题的缓解方案
+    answer = answer.replace("$\sqrt{}$", "√")
+    answer = answer.replace("$\sqrt{ }$", "√")
+    text = ""
+        
     return text, answer
 
 
 def reset_session_2st():
     model.reset_messages()
-    text = ""
     answer = ""
+    text = ""
     
     return text, answer
-
-
-def show_text(text):
-    
-  return text
 
 
 def load_text(filename):
@@ -57,6 +49,9 @@ def load_text(filename):
         filename = "outputs.log"
     with open(f"{filename}", "r") as f:
         messages = f.read()
+    # TODO: Latex渲染问题的缓解方案
+    messages = messages.replace("$\sqrt{}$", "√")
+    messages = messages.replace("$\sqrt{ }$", "√") 
     text = ""
     
     return text, messages
@@ -80,7 +75,7 @@ with gr.Blocks() as demo:
     gr.Markdown("<center><h1>Chatbot</h1>Welcome To Play - Support By OpenAI</center>")
     with gr.Group():
         with gr.Box():
-            with gr.Tab("交互文本"):
+            with gr.Tab("交互"):
                 in_text_1st = gr.Textbox(label="输入",
                                          show_label=False,
                                          lines=5,
@@ -95,7 +90,7 @@ with gr.Blocks() as demo:
                         with gr.Column():
                             reset_btn_1st = gr.Button("重启")                   
             
-            with gr.Tab("Markdown"):
+            with gr.Tab("经典"):
                 with gr.Row():
                     with gr.Box():
                         with gr.Column():
@@ -134,16 +129,16 @@ with gr.Blocks() as demo:
                         with gr.Column():
                             detele_btn = gr.Button("删除")
         
-        # 一
+        # 一、交互
         init_state = gr.State([])
         start_btn_1st.click(chatbot_interaction_1st, inputs=[in_text_1st, init_state], outputs=[in_text_1st, out_text_1st, init_state])
         reset_btn_1st.click(reset_session_1st, inputs=[], outputs=[in_text_1st, out_text_1st, init_state])
         
-        # 二
+        # 二、经典
         start_btn_2st.click(chatbot_interaction_2st, inputs=[in_text_2st], outputs=[in_text_2st, out_text_2st])
         reset_btn_2st.click(reset_session_2st, inputs=[], outputs=[in_text_2st, out_text_2st])
         
-        # 三
+        # 三、日志
         load_btn.click(load_text, inputs=[log_text_1st], outputs=[log_text_1st, log_text_2st])
         clear_btn.click(clear_text, inputs=[log_text_1st], outputs=[log_text_1st, log_text_2st])
         detele_btn.click(detele_text, inputs=[log_text_1st], outputs=[log_text_1st, log_text_2st])

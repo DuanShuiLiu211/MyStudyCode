@@ -37,7 +37,6 @@ class CallChatGPT3:
         self.outputlog_name = outputlog_name
         self.token_num = 0
     
-
     def logger(self, content=None):
         log = logging.getLogger(__name__)
         log.setLevel(logging.INFO)

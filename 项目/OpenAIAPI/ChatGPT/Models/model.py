@@ -24,7 +24,7 @@ class CallChatGPT3:
                  outputlog_dir=".",
                  outputlog_name="outputs.log"
                  ):
-        self.api_key = "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"
+        self.api_key = "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"
         self.model = model
         self.messages = []
         self.temperature = temperature
@@ -71,10 +71,10 @@ class CallChatGPT3:
         self.messages = []
         
     def reset_logger(self):
-        filepath = os.path.join(self.outputlog_dir, "outputs.log")
+        filepath = os.path.join(self.outputlog_dir, self.outputlog_name)
         if os.path.exists(filepath):
             os.remove(filepath)
-        self.logger().handlers = []
+            self.logger().handlers = []
     
     def __call__(self, prompt):
         self.token_num += 2*(len(prompt)+2)

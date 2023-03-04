@@ -1,12 +1,14 @@
 import os
 import sys
-import markdown
 import gradio as gr
 
 sys.path.append(os.path.abspath(os.path.join(os.getcwd(), "../..")))
 from Models.model import CallChatGPT3
 
 model = CallChatGPT3(temperature=0.8, n=1)
+
+import matplotlib
+matplotlib.pyplot.switch_backend('Agg')
 
 
 def chatbot_interaction_1st(question, messages):
@@ -46,8 +48,8 @@ def reset_session_2st():
 
 def load_text(filename):
     if not filename:
-        filename = "outputs.log"
-    with open(f"{filename}", "r") as f:
+        filename = os.path.join(model.outputlog_dir, model.outputlog_name)
+    with open(filename, "r") as f:
         messages = f.read()
     # TODO: Latex渲染问题的缓解方案
     messages = messages.replace("$\sqrt{}$", "√")
@@ -72,7 +74,7 @@ def detele_text(text):
 
 
 with gr.Blocks() as demo:
-    gr.Markdown("<center><h1>Chatbot</h1>Welcome To Play - Support By OpenAI</center>")
+    gr.Markdown("<center><h1>Chatbot</h1>Welcome To Play - Code By HaoDaXia</center>")
     with gr.Group():
         with gr.Box():
             with gr.Tab("交互"):
@@ -95,10 +97,10 @@ with gr.Blocks() as demo:
                     with gr.Box():
                         with gr.Column():
                             in_text_2st = gr.Textbox(label="输入",
-                                                    show_label=False,
-                                                    lines=20,
-                                                    max_lines=20,
-                                                    placeholder="输入你的问题")
+                                                     show_label=False,
+                                                     lines=20,
+                                                     max_lines=20,
+                                                     placeholder="输入你的问题")
                     with gr.Box():
                         with gr.Column():
                             out_text_2st = gr.Markdown()
@@ -113,10 +115,10 @@ with gr.Blocks() as demo:
                                          
             with gr.Tab("日志"):      
                 log_text_1st = gr.Textbox(label="输入",
-                                            show_label=False,
-                                            lines=1,
-                                            max_lines=2,
-                                            placeholder="输入日志名称")
+                                          show_label=False,
+                                          lines=1,
+                                          max_lines=2,
+                                          placeholder="输入日志名称")
                 with gr.Box():
                     log_text_2st = gr.Markdown()
                     

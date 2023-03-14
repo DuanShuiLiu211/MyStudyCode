@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Chatbot Demo</title>
+    <title>OpenAI ChatGPT</title>
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.2/styles/default.min.css">
     <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.2/highlight.min.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
@@ -15,36 +15,55 @@
             max-width: 70%;
         }
         .user-message {
-            background-color: #f3f3f3;
+            background-color: #ADD8E6;
         }
         .bot-message {
-            background-color: #d0e8ff;
+            background-color: #87CEFA;
         }
-        pre code {
-            display: block;
-            padding: 10px;
-            font-size: 14px;
-            line-height: 1.5;
-            overflow-x: auto;
-            background-color: #f4f4f4;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            margin: 10px 0;
+        .bot-message pre {
+            font-family: Consolas, monospace; /* 设置代码字体 */
+            font-size: 14px; /* 设置代码字号 */
+            background: #f6f8fa; /* 设置代码块背景 */
+            padding: 10px; /* 设置代码块内边距 */
+            border-radius: 5px; /* 设置圆角 */
+            overflow-x: auto; /* 开启水平滚动条 */
+        }
+    </style>
+    <style>
+        #user-input input[type="text"] {
+        width: 350px; /* 设置文本框宽度为 300px */
+        height: 40px; /* 将输入框的高度设为 40px */
+        font-size: 16px; /* 设置文字大小为 16px */
+        }
+        #user-form input[type="submit"], #reset-button {
+        width: 80px; /* 设置按钮宽度为 120px */
+        height: 40px; /* 设置按钮高度为 40px */
+        font-size: 16px; /* 设置按钮字体大小为 16px */
+        border-radius: 5px; /* 设置按钮圆角 */
+        border: none; /* 去掉按钮边框 */
+        background-color: #007BFF; /* 设置按钮背景色 */
+        color: #FFFFFF; /* 设置按钮字体颜色 */
+        cursor: pointer; /* 鼠标移上去变成手形 */
+        margin-left: 10px; /* 设置按钮的左边距 */
         }
     </style>
 </head>
 <body>
-    <h1>Chatbot Demo</h1>
-    <div id="chatbox">
+    <center><h1>OpenAI ChatGPT</h1></center>
+    <center>
+    <div class="chat-box">
+    <div id="chatgpt">
         <div id="messages"></div>
         <div id="user-input">
             <form id="user-form">
-                <input type="text" id="user-input-text" placeholder="Say something...">
-                <input type="submit" value="Send">
-            </form>
-            <button id="reset-button">Reset Conversation</button> <!-- 添加了一个 Reset Conversation 的按钮 -->
+                <input type="text" id="user-input-text" placeholder="请输入问题！">
+                <input type="submit" value="开始">
+                <button id="reset-button">重启</button>
+            </form>   
         </div>
     </div>
+    </div>
+    </center>
 
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script>
@@ -55,12 +74,12 @@
                 $('#messages').append('<div class="message user-message">' + user_input + '</div>');
                 $.ajax({
                     type: 'POST',
-                    url: '/get_response',
+                    url: '/get_answer',
                     data: { user_input: user_input },
-                    success: function(response) {
-                        $('#messages').append('<div class="message bot-message">' + response + '</div>');
+                    success: function(answer) {
+                        $('#messages').append('<div class="message bot-message">' + answer + '</div>');
                         $('#messages').animate({ scrollTop: $('#messages').prop("scrollHeight") }, 1000);
-                        $('pre code').each(function(i, block) {
+                        $('bot-message pre').each(function(i, block) {
                             hljs.highlightBlock(block);
                         });
                     }
@@ -71,7 +90,7 @@
                 $.ajax({
                     type: 'GET',
                     url: '/reset',
-                    success: function(response) {
+                    success: function(answer) {
                         $('#messages').empty();
                     }
                 });

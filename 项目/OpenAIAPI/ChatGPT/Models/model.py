@@ -1,61 +1,73 @@
 import os
+import time
 import logging
 import openai
 from transformers import pipeline
 
+timestamp = time.strftime('%Y%m%d', time.localtime())
+
 
 # 加载GPT-2模型
 def call_chatgpt2(task="text-generation"):
-    generator = pipeline(task=task, model='gpt2')
+    models = pipeline(task=task, model='gpt2')
     
-    return  generator
+    return models
 
 
 # 加载GPT-3模型
 class CallChatGPT3:
     def __init__(self,
+                 api_key = "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",
                  model="gpt-3.5-turbo",
-                 top_p=1,
                  temperature=1,
+                 top_p=1,
                  n=1,
                  stream=False,
                  presence_penalty=0,
                  frequency_penalty=0,
-                 outputlog_dir=".",
-                 outputlog_name="outputs.log"
-                 ):
-        self.api_key = "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"
+                 logsdir="./logging",
+                 logsname=f"chatgpt_{timestamp}.log"):
+        self.api_key = api_key
         self.model = model
         self.messages = []
+        self.token_num = 0
         self.temperature = temperature
         self.top_p = top_p
         self.n = n 
         self.stream = stream
         self.presence_penalty = presence_penalty
         self.frequency_penalty = frequency_penalty
-        self.outputlog_dir = outputlog_dir
-        self.outputlog_name = outputlog_name
-        self.token_num = 0
+        self.logsdir = logsdir
+        self.logsname = logsname
+        self.logspath = os.path.join(logsdir, logsname)
+        self.logs = self.built_logger()
     
-    def logger(self, content=None):
-        log = logging.getLogger(__name__)
-        log.setLevel(logging.INFO)
-        if not log.handlers:      
-            os.makedirs(self.outputlog_dir, exist_ok=True)
-            filepath = os.path.join(self.outputlog_dir, self.outputlog_name)    
-            handler = logging.FileHandler(filename=filepath,
-                                          encoding="UTF-8")
-            formatter = logging.Formatter(fmt="%(asctime)s - %(levelname)s: %(message)s",
-                                          datefmt="%Y-%m-%d %H:%M:%S")
-            handler.setFormatter(formatter)
-            log.addHandler(handler)    
-        log.info(content)
+    def built_logger(self):
+        os.makedirs(self.logsdir, exist_ok=True)
+        logs = logging.getLogger(__name__)
+        logs.setLevel(logging.INFO)
+        handler = logging.FileHandler(filename=self.logspath, encoding="UTF-8")
+        formatter = logging.Formatter(fmt="[%(asctime)s - %(levelname)s]: %(message)s",
+                                      datefmt="%Y%m%d %H:%M:%S")
+        handler.setFormatter(formatter)
+        if not logs.handlers:
+            logs.addHandler(handler)    
         
-        return log
+        return logs
     
-    def openai_gptapi(self, prompt): 
-        openai.api_key = self.api_key
-        self.messages.append({"role": "user", "content": prompt})    
+    def reset_logger(self):
+        if self.logs.handlers:
+            self.logs.handlers = []
+        if os.path.exists(self.logspath):
+            os.remove(self.logspath)
+            
+    def check_logger(self):
+        if not os.path.exists(self.logspath) or not self.logs.handlers:
+            self.reset_logger()
+            self.logs = self.built_logger() 
+    
+    def openai_gptapi(self): 
+        openai.api_key = self.api_key    
         response = openai.ChatCompletion.create(model=self.model,
                                                 messages=self.messages,
                                                 temperature=self.temperature,
@@ -69,37 +81,52 @@ class CallChatGPT3:
     
     def reset_messages(self):
         self.messages = []
-        
-    def reset_logger(self):
-        filepath = os.path.join(self.outputlog_dir, self.outputlog_name)
-        if os.path.exists(filepath):
-            os.remove(filepath)
-            self.logger().handlers = []
+        self.token_num = 0
+    
+    def count_token(self, content, mode=True):
+        if mode:
+            self.token_num += 2*(len(content)+2)
+        else:
+            self.token_num -= 2*(len(content)+2)
     
     def __call__(self, prompt):
-        self.token_num += 2*(len(prompt)+2)
-        if self.token_num > 4000:
-            answer = ["即将超过最长对话限制自动重启新的会话"]
-            self.reset_messages()
-            self.token_num = 0
-        else:
-            response = self.openai_gptapi(prompt)
-            input_string = f"提问: {prompt}"
-            self.logger(input_string)
+        answer_list = []
+        tips = ""
+        if 2*(len(prompt)+2) >= 4000:
+            answer_list = ["内容太长ChatGPT将无法工作"]
             
-            answer = []
-            output_content = {i: response.choices[i].message.content for i in range(self.n)}
-            for k, v in output_content.items():
-                self.token_num += 2*(len(v)+2)
-                self.messages.append({"role": "assistant", "content": v})
-                output_string = f"回答({k+1}): {v.strip()}\n"
-                self.logger(output_string)
-                answer.append(v.strip())
+            return answer_list, tips
+        
+        self.check_logger()
+        self.logs.info(f"提问: {prompt}\n")        
+        self.messages.append({"role": "user", "content": prompt})
+        self.count_token(prompt, True)
+        while self.token_num >= 4000:
+            if len(self.messages) != 0:
+                self.count_token(self.messages.pop(0)["content"], False)
+                tips = ["内容太长ChatGPT将遗忘最初的部分"]
+            else:
+                self.token_num = 0
+        
+        response = self.openai_gptapi()     
+        
+        output_content = {i: response.choices[i].message.content for i in range(self.n)}
+        for num, answer in output_content.items():
+            self.messages.append({"role": "assistant", "content": answer})
+            self.count_token(answer, True)
+            if self.n > 1:
+                self.check_logger()
+                self.logs.info(f"回答({num+1}): {answer.strip()}\n\n")
+            else:
+                self.check_logger()
+                self.logs.info(f"回答: {answer.strip()}\n\n")    
+            answer_list.append(answer.strip())
 
-        return answer
+        return answer_list, tips
 
 
 if __name__ == "__main__":      
-    model = CallChatGPT3(temperature=0.8, n=1)
+    model = CallChatGPT3()
     input_prompt = "你好"
     model(prompt=input_prompt)
+    

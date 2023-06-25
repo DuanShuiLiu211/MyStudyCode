@@ -1,0 +1,182 @@
+{
+  "comment1": "~~~~~~~hardwork config~~~~~~~",
+  "device_type": "cuda",
+  "cuda_idx": "0",
+
+  "comment2": "~~~~~~database config~~~~~~~~",
+  "database_root": "./datas",
+  "train_database": "./datas/train.txt",
+  "verify_database": "./datas/verify.txt",
+  "test_database": "./datas/test.txt",
+  "data_ext": ".tif",
+  "transform_mode": "one",
+  "one_input_range": [
+    null,
+    null
+  ],
+  "one_label_range": [
+    null,
+    null
+  ],
+  "norm_input_mean_std": [
+  ],
+  "norm_label_mean_std": [
+  ],
+  "data_size": [
+    1,
+    15,
+    512,
+    512
+  ],
+  "label_size": [
+    1,
+    15,
+    1024,
+    1024
+  ],
+  "otherLabel_size": [
+    1,
+    128,
+    128
+  ],
+  "epochs": 120,
+  "train_loader_batch": 1,
+  "test_loader_batch": 1,
+  "verify_loader_batch": 1,
+
+  "comment3": "~~~~~~~network config~~~~~~~",
+  "network_aim": "AB",
+  "general_model": {
+    "model_name": "Grunet",
+    "last_model_weight": "/Users/WangHao/学习/PyCharm/MyNet/weights/AB_GruDecoder_0.014055_7_0.0001_20220822071505.pth",
+    "verify_model_weight": "H:\\MyNet1110\\20211126\\weight\\UnetTransformer_149_-0.964320.pth",
+    "input_size": [
+      1,
+      15,
+      128,
+      128
+    ],
+    "output_one_size": [
+      1,
+      15,
+      256,
+      256
+    ],
+    "output_two_size": [
+      1,
+      128,
+      128
+    ],
+    "input_batch_size": 1,
+    "learning_rate": 1e-4,
+    "optimizer": "adam",
+    "momentum": 0.9,
+    "weight_decay": 1e-5,
+    "scheduler_mode": "auto",
+    "gamma": 0.1,
+    "last_epoch": -1,
+    "step_size": 20,
+    "milestones": [
+      2,
+      30,
+      50
+    ],
+    "T_max": 20,
+    "eta_min": 1e-8,
+    "mode": "min"
+  },
+  "generator_model": {
+    "model_name": "Generator",
+    "last_model_weight": "",
+    "test_model_weight": "H:\\MyNet1110\\20211126\\weight\\UnetTransformer_149_-0.964320.pth",
+    "input_size": [
+      1,
+      200,
+      200
+    ],
+    "output_size": [
+      1,
+      200,
+      200
+    ],
+    "input_batch_size": 2,
+    "batch_iter_generator": 1,
+    "learning_rate": 1e-4,
+    "optimizer": "adam",
+    "momentum": 0.9,
+    "weight_decay": 1e-5,
+    "scheduler_mode": "multi",
+    "gamma": 0.1,
+    "last_epoch": -1,
+    "step_size": 20,
+    "milestones": [
+      2,
+      5
+    ],
+    "T_max": 20,
+    "eta_min": 1e-8,
+    "mode": "min"
+  },
+  "discriminator_model": {
+    "model_name": "Discriminator",
+    "last_model_weight": "record/epoch_2_-0.459273.pth",
+    "test_model_weight": "H:\\MyNet1110\\20211126\\weight\\UnetTransformer_149_-0.964320.pth",
+    "input_size": [
+      1,
+      200,
+      200
+    ],
+    "output_size": [
+      1,
+      200,
+      200
+    ],
+    "input_batch_size": 2,
+    "batch_iter_discriminator": 1,
+    "learning_rate": 1e-4,
+    "optimizer": "adam",
+    "momentum": 0.9,
+    "weight_decay": 1e-5,
+    "scheduler_mode": "multi",
+    "gamma": 0.1,
+    "last_epoch": -1,
+    "step_size": 20,
+    "milestones": [
+      2,
+      5
+    ],
+    "T_max": 20,
+    "eta_min": 1e-8,
+    "mode": "min"
+  },
+
+  "comment4": "~~~~~~~loss config~~~~~~~",
+  "train_loss_function": "mse",
+  "test_loss_function": "mse",
+  "verify_loss_function": "mse",
+  "train_loss_function_discriminator": "ce",
+  "test_loss_function_discriminator": "ce",
+  "verify_loss_function_discriminator": "ce",
+  "train_loss_function_generator": "ce",
+  "test_loss_function_generator": "ce",
+  "verify_loss_function_generator": "ce",
+
+  "comment5": "~~~~~~~other relative config~~~~~~~",
+  "epoch_print": 1,
+  "batch_print": 1,
+  "log_filename_train_verify": "log_train_test_01.txt",
+  "log_filename_test": "log_verify_01.txt",
+  "visualization_train_verify": "./visual_train_test_01",
+  "visualization_test": "./visual_verify_01",
+  "model_save_dir": "weight",
+  "save_train_image": true,
+  "save_test_image": true,
+  "train_result_save_dir": "train_result",
+  "train_result_save_dir_discriminator": "train_result_discriminator",
+  "train_result_save_dir_generator": "train_result_generator",
+  "verify_result_save_dir": "verify_result",
+  "verify_result_save_dir_discriminator": "verify_result_discriminator",
+  "verify_result_save_dir_generator": "test_result_generator",
+  "test_result_save_dir": "test_result",
+  "test_save_filename": "test_result.txt"
+}

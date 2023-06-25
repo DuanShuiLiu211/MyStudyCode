@@ -451,7 +451,7 @@ class PsfGenerator3D:
 
 
 if __name__ == '__main__':
-    mode = 3
+    mode = 5
     if mode == 1:
         f1 = Zernike((1, 1), order='ansi')
         w2 = f1.polynomial(512)
@@ -689,3 +689,62 @@ if __name__ == '__main__':
         plt.colorbar()
         plt.title('trefo_obli_0.775')
         plt.show()
+
+    elif mode == 5:
+        index = 5
+        
+        # psf = PsfGenerator3D(psf_shape=(75, 1600, 1600), units=(0.1, 0.1, 0.1),
+        #                 na_detection=1.4, lam_detection=0.550, n=1.5)
+        wf = ZernikeWavefront({index: 0.1}, order='noll')
+        
+        phi_z = wf.polynomial(128)
+        # psf_z = psf.incoherent_psf_intensity(wf, normed=True)
+        
+        fig1 = plt.figure(1, figsize=(2, 2), dpi=300)
+        plt.imshow(phi_z, cmap="turbo")
+        plt.margins(0., 0.) 
+        plt.axis('off')
+        plt.subplots_adjust(0., 0., 1., 1., 0., 0.) 
+        fig1.savefig(f'/Users/WangHao/Desktop/zernike/phi_z{index}_1.png',
+                    bbox_inches='tight',
+                    pad_inches=0.,
+                    transparent=True)
+        
+        # fig2 = plt.figure(2, figsize=(2, 2), dpi=300)
+        # plt.imshow(psf_z[0, 799-80:799+80, 799-80:799+80], cmap="turbo")
+        # plt.margins(0., 0.) 
+        # plt.axis('off')
+        # plt.subplots_adjust(0., 0., 1., 1., 0., 0.) 
+        # fig2.savefig(f'/Users/WangHao/Desktop/zernike/psf_z{index}_-3.7_1.png',
+        #             bbox_inches='tight',
+        #             pad_inches=0.,
+        #             transparent=True)
+        
+        # fig3 = plt.figure(3, figsize=(2, 2), dpi=300)
+        # plt.imshow(psf_z[-1, 799-80:799+80, 799-80:799+80], cmap="turbo")
+        # plt.margins(0., 0.) 
+        # plt.axis('off')
+        # plt.subplots_adjust(0., 0., 1., 1., 0., 0.) 
+        # fig3.savefig(f'/Users/WangHao/Desktop/zernike/psf_z{index}_+3.7_1.png',
+        #             bbox_inches='tight',
+        #             pad_inches=0.,
+        #             transparent=True)
+        
+        # fig4 = plt.figure(4, figsize=(2, 2), dpi=300)
+        # plt.imshow(psf_z[37, 799-80:799+80, 799-80:799+80], cmap="turbo")
+        # plt.margins(0., 0.) 
+        # plt.axis('off')
+        # plt.subplots_adjust(0., 0., 1., 1., 0., 0.) 
+        # fig4.savefig(f'/Users/WangHao/Desktop/zernike/psf_z{index}_1.png',
+        #             bbox_inches='tight',
+        #             pad_inches=0.,
+        #             transparent=True)
+        
+        # plt.show()
+        # def norm_pi(n, m):
+        #     rn = n
+        #     rm = abs(m)
+        #     return 1. / np.sqrt((1. + (rm == 0)) / (2. * rn + 2))
+        
+        # print(nm_to_noll(8, 0))
+        # print(norm_pi(8, 0))

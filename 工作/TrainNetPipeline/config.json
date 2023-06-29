@@ -1,17 +1,16 @@
 {
   "comment1": "~~~~~~~hardwork config~~~~~~~",
-  "device_type": "cuda",
+  "device_type": "mps",
   "cuda_idx": "0",
 
   "comment2": "~~~~~~database config~~~~~~~~",
-  "database_root": "./datas",
-  "train_database": "./datas/label_train.txt",
-  "verify_database": "./datas/label_verify.txt",
-  "test_database": "./datas/label_test.txt",
+  "train_database": "../datas/label_train.txt",
+  "verify_database": "../datas/label_verify.txt",
+  "test_database": "../datas/label_test.txt",
   "data_ext": ".jpg",
-  "epochs": 120,
-  "train_loader_batch": 2,
-  "verify_loader_batch": 1,
+  "epochs": 100,
+  "train_loader_batch": 16,
+  "verify_loader_batch": 16,
   "test_loader_batch": 1,
   "transform_mode": "",
   "one_input_range": [
@@ -19,24 +18,23 @@
     null
   ],
   "one_label_range": [
-    null,
-    null
+    [null, null],
+    [null, null]
   ],
   "norm_input_mean_std": [
     [0.485, 0.456, 0.406],
     [0.229, 0.224, 0.225]
   ],
   "norm_label_mean_std": [
+    [[0.5, 0.5, 0.5],
+     [0.2, 0.2, 0.2]],
+    [[0.5, 0.5, 0.5],
+     [0.2, 0.2, 0.2]]
   ],
-  "input_one_size": [
+  "input_size": [
     3,
     224,
     224
-  ],
-  "input_two_size": [
-    1,
-    1024,
-    1024
   ],
   "label_one_size": [
     1,
@@ -50,31 +48,15 @@
   ],
 
   "comment3": "~~~~~~~model config~~~~~~~",
-  "model_aim": "safety_belt",
   "general_model": {
+    "model_aim": "safety_belt",
     "model_name": "resnet50",
-    "train_verify_model_weight": "weights/semi_supervised_resnet50-08389792.pth",
+    "model_mode": "train",
+    "model_save_mode": "checkpoint",
+    "model_load_mode": "weight",
+    "train_verify_model_weight": "../checkpoints/resnet50_fb_ssl_yfcc100m_ft_in1k.pth",
     "test_model_weight": "",
-    "input_one_size": [
-      3,
-      224,
-      224
-    ],
-    "input_two_size": [
-      1,
-      128,
-      128
-    ],
-    "label_one_size": [
-      1,
-      256,
-      256
-    ],
-    "label_two_size": [
-      1,
-      128,
-      128
-    ],
+    "model_save_dir": "../results/weights",
     "learning_rate": 1e-4,
     "optimizer": "adam",
     "momentum": 0.9,
@@ -93,19 +75,14 @@
     "mode": "min"
   },
   "generator_model": {
+    "model_aim": "safety_belt",
     "model_name": "Generator",
+    "model_mode": "train",
+    "model_save_mode": "checkpoint",
+    "model_load_mode": "checkpoint",
     "train_verify_model_weight": "",
     "test_model_weight": "",
-    "input_one_size": [
-      1,
-      200,
-      200
-    ],
-    "label_one_size": [
-      1,
-      200,
-      200
-    ],
+    "model_save_dir": "",
     "input_batch_size": 2,
     "batch_iter_generator": 1,
     "learning_rate": 1e-4,
@@ -125,19 +102,14 @@
     "mode": "min"
   },
   "discriminator_model": {
+    "model_aim": "safety_belt",
     "model_name": "Discriminator",
+    "model_mode": "train",
+    "model_save_mode": "checkpoint",
+    "model_load_mode": "checkpoint",
     "train_verify_model_weight": "",
     "test_model_weight": "",
-    "input_one_size": [
-      1,
-      200,
-      200
-    ],
-    "label_one_size": [
-      1,
-      200,
-      200
-    ],
+    "model_save_dir": "",
     "input_batch_size": 2,
     "batch_iter_discriminator": 1,
     "learning_rate": 1e-4,
@@ -158,9 +130,9 @@
   },
 
   "comment4": "~~~~~~~loss config~~~~~~~",
-  "train_loss_function": "nll",
-  "verify_loss_function": "nll",
-  "test_loss_function": "nll",
+  "train_loss_function": "focal",
+  "verify_loss_function": "focal",
+  "test_loss_function": "focal",
   "train_loss_function_discriminator": "ce",
   "verify_loss_function_discriminator": "ce",
   "test_loss_function_discriminator": "ce",
@@ -171,20 +143,21 @@
   "comment5": "~~~~~~~other relative config~~~~~~~",
   "epoch_print": 1,
   "batch_print": 1,
-  "log_filename_train_verify": "log_train_verify_01.txt",
-  "log_filename_test": "log_test_01.txt",
-  "visualization_train_verify": "./visual_train_verify_01",
-  "visualization_test": "./visual_test_01",
-  "model_save_dir": "weight",
+  "log_filename_train_verify": "../results/log_train_verify_01.txt",
+  "log_filename_test": "../results/log_test_01.txt",
+  "visualization_train_verify": "../results/visual_train_verify_01",
+  "visualization_test": "../results/visual_test_01",
   "save_train_image": false,
   "save_verify_image": false,
   "save_test_image": false,
-  "train_result_save_dir": "train_result",
-  "train_result_save_dir_discriminator": "train_result_discriminator",
-  "train_result_save_dir_generator": "train_result_generator",
-  "verify_result_save_dir": "verify_result",
-  "verify_result_save_dir_discriminator": "verify_result_discriminator",
-  "verify_result_save_dir_generator": "verify_result_generator",
-  "test_result_save_dir": "test_result",
-  "test_save_filename": "test_result.txt"
+  "train_result_save_dir": "../results/train_result",
+  "train_result_save_dir_discriminator": "../results/train_result_discriminator",
+  "train_result_save_dir_generator": "../results/train_result_generator",
+  "train_save_filename": "../results/train_result.txt",
+  "verify_result_save_dir": "../results/verify_result",
+  "verify_result_save_dir_discriminator": "../results/verify_result_discriminator",
+  "verify_result_save_dir_generator": "../results/verify_result_generator",
+  "verify_save_filename": "../results/verify_result.txt",
+  "test_result_save_dir": "../results/test_result",
+  "test_save_filename": "../results/test_result.txt"
 }

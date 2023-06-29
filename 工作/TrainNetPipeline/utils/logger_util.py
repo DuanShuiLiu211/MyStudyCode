@@ -3,25 +3,19 @@ import logging
 
 
 def loggers(cfg):
-    log = logging.getLogger()
-    log.setLevel(logging.INFO)
+    logs = logging.getLogger("USER")
+    logs.setLevel(logging.INFO)
+    handler = logging.FileHandler(filename=cfg['log_filename_train_verify'], encoding="UTF-8")
+    formatter = logging.Formatter(fmt="%(asctime)s - %(filename)s [line:%(lineno)d] - %(levelname)s: %(message)s")
+    handler.setFormatter(formatter)
+    if not logs.handlers:
+        logs.addHandler(handler)    
 
-    fh = logging.FileHandler(cfg['log_filename_train_verify'])
-    sh = logging.StreamHandler()
+    output_config(cfg, logs)
 
-    fm = logging.Formatter('%(asctime)s - %(filename)s [line:%(lineno)d] - %(levelname)s: %(message)s')
-
-    fh.setFormatter(fm)
-    sh.setFormatter(fm)
-
-    log.addHandler(fh)
-    log.addHandler(sh)
-
-    output_config(cfg, log)
-
-    return log
+    return logs
 
 
-def output_config(cfg, log):
+def output_config(cfg, logs):
     for key, val in cfg.items():
-        log.info(f'{key}:{val}')
+        logs.info(f'{key}:{val}')

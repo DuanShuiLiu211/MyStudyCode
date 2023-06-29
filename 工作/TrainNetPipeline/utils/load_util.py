@@ -47,9 +47,9 @@ def count_means_stdevs(
     datas = []
     for i in range(len(data_path)):
         if os.path.splitext(data_path[i])[-1] in [".png", ".bmp", ".tif", ".jpg"]:
-            data_temp = cv2.imdecode(np.fromfile(data_path[i], dtype=np.uint8), -1)
+            data_temp = image_load(data_path[i])
         else:
-            data_temp = None
+            continue
         assert len(data_temp.shape) == 3
         datas.append(np.expand_dims(cv2.resize(data_temp, data_size, interpolation=cv2.INTER_CUBIC), -1))
 
@@ -68,6 +68,8 @@ def count_means_stdevs(
 
 
 def data_to_normalize(inputs, mean, std, max_pixel_value=255.0):
+    # inputs shape is [b c h w]/[c h w] 
+    # mean and std shape is [c 1]
     mean = np.asarray(mean, dtype=np.float32)
     assert len(mean.shape) == 2
     if len(inputs.shape) == 3:
@@ -93,41 +95,49 @@ def data_to_normalize(inputs, mean, std, max_pixel_value=255.0):
     return outputs
 
 
-class ImageLoader:
+class FileLoader:
     def __init__(self, config):
+        self.extension = config['data_ext']
         self.transform_mode = config['transform_mode']
         if self.transform_mode == "one":
             one_input = config['one_input_range']
             one_label = config['one_label_range']
-            self.min_max_list = [one_input, one_label]
+            self.min_max_list = {"inputs":one_input,
+                                 "oneLabels":one_label[0],
+                                 "twoLabels":one_label[1]}
         elif self.transform_mode == "norm":
             norm_input = config['norm_input_mean_std']
             if len(norm_input) == 0 or None in norm_input:
-                input_means, input_stds = count_means_stdevs(path=f"{config['database_root']}/data/*/*.png",
+                input_means, input_stds = count_means_stdevs(path=f"/inputs/*/*.png",
                                                              data_size=config['data_size'][2:], pixel_limit=255)
             else:
                 input_means, input_stds = norm_input[0], norm_input[1]
             norm_label = config['norm_label_mean_std']
             if len(norm_label) == 0 or None in norm_label:
-                label_means, label_stds = count_means_stdevs(path=f"{config['database_root']}/label/*/*.png",
-                                                             data_size=config['label_size'][2:], pixel_limit=255)
+                label_one_means, label_one_stds = count_means_stdevs(path=f"/labels1/*/*.png",
+                                                                     data_size=config['label_size'][2:], pixel_limit=255)
+                label_two_means, label_two_stds = count_means_stdevs(path=f"/labels2/*/*.png",
+                                                                     data_size=config['label_size'][2:], pixel_limit=255)
             else:
-                label_means, label_stds = norm_label[0], norm_label[1]
-            self.mean_std_list = [(input_means, input_stds), (label_means, label_stds)]
+                label_one_means, label_one_stds = norm_label[0][0], norm_label[0][1]
+                label_two_means, label_two_stds = norm_label[1][0], norm_label[1][1]
+            self.mean_std_list = {"inputs":(input_means, input_stds),
+                                  "oneLabels":(label_one_means, label_one_stds),
+                                  "twoLabels":(label_two_means, label_two_stds)}
         else:
-            print("data transform not change anything")
+            self.min_max_list = []
+            self.mean_std_list = []
 
     def data_transform(self, inputs, index):
         if self.transform_mode == "one":
             min_max = self.min_max_list[index]
-            if None in min_max:
+            if not np.all(min_max):
                 outputs = data_to_one(inputs)
             elif np.all([np.isscalar(elem) for elem in min_max]):
                 assert min_max[0] < min_max[1]
                 outputs = (inputs - min_max[0]) / (min_max[1] - min_max[0])
             else:
                 outputs = inputs
-
         elif self.transform_mode == "norm":
             outputs = data_to_normalize(inputs, *self.mean_std_list[index])
         else:
@@ -135,164 +145,21 @@ class ImageLoader:
 
         return outputs
 
-    def __call__(self, path, index, **kwargs):
-        result = image_load(path)
-        return self.data_transform(np.asarray(result, dtype=np.float32), index)
-
-
-class TifLoader:
-    def __init__(self, config):
-        self.transform_mode = config['transform_mode']
-        if self.transform_mode == "one":
-            one_input = config['one_input_range']
-            one_label = config['one_label_range']
-            self.min_max_list = [one_input, one_label]
-        elif self.transform_mode == "norm":
-            norm_input = config['norm_input_mean_std']
-            if len(norm_input) == 0 or None in norm_input:
-                input_means, input_stds = count_means_stdevs(path=f"{config['database_root']}/data/*/*.png",
-                                                             data_size=config['input_one_size'][2:], pixel_limit=255)
-            else:
-                input_means, input_stds = norm_input[0], norm_input[1]
-            norm_label = config['norm_label_mean_std']
-            if len(norm_label) == 0 or None in norm_label:
-                label_means, label_stds = count_means_stdevs(path=f"{config['database_root']}/label/*/*.png",
-                                                             data_size=config['label_one_size'][2:], pixel_limit=255)
-            else:
-                label_means, label_stds = norm_label[0], norm_label[1]
-            self.mean_std_list = [(input_means, input_stds), (label_means, label_stds)]
+    def __call__(self, path, index):
+        if self.extension in ['.png', '.bmp', '.jpg', '.jpeg']:
+            result = image_load(path)
+            return self.data_transform(np.asarray(result, dtype=np.float32), index)
+        elif self.extension in ['.tif', '.tiff']:
+            result = tif_load(path)
+            return self.data_transform(np.asarray(result, dtype=np.float32), index)
+        elif self.extension == '.npy':
+            result = npy_load(path)
+            return self.data_transform(np.asarray(result, dtype=np.float32), index)
+        elif self.extension == '.mat':
+            result = mat_load(path)
+            for item in result.values():
+                if isinstance(item, np.ndarray):
+                    return self.data_transform(np.asarray(item, dtype=np.float32), index)
         else:
-            print("data transform not change anything")
-
-    def data_transform(self, inputs, index):
-        if self.transform_mode == "one":
-            min_max = self.min_max_list[index]
-            if None in min_max:
-                outputs = data_to_one(inputs)
-            elif np.all([np.isscalar(elem) for elem in min_max]):
-                assert min_max[0] < min_max[1]
-                outputs = (inputs - min_max[0]) / (min_max[1] - min_max[0])
-            else:
-                outputs = inputs
-
-        elif self.transform_mode == "norm":
-            outputs = data_to_normalize(inputs, *self.mean_std_list[index])
-        else:
-            outputs = inputs
-
-        return outputs
-
-    def __call__(self, path, index, **kwargs):
-        result = tif_load(path)
-        return self.data_transform(np.asarray(result, dtype=np.float32), index)
-
-
-class NpyLoader:
-    def __init__(self, config):
-        self.transform_mode = config['transform_mode']
-        if self.transform_mode == "one":
-            one_input = config['one_input_range']
-            one_label = config['one_label_range']
-            self.min_max_list = [one_input, one_label]
-        elif self.transform_mode == "norm":
-            norm_input = config['norm_input_mean_std']
-            if len(norm_input) == 0 or None in norm_input:
-                input_means, input_stds = count_means_stdevs(path=f"{config['database_root']}/data/*/*.png",
-                                                             data_size=config['input_one_size'][2:], pixel_limit=255)
-            else:
-                input_means, input_stds = norm_input[0], norm_input[1]
-            norm_label = config['norm_label_mean_std']
-            if len(norm_label) == 0 or None in norm_label:
-                label_means, label_stds = count_means_stdevs(path=f"{config['database_root']}/label/*/*.png",
-                                                             data_size=config['label_one_size'][2:], pixel_limit=255)
-            else:
-                label_means, label_stds = norm_label[0], norm_label[1]
-            self.mean_std_list = [(input_means, input_stds), (label_means, label_stds)]
-        else:
-            print("data transform not change anything")
-
-    def data_transform(self, inputs, index):
-        if self.transform_mode == "one":
-            min_max = self.min_max_list[index]
-            if None in min_max:
-                outputs = data_to_one(inputs)
-            elif np.all([np.isscalar(elem) for elem in min_max]):
-                assert min_max[0] < min_max[1]
-                outputs = (inputs - min_max[0]) / (min_max[1] - min_max[0])
-            else:
-                outputs = inputs
-
-        elif self.transform_mode == "norm":
-            outputs = data_to_normalize(inputs, *self.mean_std_list[index])
-        else:
-            outputs = inputs
-
-        return outputs
-
-    def __call__(self, path, index, **kwargs):
-        result = npy_load(path)
-        return self.data_transform(np.asarray(result, dtype=np.float32), index)
-
-
-class MatLoader:
-    def __init__(self, config):
-        self.transform_mode = config['transform_mode']
-        if self.transform_mode == "one":
-            one_input = config['one_input_range']
-            one_label = config['one_label_range']
-            self.min_max_list = [one_input, one_label]
-        elif self.transform_mode == "norm":
-            norm_input = config['norm_input_mean_std']
-            if len(norm_input) == 0 or None in norm_input:
-                input_means, input_stds = count_means_stdevs(path=f"{config['database_root']}/data/*/*.png",
-                                                             data_size=config['input_one_size'][2:], pixel_limit=255)
-            else:
-                input_means, input_stds = norm_input[0], norm_input[1]
-            norm_label = config['norm_label_mean_std']
-            if len(norm_label) == 0 or None in norm_label:
-                label_means, label_stds = count_means_stdevs(path=f"{config['database_root']}/label/*/*.png",
-                                                             data_size=config['label_one_size'][2:], pixel_limit=255)
-            else:
-                label_means, label_stds = norm_label[0], norm_label[1]
-            self.mean_std_list = [(input_means, input_stds), (label_means, label_stds)]
-        else:
-            print("data transform not change anything")
-
-    def data_transform(self, inputs, index):
-        if self.transform_mode == "one":
-            min_max = self.min_max_list[index]
-            if None in min_max:
-                outputs = data_to_one(inputs)
-            elif np.all([np.isscalar(elem) for elem in min_max]):
-                assert min_max[0] < min_max[1]
-                outputs = (inputs - min_max[0]) / (min_max[1] - min_max[0])
-            else:
-                outputs = inputs
-
-        elif self.transform_mode == "norm":
-            outputs = data_to_normalize(inputs, *self.mean_std_list[index])
-        else:
-            outputs = inputs
-
-        return outputs
-
-    def __call__(self, path, index, **kwargs):
-        result = mat_load(path)
-        for item in result.values():
-            if isinstance(item, np.ndarray):
-                return self.data_transform(np.asarray(item, dtype=np.float32), index)
-
-
-def file_loader(config):
-    extension = config['data_ext']
-    if extension in ['.png', '.bmp', '.jpg', '.jpeg', '.raw']:
-        return ImageLoader(config)
-    elif extension in ['.tif', '.tiff']:
-        return TifLoader(config)
-    elif extension == '.npy':
-        return NpyLoader(config)
-    elif extension == '.mat':
-        return MatLoader(config)
-    else:
-        print(f"当前数据格式{extension}无法读取")
-        sys.exit()
+            print(f"当前数据格式{self.extension}无法读取")
+            sys.exit()

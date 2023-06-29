@@ -4,5 +4,7 @@
 .vscode
 *.pt
 *.pth
+checkpoints/
+weights/
 datasets/
 datas/

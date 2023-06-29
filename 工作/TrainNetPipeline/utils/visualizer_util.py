@@ -2,7 +2,6 @@
 import time
 import torch
 from torch.utils.tensorboard import SummaryWriter
-from torch.profiler import profile, tensorboard_trace_handler
 
 
 class Visualizers:
@@ -34,26 +33,3 @@ class Visualizers:
 
     def close_vis(self):
         self.writer.close()
-
-
-def analysis_profile(config, model, save_dir):
-    model.eval()
-    input_size = [config['train_batch_size'], *config["input_one_size"]]
-    inputs = torch.randn(input_size)
-
-    with profile(
-            activities=[torch.profiler.ProfilerActivity.CPU,
-                        torch.profiler.ProfilerActivity.CUDA],
-            on_trace_ready=tensorboard_trace_handler(f'{save_dir}/analysis'),
-            profile_memory=True,
-            record_shapes=True,
-            with_stack=True
-    ) as profiler:
-        start = time.time()
-        model(inputs)
-        cost = time.time() - start
-        print(f"predict_cost = {cost}s")
-        profiler.step()
-
-    print(profiler.key_averages().table(sort_by="cpu_time_total", row_limit=10))
-    print(profiler.key_averages().table(sort_by="self_cpu_memory_usage", row_limit=10))

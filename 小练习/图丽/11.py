@@ -56,7 +56,6 @@ t_e = time.time()
 print((t_e - t_s) / 10)
 
 
-
 from shapely.geometry import Polygon
 
 

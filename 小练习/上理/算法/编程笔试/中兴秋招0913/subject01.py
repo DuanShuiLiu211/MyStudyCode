@@ -2,7 +2,6 @@ import sys
 
 
 class Solution:
-
     def bottom_up_coins(self, row_coins):
         dp = [None] * (len(row_coins) + 1)
         dp[0] = 0
@@ -27,7 +26,7 @@ class Solution:
         return sum(select)
 
 
-get_strings = list(map(int, sys.stdin.readline().strip().split(' ')))
+get_strings = list(map(int, sys.stdin.readline().strip().split(" ")))
 dp = Solution().bottom_up_coins(get_strings)
 result = Solution().trace_back_coins(get_strings, dp)
 sys.stdout.write(f"{result}\n")

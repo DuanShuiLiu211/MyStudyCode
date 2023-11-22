@@ -1,6 +1,7 @@
-from PIL import ImageGrab
 import platform
 import time
+
+from PIL import ImageGrab
 
 
 def z(f):
@@ -9,14 +10,16 @@ def z(f):
         f(*x)  # 被包装的对象
         stop_time = time.time()
         delta_time = stop_time - start_time
-        return print('{:.9f}'.format(delta_time))
+        return print("{:.9f}".format(delta_time))
 
     return y
 
 
 if platform.system() == "Windows":
-
-    import win32gui, win32ui, win32con, win32api
+    import win32api
+    import win32con
+    import win32gui
+    import win32ui
 
     @z
     def window_capture(filename, r, c, w, h):
@@ -45,6 +48,7 @@ if platform.system() == "Windows":
     window_capture("./2.png", 0, 0, 1980, 1024)
 
 else:
+
     @z
     def python_capture(filename, *place):
         screen = ImageGrab.grab()

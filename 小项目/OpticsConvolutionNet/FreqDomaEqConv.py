@@ -1,8 +1,9 @@
-import torch
-from torch.nn.functional import pad
 import time
+
 import matplotlib.pyplot as plot
+import torch
 from PIL import Image
+from torch.nn.functional import pad
 from torchvision import transforms
 
 # 1. 基础参数设置
@@ -22,18 +23,25 @@ sc_ke_pad = sc + 2 * (ke_sc // 2)
 # 2. 以输入图像中心在周围填充空白
 # -------------------------------------------------------------------------------------------------------------------- #
 # -------------------------------------------------------------------------------------------------------------------- #
-path = r'/Users/WangHao/工作/纳米光子中心/全光相关/实验-0303/0303.png'
-img_1 = Image.open(path).convert('L')
-img_1 = transforms.Compose([transforms.ToTensor(), transforms.Resize((sc, sc))])(img_1).squeeze(0)
+path = r"/Users/WangHao/工作/纳米光子中心/全光相关/实验-0303/0303.png"
+img_1 = Image.open(path).convert("L")
+img_1 = transforms.Compose([transforms.ToTensor(), transforms.Resize((sc, sc))])(
+    img_1
+).squeeze(0)
 img_1_k = torch.fft.fftshift(torch.fft.fft2(img_1), dim=(-2, -1))
 img_1_k_abs = torch.abs(img_1_k)
 img_1_k_phase = img_1_k.angle()
 
 # start-plane of 4f
 img_tile_1 = torch.zeros((scale * sc_ke_pad, scale * sc_ke_pad))
-img_tile_1[(scale // 2) * sc_ke_pad + (ke_sc // 2):(scale // 2 + 1) * sc_ke_pad - (ke_sc // 2),
-           (scale // 2) * sc_ke_pad + (ke_sc // 2):(scale // 2 + 1) * sc_ke_pad - (ke_sc // 2)] \
-           = img_1
+img_tile_1[
+    (scale // 2) * sc_ke_pad
+    + (ke_sc // 2) : (scale // 2 + 1) * sc_ke_pad
+    - (ke_sc // 2),
+    (scale // 2) * sc_ke_pad
+    + (ke_sc // 2) : (scale // 2 + 1) * sc_ke_pad
+    - (ke_sc // 2),
+] = img_1
 img_tile_1_k = torch.fft.fftshift(torch.fft.fft2(img_tile_1), dim=(-2, -1))
 img_tile_1_k_abs = torch.abs(img_tile_1_k)
 img_tile_1_k_phase = img_tile_1_k.angle()
@@ -67,7 +75,9 @@ else:
     list_kernel.append(kernel_1)
     kernel_2 = torch.tensor([[2, 0, 0], [0, -1, 0], [0, 0, -1]])
     list_kernel.append(kernel_2)
-    kernel_3 = torch.tensor([[1 / 9, 1 / 9, 1 / 9], [1 / 9, 1 / 9, 1 / 9], [1 / 9, 1 / 9, 1 / 9]])
+    kernel_3 = torch.tensor(
+        [[1 / 9, 1 / 9, 1 / 9], [1 / 9, 1 / 9, 1 / 9], [1 / 9, 1 / 9, 1 / 9]]
+    )
     list_kernel.append(kernel_3)
     kernel_4 = torch.tensor([[-1, -1, -1], [-1, 9, -1], [-1, -1, -1]])
     list_kernel.append(kernel_4)
@@ -90,13 +100,23 @@ k = 0
 for r in range(scale):
     for c in range(scale):
         if ke_sc % 2 == 0:
-            kernel_tile_1[(sc_ke_pad // 2 - ke_sc // 2) + sc_ke_pad * r:(sc_ke_pad // 2 + ke_sc // 2) + sc_ke_pad * r,
-                          (sc_ke_pad // 2 - ke_sc // 2) + sc_ke_pad * c:(sc_ke_pad // 2 + ke_sc // 2) + sc_ke_pad * c] \
-                          = list_kernel[k]
+            kernel_tile_1[
+                (sc_ke_pad // 2 - ke_sc // 2)
+                + sc_ke_pad * r : (sc_ke_pad // 2 + ke_sc // 2)
+                + sc_ke_pad * r,
+                (sc_ke_pad // 2 - ke_sc // 2)
+                + sc_ke_pad * c : (sc_ke_pad // 2 + ke_sc // 2)
+                + sc_ke_pad * c,
+            ] = list_kernel[k]
         else:
-            kernel_tile_1[(sc_ke_pad // 2 - ke_sc // 2) + sc_ke_pad * r:(sc_ke_pad // 2 + ke_sc // 2 + 1) + sc_ke_pad * r,
-                          (sc_ke_pad // 2 - ke_sc // 2) + sc_ke_pad * c:(sc_ke_pad // 2 + ke_sc // 2 + 1) + sc_ke_pad * c] \
-                          = list_kernel[k]
+            kernel_tile_1[
+                (sc_ke_pad // 2 - ke_sc // 2)
+                + sc_ke_pad * r : (sc_ke_pad // 2 + ke_sc // 2 + 1)
+                + sc_ke_pad * r,
+                (sc_ke_pad // 2 - ke_sc // 2)
+                + sc_ke_pad * c : (sc_ke_pad // 2 + ke_sc // 2 + 1)
+                + sc_ke_pad * c,
+            ] = list_kernel[k]
         k += 1
 
 # 5. 通过傅里叶变换实现深度学习中的卷积计算以及直接执行深度学习卷积计算
@@ -122,7 +142,9 @@ while n <= 0:
     mid4f_tile_1_k_abs = torch.abs(mid4f_tile_1_k)
     mid4f_tile_1_k_phase = mid4f_tile_1_k.angle()
     # end-plane of 4f
-    result_tile_1_fft_conv = torch.fft.fftshift(torch.fft.ifft2(mid4f_tile_1_k), dim=(-2, -1))
+    result_tile_1_fft_conv = torch.fft.fftshift(
+        torch.fft.ifft2(mid4f_tile_1_k), dim=(-2, -1)
+    )
     result_tile_1_fft_conv_abs = torch.abs(result_tile_1_fft_conv)
     n += 1
 time_end = time.time_ns()
@@ -134,8 +156,15 @@ result_tile_1_conv_abs = []
 n = 0
 time_start = time.time_ns()
 while n <= 0:
-    result_tile_1_conv = torch.conv2d(img_tile_1.unsqueeze(0).unsqueeze(0), kernel_tile_1.unsqueeze(0).unsqueeze(0),
-                                      padding=(kernel_tile_1.shape[-2] // 2, kernel_tile_1.shape[-1] // 2)).squeeze(0).squeeze(0)
+    result_tile_1_conv = (
+        torch.conv2d(
+            img_tile_1.unsqueeze(0).unsqueeze(0),
+            kernel_tile_1.unsqueeze(0).unsqueeze(0),
+            padding=(kernel_tile_1.shape[-2] // 2, kernel_tile_1.shape[-1] // 2),
+        )
+        .squeeze(0)
+        .squeeze(0)
+    )
     result_tile_1_conv_abs = torch.abs(result_tile_1_conv)
     n += 1
 time_end = time.time_ns()
@@ -156,39 +185,39 @@ else:
 if switch1:
     fig1 = plot.figure(1)
     plot.subplot(2, 3, 1)
-    plot.imshow(img_1, cmap='gray')
-    plot.axis('off')
-    plot.title('input')
+    plot.imshow(img_1, cmap="gray")
+    plot.axis("off")
+    plot.title("input")
     plot.colorbar()
 
     plot.subplot(2, 3, 2)
-    plot.imshow(img_1_k_abs, cmap='gray')
-    plot.axis('off')
-    plot.title('input with abs')
+    plot.imshow(img_1_k_abs, cmap="gray")
+    plot.axis("off")
+    plot.title("input with abs")
     plot.colorbar()
 
     plot.subplot(2, 3, 3)
-    plot.imshow(img_1_k_phase, cmap='gray')
-    plot.axis('off')
-    plot.title('input with phase')
+    plot.imshow(img_1_k_phase, cmap="gray")
+    plot.axis("off")
+    plot.title("input with phase")
     plot.colorbar()
 
     plot.subplot(2, 3, 4)
-    plot.imshow(img_tile_1, cmap='gray')
-    plot.axis('off')
-    plot.title('input by tile')
+    plot.imshow(img_tile_1, cmap="gray")
+    plot.axis("off")
+    plot.title("input by tile")
     plot.colorbar()
 
     plot.subplot(2, 3, 5)
-    plot.imshow(img_tile_1_k_abs, cmap='gray')
-    plot.axis('off')
-    plot.title('input by tile with abs')
+    plot.imshow(img_tile_1_k_abs, cmap="gray")
+    plot.axis("off")
+    plot.title("input by tile with abs")
     plot.colorbar()
 
     plot.subplot(2, 3, 6)
-    plot.imshow(img_tile_1_k_phase, cmap='gray')
-    plot.axis('off')
-    plot.title('input by tile with phase')
+    plot.imshow(img_tile_1_k_phase, cmap="gray")
+    plot.axis("off")
+    plot.title("input by tile with phase")
     plot.colorbar()
 
     plot.show()
@@ -198,21 +227,21 @@ if switch1:
 if switch2:
     fig2 = plot.figure(2)
     plot.subplot(1, 3, 1)
-    plot.imshow(kernel_tile_1, cmap='gray')
-    plot.axis('off')
-    plot.title('kernel of tile')
+    plot.imshow(kernel_tile_1, cmap="gray")
+    plot.axis("off")
+    plot.title("kernel of tile")
     plot.colorbar()
 
     plot.subplot(1, 3, 2)
-    plot.imshow(kernel_tile_1_k_abs, cmap='gray')
-    plot.axis('off')
-    plot.title('kernel of tile with abs')
+    plot.imshow(kernel_tile_1_k_abs, cmap="gray")
+    plot.axis("off")
+    plot.title("kernel of tile with abs")
     plot.colorbar()
 
     plot.subplot(1, 3, 3)
-    plot.imshow(kernel_tile_1_k_phase, cmap='gray')
-    plot.axis('off')
-    plot.title('kernel of tile with phase')
+    plot.imshow(kernel_tile_1_k_phase, cmap="gray")
+    plot.axis("off")
+    plot.title("kernel of tile with phase")
     plot.colorbar()
 
     plot.show()
@@ -222,15 +251,15 @@ if switch2:
 if switch3:
     fig3 = plot.figure(3)
     plot.subplot(1, 2, 1)
-    plot.imshow(mid4f_tile_1_k_abs, cmap='gray')
-    plot.axis('off')
-    plot.title('4f system mid-plane abs of tile')
+    plot.imshow(mid4f_tile_1_k_abs, cmap="gray")
+    plot.axis("off")
+    plot.title("4f system mid-plane abs of tile")
     plot.colorbar()
 
     plot.subplot(1, 2, 2)
-    plot.imshow(mid4f_tile_1_k_phase, cmap='gray')
-    plot.axis('off')
-    plot.title('4f system mid-plane phase of tile')
+    plot.imshow(mid4f_tile_1_k_phase, cmap="gray")
+    plot.axis("off")
+    plot.title("4f system mid-plane phase of tile")
     plot.colorbar()
 
     plot.show()
@@ -240,24 +269,26 @@ if switch3:
 if switch4:
     fig4 = plot.figure(4)
     plot.subplot(1, 3, 1)
-    plot.imshow(result_tile_1_fft_conv_abs, cmap='gray')
-    plot.axis('off')
-    plot.title('tile result by fft_conv')
+    plot.imshow(result_tile_1_fft_conv_abs, cmap="gray")
+    plot.axis("off")
+    plot.title("tile result by fft_conv")
     plot.colorbar()
 
     plot.subplot(1, 3, 2)
-    plot.imshow(result_tile_1_conv_abs, cmap='gray')
-    plot.axis('off')
-    plot.title('tile result by conv')
+    plot.imshow(result_tile_1_conv_abs, cmap="gray")
+    plot.axis("off")
+    plot.title("tile result by conv")
     plot.colorbar()
 
     plot.subplot(1, 3, 3)
     if sc_ke_pad % 2 == 0:
-        plot.imshow(result_tile_1_fft_conv_abs - result_tile_1_conv_abs[:-1, :-1], cmap='gray')
+        plot.imshow(
+            result_tile_1_fft_conv_abs - result_tile_1_conv_abs[:-1, :-1], cmap="gray"
+        )
     else:
-        plot.imshow(result_tile_1_fft_conv_abs - result_tile_1_conv_abs, cmap='gray')
-    plot.axis('off')
-    plot.title('fft_conv and conv of error')
+        plot.imshow(result_tile_1_fft_conv_abs - result_tile_1_conv_abs, cmap="gray")
+    plot.axis("off")
+    plot.title("fft_conv and conv of error")
     plot.colorbar()
 
     plot.show()
@@ -265,25 +296,27 @@ if switch4:
 # 7. 频域取中心一半与频域补零扩展一倍
 # -------------------------------------------------------------------------------------------------------------------- #
 h, w = img_1.shape
-img_2 = torch.fft.fftshift(torch.fft.fft2(img_1))[h // 2 - h // 4:h // 2 + h // 4, w // 2 - w // 4:w // 2 + w // 4]
+img_2 = torch.fft.fftshift(torch.fft.fft2(img_1))[
+    h // 2 - h // 4 : h // 2 + h // 4, w // 2 - w // 4 : w // 2 + w // 4
+]
 img_2 = torch.fft.ifft2(img_2)
-img_3 = torch.fft.fftshift(pad(torch.fft.fft2(img_1), [h, h, w, w], 'constant', 0.))
+img_3 = torch.fft.fftshift(pad(torch.fft.fft2(img_1), [h, h, w, w], "constant", 0.0))
 img_3 = torch.fft.ifft2(img_3)
 
 fig5 = plot.figure(5)
 plot.subplot(1, 3, 1)
-plot.imshow(img_1, cmap='gray')
-plot.title('img_1')
+plot.imshow(img_1, cmap="gray")
+plot.title("img_1")
 plot.colorbar()
 
 plot.subplot(1, 3, 2)
-plot.imshow(torch.abs(img_2), cmap='gray')
-plot.title('img_2')
+plot.imshow(torch.abs(img_2), cmap="gray")
+plot.title("img_2")
 plot.colorbar()
 
 plot.subplot(1, 3, 3)
-plot.imshow(torch.abs(img_3), cmap='gray')
-plot.title('img_3')
+plot.imshow(torch.abs(img_3), cmap="gray")
+plot.title("img_3")
 plot.colorbar()
 
 plot.show()
@@ -292,41 +325,63 @@ plot.show()
 kernel_add_1 = torch.zeros(size=(scale * sc_ke_pad, scale * sc_ke_pad))
 for i in range(scale):
     for j in range(scale):
-        kernel_add_1[sc_ke_pad * i + sc_ke_pad // 2, sc_ke_pad * j + sc_ke_pad // 2] = 1.
+        kernel_add_1[
+            sc_ke_pad * i + sc_ke_pad // 2, sc_ke_pad * j + sc_ke_pad // 2
+        ] = 1.0
 
 
-result_add_1_fft_conv = torch.fft.ifftshift(torch.fft.ifft2(torch.fft.fftshift(torch.fft.fft2(result_tile_1_fft_conv_abs)) *
-                                                            torch.fft.fftshift(torch.fft.fft2(kernel_add_1))))
+result_add_1_fft_conv = torch.fft.ifftshift(
+    torch.fft.ifft2(
+        torch.fft.fftshift(torch.fft.fft2(result_tile_1_fft_conv_abs))
+        * torch.fft.fftshift(torch.fft.fft2(kernel_add_1))
+    )
+)
 result_add_1_fft_conv_abs = torch.zeros((scale * sc_ke_pad, scale * sc_ke_pad))
-result_add_1_fft_conv_abs[(scale // 2) * sc_ke_pad + (ke_sc // 2):(scale // 2 + 1) * sc_ke_pad - (ke_sc // 2),
-                          (scale // 2) * sc_ke_pad + (ke_sc // 2):(scale // 2 + 1) * sc_ke_pad - (ke_sc // 2)] \
-                          = torch.abs(result_add_1_fft_conv)[(scale // 2) * sc_ke_pad + (ke_sc // 2):
-                                                             (scale // 2 + 1) * sc_ke_pad - (ke_sc // 2),
-                                                             (scale // 2) * sc_ke_pad + (ke_sc // 2):
-                                                             (scale // 2 + 1) * sc_ke_pad - (ke_sc // 2)]
+result_add_1_fft_conv_abs[
+    (scale // 2) * sc_ke_pad
+    + (ke_sc // 2) : (scale // 2 + 1) * sc_ke_pad
+    - (ke_sc // 2),
+    (scale // 2) * sc_ke_pad
+    + (ke_sc // 2) : (scale // 2 + 1) * sc_ke_pad
+    - (ke_sc // 2),
+] = torch.abs(result_add_1_fft_conv)[
+    (scale // 2) * sc_ke_pad
+    + (ke_sc // 2) : (scale // 2 + 1) * sc_ke_pad
+    - (ke_sc // 2),
+    (scale // 2) * sc_ke_pad
+    + (ke_sc // 2) : (scale // 2 + 1) * sc_ke_pad
+    - (ke_sc // 2),
+]
 
 result_tile_1_fft_conv_add = torch.zeros((scale * sc_ke_pad, scale * sc_ke_pad))
 for r in range(scale):
     for c in range(scale):
-        result_tile_1_fft_conv_add[(scale // 2) * sc_ke_pad + (ke_sc // 2):(scale // 2 + 1) * sc_ke_pad - (ke_sc // 2),
-                                   (scale // 2) * sc_ke_pad + (ke_sc // 2):(scale // 2 + 1) * sc_ke_pad - (ke_sc // 2)] \
-                                  += result_tile_1_conv_abs[r * sc_ke_pad + (ke_sc // 2):(r + 1) * sc_ke_pad - (ke_sc // 2),
-                                                            c * sc_ke_pad + (ke_sc // 2):(c + 1) * sc_ke_pad - (ke_sc // 2)]
+        result_tile_1_fft_conv_add[
+            (scale // 2) * sc_ke_pad
+            + (ke_sc // 2) : (scale // 2 + 1) * sc_ke_pad
+            - (ke_sc // 2),
+            (scale // 2) * sc_ke_pad
+            + (ke_sc // 2) : (scale // 2 + 1) * sc_ke_pad
+            - (ke_sc // 2),
+        ] += result_tile_1_conv_abs[
+            r * sc_ke_pad + (ke_sc // 2) : (r + 1) * sc_ke_pad - (ke_sc // 2),
+            c * sc_ke_pad + (ke_sc // 2) : (c + 1) * sc_ke_pad - (ke_sc // 2),
+        ]
 
 fig6 = plot.figure(6)
 plot.subplot(1, 3, 1)
-plot.imshow(result_add_1_fft_conv_abs, cmap='gray')
-plot.title('result_add_1_fft_conv_abs')
+plot.imshow(result_add_1_fft_conv_abs, cmap="gray")
+plot.title("result_add_1_fft_conv_abs")
 plot.colorbar()
 
 plot.subplot(1, 3, 2)
-plot.imshow(result_tile_1_fft_conv_add, cmap='gray')
-plot.title('result_tile_1_fft_conv_add')
+plot.imshow(result_tile_1_fft_conv_add, cmap="gray")
+plot.title("result_tile_1_fft_conv_add")
 plot.colorbar()
 
 plot.subplot(1, 3, 3)
-plot.imshow(result_add_1_fft_conv_abs - result_tile_1_fft_conv_add, cmap='gray')
-plot.title('fft_conv_add and conv_add of error')
+plot.imshow(result_add_1_fft_conv_abs - result_tile_1_fft_conv_add, cmap="gray")
+plot.title("fft_conv_add and conv_add of error")
 plot.colorbar()
 
 plot.show()

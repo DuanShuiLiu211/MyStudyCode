@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import datetime
 import time
+
 from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
 
@@ -36,7 +37,7 @@ def picking(browser, method):
 def buy(times):
     even = 1
     while True:
-        now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
+        now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
         if now >= times:
             while True:
                 try:
@@ -52,8 +53,8 @@ def buy(times):
 
             while True:
                 try:
-                    if browser.find_element_by_link_text('提交订单'):
-                        browser.find_element_by_link_text('提交订单').click()
+                    if browser.find_element_by_link_text("提交订单"):
+                        browser.find_element_by_link_text("提交订单").click()
                         print(f"抢购成功，请尽快付款\n")
                         break
                 except Exception as e:
@@ -69,7 +70,7 @@ def buy(times):
                 even = 0
 
 
-if (__name__ == "__main__"):
+if __name__ == "__main__":
     browser = webdriver.Chrome()
     logintaobao(browser)
     method = int(input(f"请输入模式0或者1\n(0:自动全选商品；1:手动选择商品)\n:"))

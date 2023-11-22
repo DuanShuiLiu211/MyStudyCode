@@ -4,6 +4,7 @@ class Solution:
     要求:时间复杂度为O(n),空间复杂度为O(1)
     是一个双指针问题
     """
+
     def subject02(self, arr):
         n = len(arr)
         if n < 2:
@@ -18,7 +19,7 @@ class Solution:
         while f < n:
             if arr[l] > arr[f]:
                 arr[f], arr[l] = arr[l], arr[f]
-                if l < f-1:
+                if l < f - 1:
                     arr[f], arr[l + 1] = arr[l + 1], arr[f]
                     l += 1
                 else:
@@ -45,10 +46,9 @@ class Solution:
         return arr
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # 有问题
     a = [2, 3, 1, 4, 7, 8, 5, 0, -1]
     b = Solution()
     c = b.subject02(a)
     print(c)
-

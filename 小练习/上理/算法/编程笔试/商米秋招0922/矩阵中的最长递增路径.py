@@ -1,4 +1,5 @@
-from functools import lru_cache 
+from functools import lru_cache
+
 
 class Solution:
     # 使用记忆化搜索与动态规划，状态转移公式为dp[i][j]=max(dp[i+1][j],dp[i−1][j],dp[i][j+1],dp[i][j−1],0)+1
@@ -8,7 +9,12 @@ class Solution:
         def dfs(x, y):
             res = 1
             for a, b in [[x - 1, y], [x + 1, y], [x, y - 1], [x, y + 1]]:
-                if 0 <= a < m and 0 <= b < n and matrix[a][b] > matrix[x][y] and dfs(a, b) + 1 > res:
+                if (
+                    0 <= a < m
+                    and 0 <= b < n
+                    and matrix[a][b] > matrix[x][y]
+                    and dfs(a, b) + 1 > res
+                ):
                     res = dfs(a, b) + 1
             return res
 

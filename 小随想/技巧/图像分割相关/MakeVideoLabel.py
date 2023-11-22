@@ -1,7 +1,8 @@
+import json
 import os
 import sys
+
 import cv2
-import json
 import numpy as np
 
 
@@ -14,7 +15,6 @@ def rect_pts_order(pts_2ds):
 
     d2s = []
     for i in range(len(pts_2ds)):
-
         o_x = pts_2ds[i][0] - cen_x
         o_y = pts_2ds[i][1] - cen_y
         atan2 = np.arctan2(o_y, o_x)
@@ -29,29 +29,29 @@ def rect_pts_order(pts_2ds):
 
 
 def json_plot_label(file_path, save_path):
-    with open(file_path, 'r') as f:
+    with open(file_path, "r") as f:
         print(f"load {file_path}")
         label_dict = json.load(f)
-    shapes = label_dict['shapes']
+    shapes = label_dict["shapes"]
 
     points_1st = np.ndarray(shape=(0, 2), dtype=np.uint8)
     points_2st = np.ndarray(shape=(0, 2), dtype=np.uint8)
     vein_points = np.ndarray(shape=(0, 2), dtype=np.uint8)
 
     for k in range(len(shapes)):
-        kind = shapes[k]['label']
-        x = int(shapes[k]['points'][0][0])
-        y = int(shapes[k]['points'][0][1])
+        kind = shapes[k]["label"]
+        x = int(shapes[k]["points"][0][0])
+        y = int(shapes[k]["points"][0][1])
         point = np.asarray([x, y])
 
-        if kind == '1':
+        if kind == "1":
             points_1st = np.vstack((points_1st, point))
-        elif kind == '2':
+        elif kind == "2":
             points_2st = np.vstack((points_2st, point))
-        elif kind == '3':
+        elif kind == "3":
             vein_points = np.vstack((vein_points, point))
         else:
-            raise ValueError(f'point label error: {kind}')
+            raise ValueError(f"point label error: {kind}")
 
     image_path = file_path.replace(".json", ".png")
     cv_img = cv2.imdecode(np.fromfile(image_path, dtype=np.uint8), -1)
@@ -64,33 +64,26 @@ def json_plot_label(file_path, save_path):
 
     # 填充
     if np.min(points_1st) < np.min(points_2st) and np.max(points_1st) > np.max(
-            points_2st):
-        cv2.fillPoly(label_img,
-                     pts=[rect_pts_order(points_1st)],
-                     color=(0, 0, 255))
-        cv2.fillPoly(label_img,
-                     pts=[rect_pts_order(points_2st)],
-                     color=(0, 255, 0))
-    elif np.min(points_1st) > np.min(points_2st) and np.max(
-            points_1st) < np.max(points_2st):
-        cv2.fillPoly(label_img,
-                     pts=[rect_pts_order(points_2st)],
-                     color=(0, 0, 255))
-        cv2.fillPoly(label_img,
-                     pts=[rect_pts_order(points_1st)],
-                     color=(0, 255, 0))
+        points_2st
+    ):
+        cv2.fillPoly(label_img, pts=[rect_pts_order(points_1st)], color=(0, 0, 255))
+        cv2.fillPoly(label_img, pts=[rect_pts_order(points_2st)], color=(0, 255, 0))
+    elif np.min(points_1st) > np.min(points_2st) and np.max(points_1st) < np.max(
+        points_2st
+    ):
+        cv2.fillPoly(label_img, pts=[rect_pts_order(points_2st)], color=(0, 0, 255))
+        cv2.fillPoly(label_img, pts=[rect_pts_order(points_1st)], color=(0, 255, 0))
     else:
         print("出现特殊的label")
         sys.exit()
     if vein_points.shape[0] != 0:
-        cv2.fillPoly(label_img,
-                     pts=[rect_pts_order(vein_points)],
-                     color=(255, 0, 0))
+        cv2.fillPoly(label_img, pts=[rect_pts_order(vein_points)], color=(255, 0, 0))
 
     if not os.path.exists(save_path):
         os.makedirs(save_path)
-    cv2.imencode('.png', label_img)[1].tofile(
-        os.path.join(save_path, label_dict['imagePath']))
+    cv2.imencode(".png", label_img)[1].tofile(
+        os.path.join(save_path, label_dict["imagePath"])
+    )
     print(f"label {os.path.join(save_path, label_dict['imagePath'])} fixed")
 
 
@@ -124,6 +117,5 @@ if __name__ == "__main__":
                         json_plot_label(file_path, save_path)
     else:
         print("mode设置为0或1")
-
 
     print("运行结束")

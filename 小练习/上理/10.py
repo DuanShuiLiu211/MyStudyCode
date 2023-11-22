@@ -1,7 +1,8 @@
+import os
 import struct
 from struct import unpack
+
 from PIL import Image, ImageDraw
-import os
 
 
 class QuickDrawing:
@@ -84,7 +85,6 @@ class QuickDrawing:
         """
 
         if self._strokes is None:
-
             self._strokes = []
             for stroke in self.image_data:
                 points = []
@@ -92,7 +92,9 @@ class QuickDrawing:
                 ys = stroke[1]
 
                 if len(xs) != len(ys):
-                    raise Exception("something is wrong, different number of x's and y's")
+                    raise Exception(
+                        "something is wrong, different number of x's and y's"
+                    )
 
                 for point in range(len(xs)):
                     x = xs[point]
@@ -120,7 +122,9 @@ class QuickDrawing:
 
         return self._image
 
-    def get_image(self, stroke_color=(0, 0, 0), stroke_width=2, bg_color=(255, 255, 255)):
+    def get_image(
+        self, stroke_color=(0, 0, 0), stroke_width=2, bg_color=(255, 255, 255)
+    ):
         """
         Get a `PIL Image <https://pillow.readthedocs.io/en/3.0.x/reference/Image.html>`_
         object of the drawing.
@@ -146,30 +150,30 @@ class QuickDrawing:
 
 
 def unpack_drawing(file_handle):
-    key_id, = unpack('Q', file_handle.read(8))
-    country_code, = unpack('2s', file_handle.read(2))
-    recognized, = unpack('b', file_handle.read(1))
-    timestamp, = unpack('I', file_handle.read(4))
-    n_strokes, = unpack('H', file_handle.read(2))
+    (key_id,) = unpack("Q", file_handle.read(8))
+    (country_code,) = unpack("2s", file_handle.read(2))
+    (recognized,) = unpack("b", file_handle.read(1))
+    (timestamp,) = unpack("I", file_handle.read(4))
+    (n_strokes,) = unpack("H", file_handle.read(2))
     image = []
     for i in range(n_strokes):
-        n_points, = unpack('H', file_handle.read(2))
-        fmt = str(n_points) + 'B'
+        (n_points,) = unpack("H", file_handle.read(2))
+        fmt = str(n_points) + "B"
         x = unpack(fmt, file_handle.read(n_points))
         y = unpack(fmt, file_handle.read(n_points))
         image.append((x, y))
 
     return {
-        'key_id': key_id,
-        'country_code': country_code,
-        'recognized': recognized,
-        'timestamp': timestamp,
-        'image': image
+        "key_id": key_id,
+        "country_code": country_code,
+        "recognized": recognized,
+        "timestamp": timestamp,
+        "image": image,
     }
 
 
 def unpack_drawings(filename):
-    with open(filename, 'rb') as f:
+    with open(filename, "rb") as f:
         while True:
             try:
                 yield unpack_drawing(f)
@@ -186,13 +190,13 @@ def load_bin_files(dir):
 
 
 if __name__ == "__main__":
-    bin_fileslist = load_bin_files('W:\\桌面\QuickDraw\\10')
-    datasetdir = 'W:\\桌面\\QuickDraw\\png'
+    bin_fileslist = load_bin_files("W:\\桌面\QuickDraw\\10")
+    datasetdir = "W:\\桌面\\QuickDraw\\png"
     if not os.path.exists(datasetdir):
         os.mkdir(datasetdir)
 
     for binfile in bin_fileslist:
-        class_name = binfile[binfile.rindex('\\') + 1: binfile.rindex('.bin')]
+        class_name = binfile[binfile.rindex("\\") + 1 : binfile.rindex(".bin")]
         print(binfile, " ", class_name)
 
         class_dir = os.path.join(datasetdir, class_name)
@@ -203,5 +207,5 @@ if __name__ == "__main__":
         for drawing in unpack_drawings(binfile):
             qt = QuickDrawing(class_name, drawing)
             image = qt.get_image()
-            image.save(os.path.join(class_dir, str(index) + '.png'))
+            image.save(os.path.join(class_dir, str(index) + ".png"))
             index = index + 1

@@ -1,6 +1,6 @@
-import numpy as np
 import cv2
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 def myImread(path):
@@ -8,8 +8,8 @@ def myImread(path):
     return img
 
 
-if __name__ == '__main__':
-    path = '数据/图片1.png'
+if __name__ == "__main__":
+    path = "数据/图片1.png"
     img = myImread(path)
     plt.figure(0)
     plt.imshow(img)
@@ -17,4 +17,3 @@ if __name__ == '__main__':
     plt.figure(1)
     plt.imshow(img)
     plt.show()
-    

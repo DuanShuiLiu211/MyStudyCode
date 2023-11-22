@@ -1,7 +1,6 @@
 # encoding:utf-8
-import tensorflow as tf
 import numpy as np
-
+import tensorflow as tf
 
 # 构建神经网络并训练，使模型拟合 y=x^2+1
 # 创建输入数据与标签数据
@@ -44,7 +43,9 @@ output_layer1 = model_layer(hidden_layer1, 10, 1)
 init_weight = tf.global_variables_initializer()
 
 # 定义损失函数
-loss = tf.reduce_mean(tf.reduce_sum(tf.square(ys - output_layer1), reduction_indices=[1]))
+loss = tf.reduce_mean(
+    tf.reduce_sum(tf.square(ys - output_layer1), reduction_indices=[1])
+)
 
 # 定义训练过程
 train_step = tf.train.GradientDescentOptimizer(0.1).minimize(loss)

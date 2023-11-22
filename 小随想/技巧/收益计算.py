@@ -1,12 +1,12 @@
 class OurEth:
     @staticmethod
     def miner_power(num):
-        cp = list(map(float, input('请输入第{}个矿工的各个矿机的算力：'.format(num)).split(' ')))
+        cp = list(map(float, input("请输入第{}个矿工的各个矿机的算力：".format(num)).split(" ")))
         miner_cp = sum(cp)
         return miner_cp
 
     def ratio_power(self, day):
-        miner_num = int(input('请输入第{}天的矿工数量：'.format(day)))
+        miner_num = int(input("请输入第{}天的矿工数量：".format(day)))
         cp_list = []
         for num in range(miner_num):
             miner_cp = self.miner_power(num + 1)
@@ -17,8 +17,8 @@ class OurEth:
         return miner_num, ratio_list
 
     def eth_income(self):
-        price = int(input('请输入以太币价格：'))
-        eth_list = list(map(float, input('请输入每天的挖取的以太币数量：').split(' ')))
+        price = int(input("请输入以太币价格："))
+        eth_list = list(map(float, input("请输入每天的挖取的以太币数量：").split(" ")))
         wh_eth = []
         zhb_eth = []
         yzh_eth = []
@@ -47,10 +47,21 @@ class OurEth:
         zl_ic = zl_eth * price
         other_ic = other_eth * price
         return print(
-            'wh_eth:{} wh_ic:{}\nzhb_eth:{} zhb_ic:{}\nyzh_eth:{} yzh_ic:{}\nzl_eth:{} zl_ic:{}\nother_eth:{} other_ic:{}\n' \
-            .format(wh_eth, wh_ic, zhb_eth, zhb_ic, yzh_eth, yzh_ic, zl_eth, zl_ic, other_eth, other_ic))
+            "wh_eth:{} wh_ic:{}\nzhb_eth:{} zhb_ic:{}\nyzh_eth:{} yzh_ic:{}\nzl_eth:{} zl_ic:{}\nother_eth:{} other_ic:{}\n".format(
+                wh_eth,
+                wh_ic,
+                zhb_eth,
+                zhb_ic,
+                yzh_eth,
+                yzh_ic,
+                zl_eth,
+                zl_ic,
+                other_eth,
+                other_ic,
+            )
+        )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     eth0606 = OurEth()
     eth0606.eth_income()

@@ -3,10 +3,10 @@ import os
 import pathlib
 import tkinter as tk
 from tkinter import filedialog
-import numpy as np
-import cv2
-from PIL import Image, ImageTk
 
+import cv2
+import numpy as np
+from PIL import Image, ImageTk
 
 main = tk.Tk()
 
@@ -37,9 +37,9 @@ def end_draw(event):
 
 
 main.title("图片绘制工具")
-main.geometry('%dx%d+%d+%d' % (ww, wh, x, y))
+main.geometry("%dx%d+%d+%d" % (ww, wh, x, y))
 main.resizable(0, 0)
-main.bind_all('<Escape>', end_draw)
+main.bind_all("<Escape>", end_draw)
 
 toolbar = tk.Frame(main, borderwidth=1, relief=tk.RIDGE)
 toolbar.pack(side=tk.LEFT, fill=tk.Y)
@@ -49,7 +49,7 @@ skip_seconds = 1
 # 标记当前能够进行绘制，目前没有使用
 flag_draw = False
 # 当前读取的视频的路径
-current_image = ''
+current_image = ""
 # 当前读取的视频的帧
 images = []
 # 图片中绘制的多边形
@@ -57,7 +57,7 @@ polygons = []
 # 当前绘制的多边形的点集合
 points = []
 # 配置文件所在的文件夹
-config_dir = None   
+config_dir = None
 
 
 def draw_point(event):
@@ -67,7 +67,10 @@ def draw_point(event):
     x, y = event.x, event.y
     if len(images) == 0:
         return
-    img_x, img_y = images[0][0], images[0][1], 
+    img_x, img_y = (
+        images[0][0],
+        images[0][1],
+    )
     img_w, img_h = images[0][2].width(), images[0][2].height()
     if x < img_x or x > img_x + img_w or y < img_y or y > img_y + img_h:
         return
@@ -92,7 +95,7 @@ def draw_reference_line(event):
         return
     x_pre, y_pre = points[-2], points[-1]
 
-    canvas.create_line(x_pre, y_pre, x, y, fill='red', tags="tmp")
+    canvas.create_line(x_pre, y_pre, x, y, fill="red", tags="tmp")
     # points_ = []
     # for point in points:
     #     x = point['x']
@@ -120,21 +123,21 @@ def refresh():
         canvas.create_image(image[0], image[1], anchor=tk.NW, image=image[2])
 
     for polygon in polygons:
-        canvas.create_polygon(polygon, outline='red', fill='')
+        canvas.create_polygon(polygon, outline="red", fill="")
         # random_num = random.random()
         # rect_obj = canvas.create_rectangle(rect[0], rect[1], rect[2], rect[3], tags="tags")
         # polygon_obj.append(rect_obj)
 
-        canvas.tag_bind("tags", '<Button-1>', rect_click)
-        canvas.tag_bind("tags", '<Button-2>', rect_click)
-        canvas.tag_bind("tags", '<Button-3>', rect_click)
+        canvas.tag_bind("tags", "<Button-1>", rect_click)
+        canvas.tag_bind("tags", "<Button-2>", rect_click)
+        canvas.tag_bind("tags", "<Button-3>", rect_click)
 
     for idx in range(len(points) // 2 - 1):
         sx = points[idx * 2]
         sy = points[idx * 2 + 1]
         ex = points[idx * 2 + 2]
         ey = points[idx * 2 + 3]
-        canvas.create_line(sx, sy, ex, ey, fill='red')
+        canvas.create_line(sx, sy, ex, ey, fill="red")
     # if len(points) == 0:
     #     return
     # canvas.create_polygon(points, outline='red', fill='')
@@ -146,17 +149,20 @@ def refresh_info():
     """
     video_info_box.delete(0, video_info_box.size())
     canvas_w, canvas_h = canvas.winfo_width(), canvas.winfo_height()
-    x, y, w, h = images[0][0], images[0][1], images[0][2].width(
-    ), images[0][2].height()
+    x, y, w, h = images[0][0], images[0][1], images[0][2].width(), images[0][2].height()
     for rect in polygons:
-        video_info_box.insert(tk.END, '{:0>3d}-{:0>3d}-{:0>3d}-{:0>3d}'.format(
-            int(rect[0] - x), int(rect[1] - y), int(rect[2] - x), int(rect[3] - y)))
+        video_info_box.insert(
+            tk.END,
+            "{:0>3d}-{:0>3d}-{:0>3d}-{:0>3d}".format(
+                int(rect[0] - x), int(rect[1] - y), int(rect[2] - x), int(rect[3] - y)
+            ),
+        )
 
 
 canvas = tk.Canvas(main, borderwidth=1, relief=tk.RIDGE)
 canvas.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
-canvas.bind('<Button-1>', draw_point)
-canvas.bind('<Motion>', draw_reference_line)
+canvas.bind("<Button-1>", draw_point)
+canvas.bind("<Motion>", draw_reference_line)
 
 
 info_box = tk.Frame(main, height=200)
@@ -184,14 +190,12 @@ def open_image(event, image_path=None):
 
     x, y = 0, 0
     image_w, image_h = frame.shape[1], frame.shape[0]
-    if (float(image_w / image_h) > float(canvas_w / canvas_h)):
-        frame = cv2.resize(
-            frame, (canvas_w, int(canvas_w * image_h / image_w)))
+    if float(image_w / image_h) > float(canvas_w / canvas_h):
+        frame = cv2.resize(frame, (canvas_w, int(canvas_w * image_h / image_w)))
         x = 0
         y = (canvas_h - frame.shape[0]) // 2
     else:
-        frame = cv2.resize(
-            frame, (int(canvas_h * image_w / image_h), canvas_h))
+        frame = cv2.resize(frame, (int(canvas_h * image_w / image_h), canvas_h))
         x = (canvas_w - frame.shape[1]) // 2
         y = 0
 
@@ -205,21 +209,22 @@ def open_image(event, image_path=None):
 
     # 读取配置文件
     if config_dir is None:
-        config_path = os.path.splitext(file_path)[0] + '.json'
+        config_path = os.path.splitext(file_path)[0] + ".json"
     else:
-        config_path = os.path.join(config_dir, os.path.splitext(os.path.split(file_path)[1])[0] + '.json')
+        config_path = os.path.join(
+            config_dir, os.path.splitext(os.path.split(file_path)[1])[0] + ".json"
+        )
 
-        
     if os.path.exists(config_path):
-        with open(config_path, 'r') as f:
+        with open(config_path, "r") as f:
             config = json.load(f)
 
-            for region in config['regions']:
-                points = region['ps']
+            for region in config["regions"]:
+                points = region["ps"]
                 points_ = []
                 for point in points:
-                    x_ = x + img.width() * int(point['x']) / image_w
-                    y_ = y + img.height() * int(point['y']) / image_h
+                    x_ = x + img.width() * int(point["x"]) / image_w
+                    y_ = y + img.height() * int(point["y"]) / image_h
                     points_.extend([x_, y_])
 
                 polygons.append(points_)
@@ -228,10 +233,9 @@ def open_image(event, image_path=None):
     refresh_info()
 
 
-
 file_list = tk.Listbox(info_box, yscrollcommand=tk.TRUE)
 file_list.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-file_list.bind('<Double-Button-1>', open_image)
+file_list.bind("<Double-Button-1>", open_image)
 
 
 def choose_polygon(event):
@@ -240,21 +244,22 @@ def choose_polygon(event):
     if len(selection) == 0:
         return
     polygon = polygons[selection[0]]
-    canvas.delete('tmp2')
-    canvas.create_polygon(polygon, outline='red', fill='red', tags="tmp2")
+    canvas.delete("tmp2")
+    canvas.create_polygon(polygon, outline="red", fill="red", tags="tmp2")
 
 
 def choose_polygon_delete(event):
     """
     选中当前打开的视频的标记框，用于删除
     """
+
     def delete():
         selection = video_info_box.curselection()
         if len(selection) == 0:
             return
         positions = video_info_box.get(selection).split("-")
         positions = [int(pos) for pos in positions]
-        canvas.delete('tmp2')
+        canvas.delete("tmp2")
         polygons.remove(polygons[selection[0]])
         video_info_box.delete(selection)
         refresh()
@@ -267,8 +272,8 @@ def choose_polygon_delete(event):
 
 video_info_box = tk.Listbox(info_box, width=30)
 video_info_box.pack(side=tk.RIGHT, fill=tk.Y)
-video_info_box.bind('<Button-1>', choose_polygon)
-video_info_box.bind('<Button-3>', choose_polygon_delete)
+video_info_box.bind("<Button-1>", choose_polygon)
+video_info_box.bind("<Button-3>", choose_polygon_delete)
 
 
 def draw():
@@ -283,7 +288,8 @@ def opendir():
     读取选中的文件夹中的全部视频，支持 mp4，avi，mkv 等格式
     """
     dir_path = filedialog.askdirectory()
-    if dir_path is None: return
+    if dir_path is None:
+        return
     path = pathlib.Path(dir_path)
 
     images = path.glob("*.[jp][pn][gg]")
@@ -311,7 +317,8 @@ def open_one_image():
     file_path = file_path.name
 
     ext = os.path.splitext(file_path)[-1]
-    if ext not in ['.jpg', '.jpeg', '.png']: return
+    if ext not in [".jpg", ".jpeg", ".png"]:
+        return
     file_list.delete(0, tk.END)
     file_list.insert(tk.END, file_path)
 
@@ -320,7 +327,7 @@ def pre_image():
     """
     打开当前打开的视频的前一个视频
     """
-    index = file_list.index('active')
+    index = file_list.index("active")
     if index - 1 < 0:
         return
     else:
@@ -334,7 +341,7 @@ def next_image():
     """
     打开当前打开的视频的后一个视频
     """
-    index = file_list.index('active')
+    index = file_list.index("active")
     # print(index, file_list.size())
     if index + 1 >= file_list.size():
         return
@@ -352,8 +359,14 @@ def save():
     if len(current_image) == 0:
         return
     file_path = current_image
-    x, y, w, h, w_origin, h_origin = images[0][0], images[0][1], images[0][2].width(
-    ), images[0][2].height(), images[0][3], images[0][4]
+    x, y, w, h, w_origin, h_origin = (
+        images[0][0],
+        images[0][1],
+        images[0][2].width(),
+        images[0][2].height(),
+        images[0][3],
+        images[0][4],
+    )
 
     result = {}
     regions = []
@@ -362,34 +375,33 @@ def save():
         for idx in range(len(polygon) // 2):
             x_ = int((polygon[idx * 2] - x) / w * w_origin)
             y_ = int((polygon[idx * 2 + 1] - y) / h * h_origin)
-            points_.append({'x': x_, 'y': y_})
-        regions.append({'ps': points_})
+            points_.append({"x": x_, "y": y_})
+        regions.append({"ps": points_})
 
-    result['regions'] = regions
+    result["regions"] = regions
 
-    
     if config_dir is None:
-        config_path = os.path.splitext(file_path)[0] + '.json'
+        config_path = os.path.splitext(file_path)[0] + ".json"
     else:
-        config_path = os.path.join(config_dir, os.path.splitext(os.path.split(file_path)[1])[0] + '.json')
+        config_path = os.path.join(
+            config_dir, os.path.splitext(os.path.split(file_path)[1])[0] + ".json"
+        )
     print("images path: {}".format(file_path))
     print("config path: {}".format(config_path))
-    with open(config_path, 'w') as f:
+    with open(config_path, "w") as f:
         json.dump(result, f)
 
 
-btn_opendir = tk.Button(toolbar, text="打开文件夹", height=3,
-                        width=10, command=opendir)
-btn_configdir = tk.Button(toolbar, text="配置文件夹", height=3,
-                        width=10, command=open_configdir)
-btn_openvideo = tk.Button(toolbar, text="打开图片", height=3,
-                          width=10, command=open_one_image)
-btn_drawrect = tk.Button(toolbar, text="绘制矩形",
-                         height=3, width=10, command=draw)
-btn_pre_image = tk.Button(toolbar, text="上一个", height=3,
-                          width=10, command=pre_image)
-btn_next_image = tk.Button(
-    toolbar, text="下一个", height=3, width=10, command=next_image)
+btn_opendir = tk.Button(toolbar, text="打开文件夹", height=3, width=10, command=opendir)
+btn_configdir = tk.Button(
+    toolbar, text="配置文件夹", height=3, width=10, command=open_configdir
+)
+btn_openvideo = tk.Button(
+    toolbar, text="打开图片", height=3, width=10, command=open_one_image
+)
+btn_drawrect = tk.Button(toolbar, text="绘制矩形", height=3, width=10, command=draw)
+btn_pre_image = tk.Button(toolbar, text="上一个", height=3, width=10, command=pre_image)
+btn_next_image = tk.Button(toolbar, text="下一个", height=3, width=10, command=next_image)
 btn_save = tk.Button(toolbar, text="保存", height=3, width=10, command=save)
 
 btn_opendir.pack(side=tk.TOP)

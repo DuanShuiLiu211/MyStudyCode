@@ -1,9 +1,11 @@
 import hashlib
 import os
 
+
 def file_hash(filepath):
-    with open(filepath, 'rb') as f:
+    with open(filepath, "rb") as f:
         return hashlib.md5(f.read()).hexdigest()
+
 
 def remove_duplicates(folder_path):
     hashes = {}
@@ -22,5 +24,8 @@ def remove_duplicates(folder_path):
                     )
                 os.remove(file_path)
 
-folder_path = '/Users/WangHao/Sites/学习/Python/TuLiProject/TrainNetPipeline/datas/character'
+
+folder_path = (
+    "/Users/WangHao/Sites/学习/Python/TuLiProject/TrainNetPipeline/datas/character"
+)
 remove_duplicates(folder_path)

@@ -12,19 +12,22 @@ def otus_threshold(image, bins=255, ranges=(0, 255)):
     w_f = []
     u_f = []
     for k in range(len(hist_array)):
-        back_pixel = np.sum(hist_array[:k + 1])
+        back_pixel = np.sum(hist_array[: k + 1])
         w_b.append(back_pixel / total_pixel)
         if back_pixel == 0:
             u_b.append(0)
         else:
-            u_b.append((bins_array[1:k + 2] * hist_array[:k + 1]).sum() / back_pixel)
+            u_b.append((bins_array[1 : k + 2] * hist_array[: k + 1]).sum() / back_pixel)
 
         front_pixel = total_pixel - back_pixel
         w_f.append(front_pixel / total_pixel)
         if front_pixel == 0:
             u_f.append(0)
         else:
-            u_f.append((bins_array[k + 2:bins] * hist_array[k + 1:bins-1]).sum() / front_pixel)
+            u_f.append(
+                (bins_array[k + 2 : bins] * hist_array[k + 1 : bins - 1]).sum()
+                / front_pixel
+            )
 
     # 最大类间方差的灰度
     variance_k = np.array(w_b) * np.array(w_f) * (np.array(u_b) - np.array(u_f)) ** 2
@@ -33,7 +36,7 @@ def otus_threshold(image, bins=255, ranges=(0, 255)):
     return gray_k
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     data = np.random.rand(20, 20) * 255
     otus_threshold(data)
 

@@ -1,4 +1,5 @@
 import math
+
 import numpy as np
 import torch
 import torch.nn as nn
@@ -46,7 +47,7 @@ nn.init.eye_(w)
 # torch.nn.init.xavier_uniform_(tensor, gain=1)
 # From - Understanding the difficulty of training deep feedforward neural networks - Bengio 2010
 # calculate_gain 返回默认增益值
-a = nn.init.calculate_gain('relu')
+a = nn.init.calculate_gain("relu")
 # 1.414
 nn.init.xavier_uniform_(w, gain=a)
 # tensor([[ 1.3374,  0.7932, -0.0891],
@@ -61,13 +62,13 @@ nn.init.xavier_normal_(w)
 # 9. kaiming_uniform 初始化
 # From - Delving deep into rectifiers: Surpassing human-level performance on ImageNet classification - He Kaiming 2015
 # torch.nn.init.kaiming_uniform_(tensor, a=0, mode='fan_in', nonlinearity='leaky_relu')
-nn.init.kaiming_uniform_(w, mode='fan_in', nonlinearity='relu')
+nn.init.kaiming_uniform_(w, mode="fan_in", nonlinearity="relu")
 # tensor([[ 0.6426, -0.9582, -1.1783],
 #         [-0.0515, -0.4975,  1.3237]])
 
 # 10. kaiming_normal 初始化
 # torch.nn.init.kaiming_normal_(tensor, a=0, mode='fan_in', nonlinearity='leaky_relu')
-nn.init.kaiming_normal_(w, mode='fan_out', nonlinearity='relu')
+nn.init.kaiming_normal_(w, mode="fan_out", nonlinearity="relu")
 # tensor([[ 0.2530, -0.4382,  1.5995],
 #         [ 0.0544,  1.6392, -2.0752]])
 
@@ -91,7 +92,9 @@ nn.init.sparse_(w, sparsity=0.1)
 # torch.nn.init.dirac_(tensor)
 b = torch.empty(3, 16, 5, 5)  # 是根据输入的size信息生成张量的方法,其dtype默认torch.folat32
 nn.init.dirac_(b)
-c = torch.tensor(np.array([1, 2, 3.]))  # torch.tensor()则是复制输入的数据再生成张量的方法,其dtype默认输入数据的dtype
+c = torch.tensor(
+    np.array([1, 2, 3.0])
+)  # torch.tensor()则是复制输入的数据再生成张量的方法,其dtype默认输入数据的dtype
 
 # 举例
 # 1 一层一层单独设置
@@ -101,14 +104,14 @@ conv = nn.Conv2d(1, 3, kernel_size=1)
 # fan_in, _ = init._calculate_fan_in_and_fan_out(self.weight)
 # bound = 1 / math.sqrt(fan_in)
 # init.uniform_(self.bias, -bound, bound)  ## nn.Conv2d()的bias的默认的初始化方式
-nn.init.kaiming_normal_(conv.weight, mode='fan_in')
-nn.init.constant_(conv.bias, 0.)
+nn.init.kaiming_normal_(conv.weight, mode="fan_in")
+nn.init.constant_(conv.bias, 0.0)
 
-bn = nn.BatchNorm2d(3),
+bn = (nn.BatchNorm2d(3),)
 # init.ones_(self.weight)  ## nn.BatchNorm2d()的weight的默认的初始化方式
 # init.zeros_(self.bias)  ## nn.BatchNorm2d()的bias的默认的初始化方式
-nn.init.normal_(bn[0].weight, mean=1., std=0.02)
-nn.init.constant_(bn[0].bias, 0.)
+nn.init.normal_(bn[0].weight, mean=1.0, std=0.02)
+nn.init.constant_(bn[0].bias, 0.0)
 
 
 # 2 在模型中遍历设置
@@ -131,7 +134,7 @@ class DoubleConv(nn.Module):
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
                 n = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
-                m.weight.data.normal_(0, math.sqrt(2. / n))
+                m.weight.data.normal_(0, math.sqrt(2.0 / n))
             elif isinstance(m, nn.BatchNorm2d):
                 m.weight.data.fill_(1)
                 m.bias.data.zero_()

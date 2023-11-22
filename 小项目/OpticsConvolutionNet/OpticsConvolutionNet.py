@@ -1,21 +1,21 @@
 import sys
-import torch
-from torch import pi
-from torch import nn
-from torch.nn.functional import pad
-import numpy as np
-from PIL import Image
-from torchvision import transforms
+
 import matplotlib.pyplot as plot
+import numpy as np
+import torch
 import torch.optim as optim
+from PIL import Image
+from torch import nn, pi
+from torch.nn.functional import pad
 from torch.utils.tensorboard import SummaryWriter
+from torchvision import transforms
 
 
 def initialize_weight(weight):
     """
     初始化模型的权重参数
     """
-    nn.init.kaiming_uniform_(weight, a=0, mode='fan_in', nonlinearity='relu')
+    nn.init.kaiming_uniform_(weight, a=0, mode="fan_in", nonlinearity="relu")
 
 
 def normalized_tensor(inputs):
@@ -38,7 +38,10 @@ def fourier_transform_right(inputs):
 
     return outputs
 
+
 torch.max
+
+
 def fourier_transform_left(inputs):
     """
     对xy平面的频域做傅立叶逆变换，还原xy平面空间域结果
@@ -53,9 +56,9 @@ def phase_shifts_heightmap(heightmaps, wave_lengths=638e-9, refractive_index=1.5
     计算由高度图产生的相位偏移，自由传播中的空气折射率是1.000277
     """
     delta_n = refractive_index - 1.000277
-    wave_vector = 2. * pi / wave_lengths
+    wave_vector = 2.0 * pi / wave_lengths
     phase = wave_vector * delta_n * heightmaps
-    outputs = torch.exp(1.j * phase)
+    outputs = torch.exp(1.0j * phase)
 
     return outputs
 
@@ -69,8 +72,16 @@ def pad_inputs(inputs, input_kernel_size, kernel_size, scale):
     assert (kernel_size[0] == kernel_size[1]) & (scale % 2 == 1)
     dh = kernel_size[0] // 2
     dw = kernel_size[1] // 2
-    outputs = pad(inputs, [int(input_kernel_size[0] * (scale // 2) + dh), int(input_kernel_size[1] * (scale // 2) + dw),
-                           int(input_kernel_size[0] * (scale // 2) + dh), int(input_kernel_size[1] * (scale // 2) + dw)], value=0.)
+    outputs = pad(
+        inputs,
+        [
+            int(input_kernel_size[0] * (scale // 2) + dh),
+            int(input_kernel_size[1] * (scale // 2) + dw),
+            int(input_kernel_size[0] * (scale // 2) + dh),
+            int(input_kernel_size[1] * (scale // 2) + dw),
+        ],
+        value=0.0,
+    )
 
     return outputs
 
@@ -82,14 +93,29 @@ def unpad_inputs(inputs, input_kernel_size, kernel_size, scale):
     _, _, h, w = inputs.size()
     dh = kernel_size[0] // 2
     dw = kernel_size[1] // 2
-    outputs = inputs[:, :, input_kernel_size[0] * (scale // 2) + dh:input_kernel_size[0] * (scale // 2 + 1) - dh,
-              input_kernel_size[1] * (scale // 2) + dw:input_kernel_size[1] * (scale // 2 + 1) - dw]
+    outputs = inputs[
+        :,
+        :,
+        input_kernel_size[0] * (scale // 2)
+        + dh : input_kernel_size[0] * (scale // 2 + 1)
+        - dh,
+        input_kernel_size[1] * (scale // 2)
+        + dw : input_kernel_size[1] * (scale // 2 + 1)
+        - dw,
+    ]
 
     return outputs
 
 
 class FourOptConv(nn.Module):
-    def __init__(self, input_size=(100, 100), kernel_size=(3, 3), scale=3, weight_mode="kernel", visual=False):
+    def __init__(
+        self,
+        input_size=(100, 100),
+        kernel_size=(3, 3),
+        scale=3,
+        weight_mode="kernel",
+        visual=False,
+    ):
         """
         input_size：输入数据的尺寸
         kernel_size：每一个卷积核的尺寸，
@@ -103,7 +129,7 @@ class FourOptConv(nn.Module):
         self.weight_mode = weight_mode
         self.visual = visual
         self.input_kernel_size = np.array(input_size) + 2 * (np.array(kernel_size) // 2)
-        self.kernel_add_softmax = torch.nn.Softmax(-1)(torch.rand(scale ** 2))
+        self.kernel_add_softmax = torch.nn.Softmax(-1)(torch.rand(scale**2))
         self.phase_bn_input = torch.nn.BatchNorm2d(1)
         self.phase_bn_down = torch.nn.BatchNorm2d(1)
         self.phase_bn_up = torch.nn.BatchNorm2d(1)
@@ -111,18 +137,23 @@ class FourOptConv(nn.Module):
 
         # 0426 增加 plane
         if self.weight_mode == "kernel":
-            self.kernel_fetch, kernel_fetch_mask, self.kernel_add, kernel_add_mask = self.create_kernel()
+            (
+                self.kernel_fetch,
+                kernel_fetch_mask,
+                self.kernel_add,
+                kernel_add_mask,
+            ) = self.create_kernel()
             self.register_buffer("kernel_fetch_mask", kernel_fetch_mask)
             self.register_buffer("kernel_add_mask", kernel_add_mask)
         elif self.weight_mode == "plane":
             self.plane = self.create_plane()
         else:
-            print('权重模式错误')
+            print("权重模式错误")
             sys.exit()
 
     def create_kernel(self):
         kernel_list = []
-        for _ in range(self.scale ** 2):
+        for _ in range(self.scale**2):
             kernel_valid = torch.rand(size=self.kernel_size)
             initialize_weight(kernel_valid)
             kernel_list.append(kernel_valid)
@@ -144,52 +175,105 @@ class FourOptConv(nn.Module):
                 由于离散性，平铺的傅立叶卷积能够与平铺的PyTorch卷积的输出结果完全对应的是 1 与 2 整体尺寸为奇数，其中 3 与 4 整体尺寸为偶数有细微差别
                 3. 平铺的PyTorch卷积的输出结果比平铺的傅立叶卷积的输出结果下与右多出一行与一列额外元素
                 4. 平铺的PyTorch卷积的输出结果比平铺的傅立叶卷积的输出结果下与右多出一行与一列额外元素
-                另外，如果核尺寸为奇数则每一个子区域将紧密相连，如果核尺寸为偶数则每一个子区域间将有一个元素间隔            
+                另外，如果核尺寸为奇数则每一个子区域将紧密相连，如果核尺寸为偶数则每一个子区域间将有一个元素间隔
                 但以上四种情况输出的有效元素位置都与输入有效元素位置相同
                 """
                 # 核尺寸为奇数时生成平铺卷积核
                 if (self.kernel_size[0] % 2 == 1) & (self.kernel_size[1] % 2 == 1):
                     kernel_fetch[
-                    self.input_kernel_size[0] * i + (self.input_kernel_size[0] // 2 - self.kernel_size[0] // 2):
-                    self.input_kernel_size[0] * i + (self.input_kernel_size[0] // 2 + self.kernel_size[0] // 2 + 1),
-                    self.input_kernel_size[1] * j + (self.input_kernel_size[1] // 2 - self.kernel_size[1] // 2):
-                    self.input_kernel_size[1] * j + (self.input_kernel_size[1] // 2 + self.kernel_size[1] // 2 + 1)] \
-                        = kernel_list[k]
+                        self.input_kernel_size[0] * i
+                        + (
+                            self.input_kernel_size[0] // 2 - self.kernel_size[0] // 2
+                        ) : self.input_kernel_size[0]
+                        * i
+                        + (
+                            self.input_kernel_size[0] // 2
+                            + self.kernel_size[0] // 2
+                            + 1
+                        ),
+                        self.input_kernel_size[1] * j
+                        + (
+                            self.input_kernel_size[1] // 2 - self.kernel_size[1] // 2
+                        ) : self.input_kernel_size[1]
+                        * j
+                        + (
+                            self.input_kernel_size[1] // 2
+                            + self.kernel_size[1] // 2
+                            + 1
+                        ),
+                    ] = kernel_list[k]
                     kernel_fetch_mask[
-                    self.input_kernel_size[0] * i + (self.input_kernel_size[0] // 2 - self.kernel_size[0] // 2):
-                    self.input_kernel_size[0] * i + (self.input_kernel_size[0] // 2 + self.kernel_size[0] // 2 + 1),
-                    self.input_kernel_size[1] * j + (self.input_kernel_size[1] // 2 - self.kernel_size[1] // 2):
-                    self.input_kernel_size[1] * j + (self.input_kernel_size[1] // 2 + self.kernel_size[1] // 2 + 1)] \
-                        = torch.ones(size=self.kernel_size)
+                        self.input_kernel_size[0] * i
+                        + (
+                            self.input_kernel_size[0] // 2 - self.kernel_size[0] // 2
+                        ) : self.input_kernel_size[0]
+                        * i
+                        + (
+                            self.input_kernel_size[0] // 2
+                            + self.kernel_size[0] // 2
+                            + 1
+                        ),
+                        self.input_kernel_size[1] * j
+                        + (
+                            self.input_kernel_size[1] // 2 - self.kernel_size[1] // 2
+                        ) : self.input_kernel_size[1]
+                        * j
+                        + (
+                            self.input_kernel_size[1] // 2
+                            + self.kernel_size[1] // 2
+                            + 1
+                        ),
+                    ] = torch.ones(size=self.kernel_size)
                 # 核尺寸为偶数时生成平铺卷积核
                 elif (self.kernel_size[0] % 2 == 0) & (self.kernel_size[1] % 2 == 0):
                     kernel_fetch[
-                    self.input_kernel_size[0] * i + (self.input_kernel_size[0] // 2 - self.kernel_size[0] // 2):
-                    self.input_kernel_size[0] * i + (self.input_kernel_size[0] // 2 + self.kernel_size[0] // 2),
-                    self.input_kernel_size[1] * j + (self.input_kernel_size[1] // 2 - self.kernel_size[1] // 2):
-                    self.input_kernel_size[1] * j + (self.input_kernel_size[1] // 2 + self.kernel_size[1] // 2)] \
-                        = kernel_list[k]
+                        self.input_kernel_size[0] * i
+                        + (
+                            self.input_kernel_size[0] // 2 - self.kernel_size[0] // 2
+                        ) : self.input_kernel_size[0]
+                        * i
+                        + (self.input_kernel_size[0] // 2 + self.kernel_size[0] // 2),
+                        self.input_kernel_size[1] * j
+                        + (
+                            self.input_kernel_size[1] // 2 - self.kernel_size[1] // 2
+                        ) : self.input_kernel_size[1]
+                        * j
+                        + (self.input_kernel_size[1] // 2 + self.kernel_size[1] // 2),
+                    ] = kernel_list[k]
                     kernel_fetch_mask[
-                    self.input_kernel_size[0] * i + (self.input_kernel_size[0] // 2 - self.kernel_size[0] // 2):
-                    self.input_kernel_size[0] * i + (self.input_kernel_size[0] // 2 + self.kernel_size[0] // 2),
-                    self.input_kernel_size[1] * j + (self.input_kernel_size[1] // 2 - self.kernel_size[1] // 2):
-                    self.input_kernel_size[1] * j + (self.input_kernel_size[1] // 2 + self.kernel_size[1] // 2)] \
-                        = torch.ones(size=self.kernel_size)
+                        self.input_kernel_size[0] * i
+                        + (
+                            self.input_kernel_size[0] // 2 - self.kernel_size[0] // 2
+                        ) : self.input_kernel_size[0]
+                        * i
+                        + (self.input_kernel_size[0] // 2 + self.kernel_size[0] // 2),
+                        self.input_kernel_size[1] * j
+                        + (
+                            self.input_kernel_size[1] // 2 - self.kernel_size[1] // 2
+                        ) : self.input_kernel_size[1]
+                        * j
+                        + (self.input_kernel_size[1] // 2 + self.kernel_size[1] // 2),
+                    ] = torch.ones(size=self.kernel_size)
                 else:
                     print("请保证卷积核有效区是方形")
                     sys.exit()
 
                 kernel_add[
                     self.input_kernel_size[0] * i + self.input_kernel_size[0] // 2,
-                    self.input_kernel_size[1] * j + self.input_kernel_size[1] // 2] \
-                    = self.kernel_add_softmax[k]
+                    self.input_kernel_size[1] * j + self.input_kernel_size[1] // 2,
+                ] = self.kernel_add_softmax[k]
                 kernel_add_mask[
                     self.input_kernel_size[0] * i + self.input_kernel_size[0] // 2,
-                    self.input_kernel_size[1] * j + self.input_kernel_size[1] // 2] \
-                    = torch.ones(1)
+                    self.input_kernel_size[1] * j + self.input_kernel_size[1] // 2,
+                ] = torch.ones(1)
                 k += 1
 
-        return nn.Parameter(kernel_fetch), kernel_fetch_mask, nn.Parameter(kernel_add), kernel_add_mask
+        return (
+            nn.Parameter(kernel_fetch),
+            kernel_fetch_mask,
+            nn.Parameter(kernel_add),
+            kernel_add_mask,
+        )
 
     def create_plane(self):
         plane = torch.rand(size=self.input_kernel_size)
@@ -197,12 +281,14 @@ class FourOptConv(nn.Module):
 
         return nn.Parameter(plane)
 
-    def forward(self, inputs, factor=2, sample_mode='input'):
+    def forward(self, inputs, factor=2, sample_mode="input"):
         """现阶段实验可实现的是纯相位调制，即使用平铺卷积核的相谱制作纯相位的衍射板，相应的只能进行退化版的傅立叶卷积，计算时仅使用 angle()"""
         if self.weight_mode == "kernel":
-            if sample_mode == 'input':
+            if sample_mode == "input":
                 # 构造输入
-                inputs = pad_inputs(inputs, self.input_kernel_size, self.kernel_size, self.scale)
+                inputs = pad_inputs(
+                    inputs, self.input_kernel_size, self.kernel_size, self.scale
+                )
                 if self.visual:
                     plot.figure(1)
                     plot.subplot(121)
@@ -216,11 +302,19 @@ class FourOptConv(nn.Module):
                     plot.show()
 
                 # 特征提取的4f系统
-                kernel_fetch_k = fourier_transform_right(self.kernel_fetch * self.kernel_fetch_mask)
+                kernel_fetch_k = fourier_transform_right(
+                    self.kernel_fetch * self.kernel_fetch_mask
+                )
                 # phase_plane = torch.exp(1j * (2 * pi * kernel_fetch_k.angle()))
-                phase_plane = torch.exp(1j * (2 * pi * torch.sigmoid(kernel_fetch_k.angle())))
-                outputs = fourier_transform_right(inputs) * phase_plane  # a*exp(jx) * exp(jdetlax) = a*exp(j(x+detlax))
-                outputs = fourier_transform_right(outputs).abs() * torch.exp(1j * (2 * pi * torch.sigmoid((outputs).angle())))
+                phase_plane = torch.exp(
+                    1j * (2 * pi * torch.sigmoid(kernel_fetch_k.angle()))
+                )
+                outputs = (
+                    fourier_transform_right(inputs) * phase_plane
+                )  # a*exp(jx) * exp(jdetlax) = a*exp(j(x+detlax))
+                outputs = fourier_transform_right(outputs).abs() * torch.exp(
+                    1j * (2 * pi * torch.sigmoid((outputs).angle()))
+                )
                 outputs = fourier_transform_left(outputs)
                 if self.visual:
                     plot.figure(2)
@@ -235,11 +329,17 @@ class FourOptConv(nn.Module):
                     plot.show()
 
                 # 特征融合的4f系统
-                kernel_add_k = fourier_transform_right(self.kernel_add * self.kernel_add_mask)
+                kernel_add_k = fourier_transform_right(
+                    self.kernel_add * self.kernel_add_mask
+                )
                 # phase_plane = torch.exp(1j * (2 * pi * kernel_add_k.angle()))
-                phase_plane = torch.exp(1j * (2 * pi * torch.sigmoid(kernel_add_k.angle())))
+                phase_plane = torch.exp(
+                    1j * (2 * pi * torch.sigmoid(kernel_add_k.angle()))
+                )
                 outputs = fourier_transform_right(outputs) * phase_plane
-                outputs = fourier_transform_right(outputs).abs() * torch.exp(1j * (2 * pi * torch.sigmoid((outputs).angle())))
+                outputs = fourier_transform_right(outputs).abs() * torch.exp(
+                    1j * (2 * pi * torch.sigmoid((outputs).angle()))
+                )
                 outputs = fourier_transform_left(outputs)
                 if self.visual:
                     plot.figure(3)
@@ -254,7 +354,9 @@ class FourOptConv(nn.Module):
                     plot.show()
 
                 # 构造输出
-                outputs = unpad_inputs(outputs, self.input_kernel_size, self.kernel_size, self.scale)
+                outputs = unpad_inputs(
+                    outputs, self.input_kernel_size, self.kernel_size, self.scale
+                )
                 if self.visual:
                     plot.figure(4)
                     plot.subplot(121)
@@ -267,7 +369,7 @@ class FourOptConv(nn.Module):
                     plot.title("Phase")
                     plot.show()
 
-            elif sample_mode == 'down':
+            elif sample_mode == "down":
                 # 频域下采样，调整 NA 降低分辨率
                 # _, _, h, w = inputs.shape
                 # inputs_k = fourier_transform_right(inputs)[:, :, h // factor - h // (2 * factor):h // factor + h // (2 * factor) + 1,
@@ -275,8 +377,14 @@ class FourOptConv(nn.Module):
                 # inputs = torch.fft.ifft2(inputs_k)
 
                 # 空域下采样，插值或池化
-                inputs = torch.nn.UpsamplingNearest2d(scale_factor=(1/factor))(inputs.abs()) * \
-                         torch.exp(1.j * torch.nn.UpsamplingNearest2d(scale_factor=(1/factor))(inputs.angle()))
+                inputs = torch.nn.UpsamplingNearest2d(scale_factor=(1 / factor))(
+                    inputs.abs()
+                ) * torch.exp(
+                    1.0j
+                    * torch.nn.UpsamplingNearest2d(scale_factor=(1 / factor))(
+                        inputs.angle()
+                    )
+                )
                 # inputs = torch.max_pool2d(torch.abs(inputs), kernel_size=(2, 2), stride=(2, 2)) + \
                 #          1.j * torch.max_pool2d(inputs.angle())
                 if self.visual:
@@ -286,13 +394,17 @@ class FourOptConv(nn.Module):
                     plot.colorbar()
                     plot.title("Amplitude")
                     plot.subplot(122)
-                    plot.imshow(np.abs(inputs.detach().angle().numpy().squeeze(0).squeeze(0)))
+                    plot.imshow(
+                        np.abs(inputs.detach().angle().numpy().squeeze(0).squeeze(0))
+                    )
                     plot.colorbar()
                     plot.title("Phase")
                     plot.show()
 
                 # 构造输入
-                inputs = pad_inputs(inputs, self.input_kernel_size, self.kernel_size, self.scale)
+                inputs = pad_inputs(
+                    inputs, self.input_kernel_size, self.kernel_size, self.scale
+                )
                 if self.visual:
                     plot.figure(2)
                     plot.subplot(121)
@@ -300,17 +412,25 @@ class FourOptConv(nn.Module):
                     plot.colorbar()
                     plot.title("Amplitude")
                     plot.subplot(122)
-                    plot.imshow(np.abs(inputs.detach().angle().numpy().squeeze(0).squeeze(0)))
+                    plot.imshow(
+                        np.abs(inputs.detach().angle().numpy().squeeze(0).squeeze(0))
+                    )
                     plot.colorbar()
                     plot.title("Phase")
                     plot.show()
 
                 # 特征提取的4f系统
-                kernel_fetch_k = fourier_transform_right(self.kernel_fetch * self.kernel_fetch_mask)
+                kernel_fetch_k = fourier_transform_right(
+                    self.kernel_fetch * self.kernel_fetch_mask
+                )
                 # phase_plane = torch.exp(1j * (2 * pi * kernel_fetch_k.angle()))
-                phase_plane = torch.exp(1j * (2 * pi * torch.sigmoid(kernel_fetch_k.angle())))
+                phase_plane = torch.exp(
+                    1j * (2 * pi * torch.sigmoid(kernel_fetch_k.angle()))
+                )
                 outputs = fourier_transform_right(inputs) * phase_plane
-                outputs = fourier_transform_right(outputs).abs() * torch.exp(1j * (2 * pi * torch.sigmoid((outputs).angle())))
+                outputs = fourier_transform_right(outputs).abs() * torch.exp(
+                    1j * (2 * pi * torch.sigmoid((outputs).angle()))
+                )
                 outputs = fourier_transform_left(outputs)
                 if self.visual:
                     plot.figure(3)
@@ -325,11 +445,17 @@ class FourOptConv(nn.Module):
                     plot.show()
 
                 # 特征融合的4f系统
-                kernel_add_k = fourier_transform_right(self.kernel_add * self.kernel_add_mask)
+                kernel_add_k = fourier_transform_right(
+                    self.kernel_add * self.kernel_add_mask
+                )
                 # phase_plane = torch.exp(1j * (2 * pi * kernel_add_k.angle()))
-                phase_plane = torch.exp(1j * (2 * pi * torch.sigmoid(kernel_add_k.angle())))
+                phase_plane = torch.exp(
+                    1j * (2 * pi * torch.sigmoid(kernel_add_k.angle()))
+                )
                 outputs = fourier_transform_right(outputs) * phase_plane
-                outputs = fourier_transform_right(outputs).abs() * torch.exp(1j * (2 * pi * torch.sigmoid((outputs).angle())))
+                outputs = fourier_transform_right(outputs).abs() * torch.exp(
+                    1j * (2 * pi * torch.sigmoid((outputs).angle()))
+                )
                 outputs = fourier_transform_left(outputs)
                 if self.visual:
                     plot.figure(4)
@@ -344,7 +470,9 @@ class FourOptConv(nn.Module):
                     plot.show()
 
                 # 构造输出
-                outputs = unpad_inputs(outputs, self.input_kernel_size, self.kernel_size, self.scale)
+                outputs = unpad_inputs(
+                    outputs, self.input_kernel_size, self.kernel_size, self.scale
+                )
                 if self.visual:
                     plot.figure(5)
                     plot.subplot(121)
@@ -357,17 +485,27 @@ class FourOptConv(nn.Module):
                     plot.title("Phase")
                     plot.show()
 
-            elif sample_mode == 'up':
+            elif sample_mode == "up":
                 # 空域上采样
                 _, _, h, w = inputs.shape
                 if (h % 2 == 0) & (w % 2 == 0):
-                    inputs = torch.nn.UpsamplingNearest2d(size=(h * factor, w * factor))(inputs.abs()) * \
-                             torch.exp(1.j *
-                                       torch.nn.UpsamplingNearest2d(size=(h * factor, w * factor))(inputs.angle()))
+                    inputs = torch.nn.UpsamplingNearest2d(
+                        size=(h * factor, w * factor)
+                    )(inputs.abs()) * torch.exp(
+                        1.0j
+                        * torch.nn.UpsamplingNearest2d(size=(h * factor, w * factor))(
+                            inputs.angle()
+                        )
+                    )
                 elif (h % 2 == 1) & (w % 2 == 1):
-                    inputs = torch.nn.UpsamplingNearest2d(size=((h + 1) * factor - 1, (w + 1) * factor - 1))(inputs.abs()) * \
-                             torch.exp(1.j *
-                                       torch.nn.UpsamplingNearest2d(size=((h + 1) * factor - 1, (w + 1) * factor - 1))(inputs.angle()))
+                    inputs = torch.nn.UpsamplingNearest2d(
+                        size=((h + 1) * factor - 1, (w + 1) * factor - 1)
+                    )(inputs.abs()) * torch.exp(
+                        1.0j
+                        * torch.nn.UpsamplingNearest2d(
+                            size=((h + 1) * factor - 1, (w + 1) * factor - 1)
+                        )(inputs.angle())
+                    )
                 else:
                     print("保证输入为方形")
                     sys.exit()
@@ -378,13 +516,17 @@ class FourOptConv(nn.Module):
                     plot.colorbar()
                     plot.title("Amplitude")
                     plot.subplot(122)
-                    plot.imshow(np.abs(inputs.detach().angle().numpy().squeeze(0).squeeze(0)))
+                    plot.imshow(
+                        np.abs(inputs.detach().angle().numpy().squeeze(0).squeeze(0))
+                    )
                     plot.colorbar()
                     plot.title("Phase")
                     plot.show()
 
                 # 构造输入
-                inputs = pad_inputs(inputs, self.input_kernel_size, self.kernel_size, self.scale)
+                inputs = pad_inputs(
+                    inputs, self.input_kernel_size, self.kernel_size, self.scale
+                )
                 if self.visual:
                     plot.figure(2)
                     plot.subplot(121)
@@ -392,17 +534,25 @@ class FourOptConv(nn.Module):
                     plot.colorbar()
                     plot.title("Amplitude")
                     plot.subplot(122)
-                    plot.imshow(np.abs(inputs.detach().angle().numpy().squeeze(0).squeeze(0)))
+                    plot.imshow(
+                        np.abs(inputs.detach().angle().numpy().squeeze(0).squeeze(0))
+                    )
                     plot.colorbar()
                     plot.title("Phase")
                     plot.show()
 
                 # 特征提取的4f系统
-                kernel_fetch_k = fourier_transform_right(self.kernel_fetch * self.kernel_fetch_mask)
+                kernel_fetch_k = fourier_transform_right(
+                    self.kernel_fetch * self.kernel_fetch_mask
+                )
                 # phase_plane = torch.exp(1j * (2 * pi * kernel_fetch_k.angle()))
-                phase_plane = torch.exp(1j * (2 * pi * torch.sigmoid(kernel_fetch_k.angle())))
+                phase_plane = torch.exp(
+                    1j * (2 * pi * torch.sigmoid(kernel_fetch_k.angle()))
+                )
                 outputs = fourier_transform_right(inputs) * phase_plane
-                outputs = fourier_transform_right(outputs).abs() * torch.exp(1j * (2 * pi * torch.sigmoid((outputs).angle())))
+                outputs = fourier_transform_right(outputs).abs() * torch.exp(
+                    1j * (2 * pi * torch.sigmoid((outputs).angle()))
+                )
                 outputs = fourier_transform_left(outputs)
                 if self.visual:
                     plot.figure(3)
@@ -417,11 +567,17 @@ class FourOptConv(nn.Module):
                     plot.show()
 
                 # 特征融合的4f系统
-                kernel_add_k = fourier_transform_right(self.kernel_add * self.kernel_add_mask)
+                kernel_add_k = fourier_transform_right(
+                    self.kernel_add * self.kernel_add_mask
+                )
                 # phase_plane = torch.exp(1j * (2 * pi * kernel_add_k.angle()))
-                phase_plane = torch.exp(1j * (2 * pi * torch.sigmoid(kernel_add_k.angle())))
+                phase_plane = torch.exp(
+                    1j * (2 * pi * torch.sigmoid(kernel_add_k.angle()))
+                )
                 outputs = fourier_transform_right(outputs) * phase_plane
-                outputs = fourier_transform_right(outputs).abs() * torch.exp(1j * (2 * pi * torch.sigmoid((outputs).angle())))
+                outputs = fourier_transform_right(outputs).abs() * torch.exp(
+                    1j * (2 * pi * torch.sigmoid((outputs).angle()))
+                )
                 outputs = fourier_transform_left(outputs)
                 if self.visual:
                     plot.figure(4)
@@ -436,7 +592,9 @@ class FourOptConv(nn.Module):
                     plot.show()
 
                 # 构造输出
-                outputs = unpad_inputs(outputs, self.input_kernel_size, self.kernel_size, self.scale)
+                outputs = unpad_inputs(
+                    outputs, self.input_kernel_size, self.kernel_size, self.scale
+                )
                 if self.visual:
                     plot.figure(5)
                     plot.subplot(121)
@@ -449,9 +607,11 @@ class FourOptConv(nn.Module):
                     plot.title("Phase")
                     plot.show()
 
-            elif sample_mode == 'output':
+            elif sample_mode == "output":
                 # 构造输入
-                inputs = pad_inputs(inputs, self.input_kernel_size, self.kernel_size, self.scale)
+                inputs = pad_inputs(
+                    inputs, self.input_kernel_size, self.kernel_size, self.scale
+                )
                 if self.visual:
                     plot.figure(1)
                     plot.subplot(121)
@@ -465,11 +625,17 @@ class FourOptConv(nn.Module):
                     plot.show()
 
                 # 特征提取的4f系统
-                kernel_fetch_k = fourier_transform_right(self.kernel_fetch * self.kernel_fetch_mask)
+                kernel_fetch_k = fourier_transform_right(
+                    self.kernel_fetch * self.kernel_fetch_mask
+                )
                 # phase_plane = torch.exp(1j * (2 * pi * kernel_fetch_k.angle()))
-                phase_plane = torch.exp(1j * (2 * pi * torch.sigmoid(kernel_fetch_k.angle())))
+                phase_plane = torch.exp(
+                    1j * (2 * pi * torch.sigmoid(kernel_fetch_k.angle()))
+                )
                 outputs = fourier_transform_right(inputs) * phase_plane
-                outputs = fourier_transform_right(outputs).abs() * torch.exp(1j * (2 * pi * torch.sigmoid((outputs).angle())))
+                outputs = fourier_transform_right(outputs).abs() * torch.exp(
+                    1j * (2 * pi * torch.sigmoid((outputs).angle()))
+                )
                 outputs = fourier_transform_left(outputs)
                 if self.visual:
                     plot.figure(2)
@@ -484,11 +650,17 @@ class FourOptConv(nn.Module):
                     plot.show()
 
                 # 特征融合的4f系统
-                kernel_add_k = fourier_transform_right(self.kernel_add * self.kernel_add_mask)
+                kernel_add_k = fourier_transform_right(
+                    self.kernel_add * self.kernel_add_mask
+                )
                 # phase_plane = torch.exp(1j * (2 * pi * kernel_add_k.angle()))
-                phase_plane = torch.exp(1j * (2 * pi * torch.sigmoid(kernel_add_k.angle())))
+                phase_plane = torch.exp(
+                    1j * (2 * pi * torch.sigmoid(kernel_add_k.angle()))
+                )
                 outputs = fourier_transform_right(outputs) * phase_plane
-                outputs = fourier_transform_right(outputs).abs() * torch.exp(1j * (2 * pi * torch.sigmoid((outputs).angle())))
+                outputs = fourier_transform_right(outputs).abs() * torch.exp(
+                    1j * (2 * pi * torch.sigmoid((outputs).angle()))
+                )
                 outputs = fourier_transform_left(outputs)
                 if self.visual:
                     plot.figure(3)
@@ -503,7 +675,9 @@ class FourOptConv(nn.Module):
                     plot.show()
 
                 # 构造输出
-                outputs = unpad_inputs(outputs, self.input_kernel_size, self.kernel_size, self.scale)
+                outputs = unpad_inputs(
+                    outputs, self.input_kernel_size, self.kernel_size, self.scale
+                )
                 if self.visual:
                     plot.figure(4)
                     plot.subplot(121)
@@ -517,31 +691,46 @@ class FourOptConv(nn.Module):
                     plot.show()
 
             else:
-                print('采样模式错误')
+                print("采样模式错误")
                 sys.exit()
         elif self.weight_mode == "plane":
-            if sample_mode == 'normal':
-                outputs = fourier_transform_right(inputs) * phase_shifts_heightmap(self.plane)
-            elif sample_mode == 'down':
+            if sample_mode == "normal":
+                outputs = fourier_transform_right(inputs) * phase_shifts_heightmap(
+                    self.plane
+                )
+            elif sample_mode == "down":
                 _, _, h, w = inputs.shape
-                inputs_k = fourier_transform_right(inputs)[:, :, h // factor - h // (2 * factor):h // factor + h // (2 * factor),
-                           w // factor - w // (2 * factor):w // factor + w // (2 * factor)]
+                inputs_k = fourier_transform_right(inputs)[
+                    :,
+                    :,
+                    h // factor - h // (2 * factor) : h // factor + h // (2 * factor),
+                    w // factor - w // (2 * factor) : w // factor + w // (2 * factor),
+                ]
                 outputs = inputs_k * phase_shifts_heightmap(self.plane)
-            elif sample_mode == 'up':
-                inputs_k = fourier_transform_right(torch.nn.UpsamplingNearest2d(scale_factor=factor)(inputs))
+            elif sample_mode == "up":
+                inputs_k = fourier_transform_right(
+                    torch.nn.UpsamplingNearest2d(scale_factor=factor)(inputs)
+                )
                 outputs = inputs_k * phase_shifts_heightmap(self.plane)
             else:
-                print('采样模式设置错误')
+                print("采样模式设置错误")
                 sys.exit()
         else:
-            print('权重模式设置错误')
+            print("权重模式设置错误")
             sys.exit()
 
         return outputs
 
 
 class OptConvNet(nn.Module):
-    def __init__(self, input_size=(256, 256), output_size=(256, 256), down_factor=4, up_factor=4, visual=False):
+    def __init__(
+        self,
+        input_size=(256, 256),
+        output_size=(256, 256),
+        down_factor=4,
+        up_factor=4,
+        visual=False,
+    ):
         super(OptConvNet, self).__init__()
         self.input_size = input_size
         self.output_size = output_size
@@ -579,18 +768,18 @@ class OptConvNet(nn.Module):
         self.bn_output = torch.nn.BatchNorm2d(1)
 
     def forward(self, inputs):
-        x = self.layer1(inputs, sample_mode='input')
-        x = self.layer2(x, self.down_factor, 'down')
-        x = self.layer3(x, self.down_factor, 'down')
-        x = self.layer4(x, self.up_factor, 'up')
-        x = self.layer5(x, self.up_factor, 'up')
-        x = self.layer6(x, sample_mode='output')
+        x = self.layer1(inputs, sample_mode="input")
+        x = self.layer2(x, self.down_factor, "down")
+        x = self.layer3(x, self.down_factor, "down")
+        x = self.layer4(x, self.up_factor, "up")
+        x = self.layer5(x, self.up_factor, "up")
+        x = self.layer6(x, sample_mode="output")
         # outputs = self.bn_output(torch.abs(x))
         outputs = torch.sigmoid(torch.abs(x))
         return outputs
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     """
     path = r'/Users/WangHao/工作/纳米光子中心/全光相关/实验-0303/0303.png'
     img = Image.open(path).convert('L')
@@ -706,15 +895,23 @@ if __name__ == '__main__':
             print(k, v, id(v))
         """
 
-    models1 = OptConvNet(input_size=(255, 255), output_size=(255, 255), down_factor=2, up_factor=2, visual=False)
+    models1 = OptConvNet(
+        input_size=(255, 255),
+        output_size=(255, 255),
+        down_factor=2,
+        up_factor=2,
+        visual=False,
+    )
     adam_optimize = optim.Adam(models1.parameters(), lr=1e-4, weight_decay=1e-5)
     ce_loss = nn.BCELoss()
     # visual_writer = SummaryWriter('visualization')
-    path = r'/Users/WangHao/工作/纳米光子中心/全光相关/实验-0303/0303.png'
-    inputs1 = Image.open(path).convert('L')
-    inputs1 = transforms.Compose([transforms.ToTensor(), transforms.Resize((255, 255))])(inputs1).unsqueeze(0)
+    path = r"/Users/WangHao/工作/纳米光子中心/全光相关/实验-0303/0303.png"
+    inputs1 = Image.open(path).convert("L")
+    inputs1 = transforms.Compose(
+        [transforms.ToTensor(), transforms.Resize((255, 255))]
+    )(inputs1).unsqueeze(0)
 
-    a = torch.rand(4,4,2,2)
+    a = torch.rand(4, 4, 2, 2)
     b = normalized_tensor(a)
 
     epoch = 1000

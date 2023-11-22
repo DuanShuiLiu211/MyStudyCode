@@ -1,9 +1,9 @@
 def function(a, b):
     if a > 1:
-        print('a ok')
+        print("a ok")
         return a
     if b > 1:
-        print('b ok')
+        print("b ok")
         return b
 
 
@@ -46,17 +46,17 @@ def z(f):
         f(x)  # 运行输入的函数
         stop_time = time.time()  # 结束时间
         delta_time = stop_time - start_time  # 运行时间
-        return print('{:.9f}'.format(delta_time))
+        return print("{:.9f}".format(delta_time))
 
     return y
 
 
 @z
 def t(a):
-    return a ** 9 * a ** 9
+    return a**9 * a**9
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     c = function(0, 3)
     print(c)
 
@@ -80,7 +80,3 @@ if __name__ == '__main__':
     print(sum(10, 20))
 
     t(25000)
-<<<<<<< HEAD
-=======
-    pass
->>>>>>> a98794fef118e4fbd47d0348edb5f8b3154dd000

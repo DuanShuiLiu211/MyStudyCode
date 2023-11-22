@@ -2,7 +2,7 @@ import sys
 import traceback
 
 __stderr__ = sys.stderr
-sys.stderr = open('errorlog.txt', 'w')
+sys.stderr = open("errorlog.txt", "w")
 
 # 使用traceback函数定位错误信息
 try:

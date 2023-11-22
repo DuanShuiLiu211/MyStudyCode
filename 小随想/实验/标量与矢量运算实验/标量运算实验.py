@@ -1,9 +1,10 @@
 import time
-import numpy as np
-from numba import jit
+
 import cython
-import torch
+import numpy as np
 import tensorflow as tf
+import torch
+from numba import jit
 
 
 def execute_time(func):
@@ -13,6 +14,7 @@ def execute_time(func):
         time_end = time.time_ns()
         sum_time = (time_end - time_start) / 1e9
         print(f"{func.__name__}运行总时间{sum_time}秒")
+
     return func_new
 
 
@@ -195,7 +197,12 @@ def torch_div(a=torch.tensor(1), b=torch.tensor(2), m=int(1e6), mode="for"):
 
 
 @execute_time
-def torch_div_gpu(a=torch.tensor(1, device='mps'), b=torch.tensor(2, device='mps'), m=int(1e6), mode="for"):
+def torch_div_gpu(
+    a=torch.tensor(1, device="mps"),
+    b=torch.tensor(2, device="mps"),
+    m=int(1e6),
+    mode="for",
+):
     m = torch.tensor(m, dtype=torch.int64)
     c = torch.tensor(0)
     i = torch.tensor(0)
@@ -239,9 +246,9 @@ if __name__ == "__main__":
     cython_div()  # 运行总时间0.019132秒
     torch_div()  # 运行总时间1.878211秒
     torch_div_gpu()  # 运行总时间24.878211秒
-    with tf.device('cpu:0'):
+    with tf.device("cpu:0"):
         tensorflow_div()  # 运行总时间24.869914秒
-    with tf.device('gpu:0'):
+    with tf.device("gpu:0"):
         tensorflow_div()  # 运行总时间24.809914秒
 
     # 使用纯c编写 运行总时间0.001738秒

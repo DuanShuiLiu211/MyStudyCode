@@ -1,5 +1,5 @@
-import sys
 import collections
+import sys
 
 
 class Solution:
@@ -20,8 +20,11 @@ class Solution:
                 dic[value] = index
         return -1 if res == float("-inf") else len(nums) - res
 
+
 get_strings = []
-get_strings.append(list(map(int, sys.stdin.readline().replace("[", "").replace("]", "").split(","))))
+get_strings.append(
+    list(map(int, sys.stdin.readline().replace("[", "").replace("]", "").split(",")))
+)
 get_strings.append(int(sys.stdin.readline().strip()))
 get_strings.append(int(sys.stdin.readline().strip()))
 

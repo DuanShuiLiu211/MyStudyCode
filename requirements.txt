@@ -23,9 +23,7 @@ selenium==3.141.0
 SimpleITK==2.2.1
 skimage==0.0
 tensorboard==2.9.1
-tensorboard_data_server==0.6.1
 tensorflow==2.11.0
-tensorflow_macos==2.9.2
 tifffile==2021.7.2
 torch==1.13.1
 torchvision==0.14.1

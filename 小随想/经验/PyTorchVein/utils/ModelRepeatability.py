@@ -1,12 +1,13 @@
 import os
 import random
+
 import numpy as np
 import torch
 
 # 常见生成随机数的播种方法，只要播种相同就可以保证接下来生成的随机数相同
 seed = 1
-os.environ['PYTHONHASHSEED'] = str(seed)
-print('hash of s is', hash('abc'))
+os.environ["PYTHONHASHSEED"] = str(seed)
+print("hash of s is", hash("abc"))
 # 以上可以设置Python的Hash种子，保证Hash的结果
 
 np.random.seed(seed)

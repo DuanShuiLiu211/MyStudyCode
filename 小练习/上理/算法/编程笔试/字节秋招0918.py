@@ -1,5 +1,5 @@
-import time
 import sys
+import time
 
 
 class Solution:
@@ -8,14 +8,16 @@ class Solution:
         for k in range(1, n_layer):
             for idx in range(n_place[k][0]):
                 for i in range(len(enable_place)):
-                    if n_place[k][idx+1] < enable_place[i]+50:
+                    if n_place[k][idx + 1] < enable_place[i] + 50:
                         enable_place.append(n_place[k][idx + 1])
                         enable_place = sorted(enable_place)
                         break
-                    if (i < len(enable_place)-1 and
-                        n_place[k][idx+1] + 100 > enable_place[i+1] and
-                        n_place[k][idx+1] < enable_place[i] + 100):
-                        enable_place.append(n_place[k][idx+1])
+                    if (
+                        i < len(enable_place) - 1
+                        and n_place[k][idx + 1] + 100 > enable_place[i + 1]
+                        and n_place[k][idx + 1] < enable_place[i] + 100
+                    ):
+                        enable_place.append(n_place[k][idx + 1])
                         enable_place = sorted(enable_place)
                         break
 
@@ -26,7 +28,7 @@ get_strings = []
 get_strings.append(int(sys.stdin.readline().strip()))
 nums = []
 for _ in range(get_strings[0]):
-    nums.append(list(map(int, sys.stdin.readline().strip().split(' '))))
+    nums.append(list(map(int, sys.stdin.readline().strip().split(" "))))
 get_strings.append(nums)
 
 start_time = time.time()

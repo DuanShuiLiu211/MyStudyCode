@@ -1,10 +1,9 @@
-import sys
 import heapq
+import sys
 
 
 # ACM模式
 class Solution:
-
     def max_sliding_windows(self, nums, k):
         n = len(nums)
         q = [(-nums[i], i) for i in range(k)]
@@ -23,7 +22,9 @@ class Solution:
 lists = list(
     map(
         int,
-        sys.stdin.readline().strip().replace(',', '').replace('[', '').replace(']', '')))
+        sys.stdin.readline().strip().replace(",", "").replace("[", "").replace("]", ""),
+    )
+)
 nums = lists[:-1]
 k = lists[-1]
 ans = Solution().max_sliding_windows(nums, k)

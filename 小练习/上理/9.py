@@ -6,7 +6,7 @@ with open(r"W:\桌面\urls.txt", "r") as fd:
     lines = fd.readlines()
     for line in lines:
         line = line.replace("\n", "")
-        filename = line[line.rindex("/") + 1:]
+        filename = line[line.rindex("/") + 1 :]
         filename = unquote(filename)
         data = ur.urlopen(line, timeout=20).read()
         with open(filename, "wb") as datafd:

@@ -153,7 +153,7 @@ def autoidentify():
 def general():
     logging.info("sys.version_info: %s", sys.version_info)
     logging.info("os.name: %s", os.name)
-    na = type("N/A", (object, ), {"__repr__": lambda self: "N/A"})
+    na = type("N/A", (object,), {"__repr__": lambda self: "N/A"})
     logging.info(
         "os.uname(): %r",
         getattr(os, "uname", na)(),
@@ -180,24 +180,30 @@ def installed_packages():
     # For each of the following families, expect exactly one package to be
     # installed.
     expect_unique = [
-        frozenset([
-            "tensorboard",
-            "tb-nightly",
-            "tensorflow-tensorboard",
-        ]),
-        frozenset([
-            "tensorflow",
-            "tensorflow-gpu",
-            "tf-nightly",
-            "tf-nightly-2.0-preview",
-            "tf-nightly-gpu",
-            "tf-nightly-gpu-2.0-preview",
-        ]),
-        frozenset([
-            "tensorflow-estimator",
-            "tensorflow-estimator-2.0-preview",
-            "tf-estimator-nightly",
-        ]),
+        frozenset(
+            [
+                "tensorboard",
+                "tb-nightly",
+                "tensorflow-tensorboard",
+            ]
+        ),
+        frozenset(
+            [
+                "tensorflow",
+                "tensorflow-gpu",
+                "tf-nightly",
+                "tf-nightly-2.0-preview",
+                "tf-nightly-gpu",
+                "tf-nightly-gpu-2.0-preview",
+            ]
+        ),
+        frozenset(
+            [
+                "tensorflow-estimator",
+                "tensorflow-estimator-2.0-preview",
+                "tf-estimator-nightly",
+            ]
+        ),
     ]
     salient_extras = frozenset(["tensorboard-data-server"])
 
@@ -215,7 +221,8 @@ def installed_packages():
         logging.info("installed: %s", packages[package])
 
     if found_conflict:
-        preamble = reflow("""
+        preamble = reflow(
+            """
             Conflicting package installations found. Depending on the order
             of installations and uninstallations, behavior may be undefined.
             Please uninstall ALL versions of TensorFlow and TensorBoard,
@@ -223,9 +230,9 @@ def installed_packages():
             will transitively pull in the proper version of TensorBoard. (If
             you use TensorBoard without TensorFlow, just reinstall the
             appropriate version of TensorBoard directly.)
-            """)
-        packages_to_uninstall = sorted(frozenset().union(*expect_unique)
-                                       & packages_set)
+            """
+        )
+        packages_to_uninstall = sorted(frozenset().union(*expect_unique) & packages_set)
         commands = [
             "pip uninstall %s" % " ".join(packages_to_uninstall),
             "pip install tensorflow  # or `tensorflow-gpu`, or `tf-nightly`, ...",
@@ -241,12 +248,14 @@ def installed_packages():
         # This is only incompatible with TensorBoard prior to 2.2.0, but
         # we just issue a blanket warning so that we don't have to pull
         # in a `pkg_resources` dep to parse the version.
-        preamble = reflow("""
+        preamble = reflow(
+            """
             Versions of the What-If Tool (`tensorboard-plugin-wit`)
             prior to 1.6.0.post3 are incompatible with some versions of
             TensorBoard. Please upgrade this package to the latest
             version to resolve any startup errors:
-            """)
+            """
+        )
         command = "pip install -U tensorboard-plugin-wit"
         message = "%s\n\n\t%s" % (preamble, command)
         yield Suggestion("Upgrade `tensorboard-plugin-wit`", message)
@@ -289,8 +298,7 @@ def tensorboard_data_server_version():
     except subprocess.CalledProcessError as e:
         logging.info("failed to check binary version: %s", e)
     else:
-        logging.info("data server binary version: %s",
-                     subprocess_output.stdout.strip())
+        logging.info("data server binary version: %s", subprocess_output.stdout.strip())
 
 
 @check
@@ -309,13 +317,13 @@ def addrinfos():
 
     hints_loopback = (family, socktype, protocol, flags_loopback)
     infos_loopback = socket.getaddrinfo(None, 0, *hints_loopback)
-    print("Loopback flags: %r" % (flags_loopback, ))
-    print("Loopback infos: %r" % (infos_loopback, ))
+    print("Loopback flags: %r" % (flags_loopback,))
+    print("Loopback infos: %r" % (infos_loopback,))
 
     hints_wildcard = (family, socktype, protocol, flags_wildcard)
     infos_wildcard = socket.getaddrinfo(None, 0, *hints_wildcard)
-    print("Wildcard flags: %r" % (flags_wildcard, ))
-    print("Wildcard infos: %r" % (infos_wildcard, ))
+    print("Wildcard flags: %r" % (flags_wildcard,))
+    print("Wildcard infos: %r" % (infos_wildcard,))
 
 
 @check
@@ -329,26 +337,33 @@ def readable_fqdn():
             binary_hostname = subprocess.check_output(["hostname"]).strip()
         except subprocess.CalledProcessError:
             binary_hostname = b"<unavailable>"
-        is_non_ascii = not all(0x20 <= (
-            ord(c) if not isinstance(c, int) else c) <= 0x7E  # Python 2
-                               for c in binary_hostname)
+        is_non_ascii = not all(
+            0x20 <= (ord(c) if not isinstance(c, int) else c) <= 0x7E  # Python 2
+            for c in binary_hostname
+        )
         if is_non_ascii:
-            message = reflow("""
+            message = reflow(
+                """
                 Your computer's hostname, %r, contains bytes outside of the
                 printable ASCII range. Some versions of Python have trouble
                 working with such names (https://bugs.python.org/issue26227).
                 Consider changing to a hostname that only contains printable
                 ASCII bytes.
-                """ % (binary_hostname, ))
+                """
+                % (binary_hostname,)
+            )
             yield Suggestion("Use an ASCII hostname", message)
         else:
-            message = reflow("""
+            message = reflow(
+                """
                 Python can't read your computer's hostname, %r. This can occur
                 if the hostname contains non-ASCII bytes
                 (https://bugs.python.org/issue26227). Consider changing your
                 hostname, rebooting your machine, and rerunning this diagnosis
                 script to see if the problem is resolved.
-                """ % (binary_hostname, ))
+                """
+                % (binary_hostname,)
+            )
             yield Suggestion("Use a simpler hostname", message)
         raise e
 
@@ -371,12 +386,14 @@ def stat_tensorboardinfo():
     logging.info("os.stat(...): %r", stat_result)
     logging.info("mode: 0o%o", stat_result.st_mode)
     if stat_result.st_mode & 0o777 != 0o777:
-        preamble = reflow("""
+        preamble = reflow(
+            """
             The ".tensorboard-info" directory was created by an old version
             of TensorBoard, and its permissions are not set correctly; see
             issue #2010. Change that directory to be world-accessible (may
             require superuser privilege):
-            """)
+            """
+        )
         # This error should only appear on Unices, so it's okay to use
         # Unix-specific utilities and shell syntax.
         quote = getattr(shlex, "quote", None) or pipes.quote  # Python <3.3
@@ -399,8 +416,7 @@ def source_trees_without_genfiles():
 
     def has_genfiles(root):
         sample_genfile = os.path.join("compat", "proto", "summary_pb2.py")
-        return os.path.isfile(os.path.join(root, "tensorboard",
-                                           sample_genfile))
+        return os.path.isfile(os.path.join(root, "tensorboard", sample_genfile))
 
     def is_bad(root):
         return has_tensorboard(root) and not has_genfiles(root)
@@ -418,21 +434,25 @@ def source_trees_without_genfiles():
 
     if bad_roots:
         if bad_roots == [""]:
-            message = reflow("""
+            message = reflow(
+                """
                 Your current directory contains a `tensorboard` Python package
                 that does not include generated files. This can happen if your
                 current directory includes the TensorBoard source tree (e.g.,
                 you are in the TensorBoard Git repository). Consider changing
                 to a different directory.
-                """)
+                """
+            )
         else:
-            preamble = reflow("""
+            preamble = reflow(
+                """
                 Your Python path contains a `tensorboard` package that does
                 not include generated files. This can happen if your current
                 directory includes the TensorBoard source tree (e.g., you are
                 in the TensorBoard Git repository). The following directories
                 from your Python path may be problematic:
-                """)
+                """
+            )
             roots = []
             realpaths_seen = set()
             for root in bad_roots:
@@ -448,15 +468,13 @@ def source_trees_without_genfiles():
                 preamble,
                 "\n".join("  - %s" % s for s in roots),
             )
-        yield Suggestion("Avoid `tensorboard` packages without genfiles",
-                         message)
+        yield Suggestion("Avoid `tensorboard` packages without genfiles", message)
 
 
 # Prefer to include this check last, as its output is long.
 @check
 def full_pip_freeze():
-    logging.info("pip freeze --all:\n%s",
-                 pip(["freeze", "--all"]).decode("utf-8"))
+    logging.info("pip freeze --all:\n%s", pip(["freeze", "--all"]).decode("utf-8"))
 
 
 def set_up_logging():
@@ -483,7 +501,7 @@ def main():
     markdown_code_fence = "``````"  # seems likely to be sufficient
     print(markdown_code_fence)
     suggestions = []
-    for (i, check) in enumerate(CHECKS):
+    for i, check in enumerate(CHECKS):
         if i > 0:
             print()
         print("--- check: %s" % check.__name__)
@@ -507,20 +525,26 @@ def main():
     print()
     if suggestions:
         print(
-            reflow("""
+            reflow(
+                """
                 Please try each suggestion enumerated above to determine whether
                 it solves your problem. If none of these suggestions works,
                 please copy ALL of the above output, including the lines
                 containing only backticks, into your GitHub issue or comment. Be
                 sure to redact any sensitive information.
-                """))
+                """
+            )
+        )
     else:
         print(
-            reflow("""
+            reflow(
+                """
                 No action items identified. Please copy ALL of the above output,
                 including the lines containing only backticks, into your GitHub
                 issue or comment. Be sure to redact any sensitive information.
-                """))
+                """
+            )
+        )
 
 
 if __name__ == "__main__":

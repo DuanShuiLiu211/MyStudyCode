@@ -1,6 +1,6 @@
 import random
-from math import sin, cos, pi, log
 import time
+from math import cos, log, pi, sin
 from tkinter import *
 
 CANVAS_WIDTH = 1080  # 画布的宽(X)
@@ -19,7 +19,7 @@ def heart_function(t, cx=CANVAS_CENTER_X, cy=CANVAS_CENTER_Y, ratio=10):
     :return: 坐标
     """
     # 心形线函数
-    x = 17 * (sin(t)**3)
+    x = 17 * (sin(t) ** 3)
     y = -(16 * cos(t) - 5 * cos(2 * t) - 2 * cos(3 * t) - cos(3 * t))
 
     # 放大
@@ -60,13 +60,14 @@ def rhythmic(p):
 
 
 class Heart:
-
-    def __init__(self,
-                 w=CANVAS_WIDTH,
-                 h=CANVAS_HEIGHT,
-                 cx=CANVAS_CENTER_X,
-                 cy=CANVAS_CENTER_Y,
-                 generate_frame=60):
+    def __init__(
+        self,
+        w=CANVAS_WIDTH,
+        h=CANVAS_HEIGHT,
+        cx=CANVAS_CENTER_X,
+        cy=CANVAS_CENTER_Y,
+        generate_frame=60,
+    ):
         self._edge_points = set()
         self._edge_diffusion_points = set()
         self._points = set()
@@ -83,7 +84,6 @@ class Heart:
             self.get_frame(frame)
 
     def build(self, number):
-
         for _ in range(number):
             t = random.uniform(0, 2 * pi)
             x, y = heart_function(t, self.cx, self.cy, 10)
@@ -101,26 +101,16 @@ class Heart:
             self._points.add((x, y))
 
     @staticmethod
-    def shrink_position_1st(x,
-                            y,
-                            cx=CANVAS_CENTER_X,
-                            cy=CANVAS_CENTER_Y,
-                            ratio=10):
-
-        force = 1 / (((x - cx)**2 + (y - cy)**2)**0.45)
+    def shrink_position_1st(x, y, cx=CANVAS_CENTER_X, cy=CANVAS_CENTER_Y, ratio=10):
+        force = 1 / (((x - cx) ** 2 + (y - cy) ** 2) ** 0.45)
         dx = ratio * force * (x - cx) + random.randint(-1, 1)
         dy = ratio * force * (y - cy) + random.randint(-1, 1)
 
         return x - dx, y - dy
 
     @staticmethod
-    def shrink_position_2st(x,
-                            y,
-                            cx=CANVAS_CENTER_X,
-                            cy=CANVAS_CENTER_Y,
-                            ratio=10):
-
-        force = -1 / (((x - cx)**2 + (y - cy)**2)**0.6)
+    def shrink_position_2st(x, y, cx=CANVAS_CENTER_X, cy=CANVAS_CENTER_Y, ratio=10):
+        force = -1 / (((x - cx) ** 2 + (y - cy) ** 2) ** 0.6)
         dx = ratio * force * (x - cx)
         dy = ratio * force * (y - cy)
 
@@ -131,7 +121,7 @@ class Heart:
             "heart_edge": [],
             "heart_edge_diffusion": [],
             "heart": [],
-            "heart_halo": []
+            "heart_halo": [],
         }
         ratio = 15 * rhythmic(generate_frame / 10 * pi)  # 周期性的缩放系数
 
@@ -155,14 +145,12 @@ class Heart:
 
         # 固定大小的爱心光晕
         halo_radius = int(4 + 6 * (1 + rhythmic(generate_frame / 10 * pi)))
-        halo_number = int(4000 + 6000 *
-                          (1 + rhythmic(generate_frame / 10 * pi)))
+        halo_number = int(4000 + 6000 * (1 + rhythmic(generate_frame / 10 * pi)))
         heart_halo_point = set()
         for _ in range(halo_number):
             t = random.uniform(0, 2 * pi)
             x, y = heart_function(t, self.cx, self.cy, ratio=10)
-            x, y = self.shrink_position_2st(x, y, self.cx, self.cy,
-                                            halo_radius)
+            x, y = self.shrink_position_2st(x, y, self.cx, self.cy, halo_radius)
             if (x, y) not in heart_halo_point:
                 heart_halo_point.add((x, y))
                 x += random.randint(-40, 40)
@@ -177,52 +165,37 @@ class Heart:
         self.all_frame_points[generate_frame] = all_kind_points
 
     def render(self, canvas, current_frame):
-        for x, y, size in self.all_frame_points[
-                current_frame % self.generate_frame]["heart_edge"]:
-            canvas.create_rectangle(x,
-                                    y,
-                                    x + size,
-                                    y + size,
-                                    width=0,
-                                    fill="#ef7a82")
-        for x, y, size in self.all_frame_points[
-                current_frame % self.generate_frame]["heart_edge_diffusion"]:
-            canvas.create_rectangle(x,
-                                    y,
-                                    x + size,
-                                    y + size,
-                                    width=0,
-                                    fill="#ef7a82")
-        for x, y, size in self.all_frame_points[current_frame %
-                                                self.generate_frame]["heart"]:
-            canvas.create_rectangle(x,
-                                    y,
-                                    x + size,
-                                    y + size,
-                                    width=0,
-                                    fill="#ff2d51")
-        for x, y, size in self.all_frame_points[
-                current_frame % self.generate_frame]["heart_halo"]:
-            canvas.create_rectangle(x,
-                                    y,
-                                    x + size,
-                                    y + size,
-                                    width=0,
-                                    fill="#ff2d51")
+        for x, y, size in self.all_frame_points[current_frame % self.generate_frame][
+            "heart_edge"
+        ]:
+            canvas.create_rectangle(x, y, x + size, y + size, width=0, fill="#ef7a82")
+        for x, y, size in self.all_frame_points[current_frame % self.generate_frame][
+            "heart_edge_diffusion"
+        ]:
+            canvas.create_rectangle(x, y, x + size, y + size, width=0, fill="#ef7a82")
+        for x, y, size in self.all_frame_points[current_frame % self.generate_frame][
+            "heart"
+        ]:
+            canvas.create_rectangle(x, y, x + size, y + size, width=0, fill="#ff2d51")
+        for x, y, size in self.all_frame_points[current_frame % self.generate_frame][
+            "heart_halo"
+        ]:
+            canvas.create_rectangle(x, y, x + size, y + size, width=0, fill="#ff2d51")
 
 
-def draw(winer: Tk,
-         w=CANVAS_WIDTH,
-         h=CANVAS_HEIGHT,
-         cx=CANVAS_CENTER_X,
-         cy=CANVAS_CENTER_Y,
-         current_frame=0):
-
+def draw(
+    winer: Tk,
+    w=CANVAS_WIDTH,
+    h=CANVAS_HEIGHT,
+    cx=CANVAS_CENTER_X,
+    cy=CANVAS_CENTER_Y,
+    current_frame=0,
+):
     global canvas
     global heart
 
     if current_frame == 0:
-        canvas = Canvas(winer, bg='black', bd=0, width=w, height=h)
+        canvas = Canvas(winer, bg="black", bd=0, width=w, height=h)
         canvas.pack()
         heart = Heart(w=w, h=h, cx=cx, cy=cy, generate_frame=60)
 
@@ -235,27 +208,29 @@ def draw(winer: Tk,
             canvas.destroy()
             winer.update()
             time.sleep(0.03)
-            canvas = Canvas(winer, bg='black', bd=0, width=w, height=h)
+            canvas = Canvas(winer, bg="black", bd=0, width=w, height=h)
             canvas.pack()
             heart = Heart(w=w, h=h, cx=cx, cy=cy, generate_frame=60)
 
-    canvas.delete('all')
+    canvas.delete("all")
     heart.render(canvas, current_frame)
     winer.after(int(1000 / 60), draw, winer, w, h, cx, cy, current_frame + 1)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # 创建窗口事件
     root = Tk()
     root.title("跳动的心")
 
     # 在窗口中定义绘制
-    draw(winer=root,
-         w=CANVAS_WIDTH,
-         h=CANVAS_HEIGHT,
-         cx=CANVAS_CENTER_X,
-         cy=CANVAS_CENTER_Y,
-         current_frame=0)
+    draw(
+        winer=root,
+        w=CANVAS_WIDTH,
+        h=CANVAS_HEIGHT,
+        cx=CANVAS_CENTER_X,
+        cy=CANVAS_CENTER_Y,
+        current_frame=0,
+    )
 
     # 执行窗口事件
     root.mainloop()

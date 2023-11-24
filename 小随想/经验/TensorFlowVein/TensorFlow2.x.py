@@ -1,46 +1,45 @@
 # encoding:utf-8
-<<<<<<< HEAD
-import os
-import time
-import gzip
-=======
 import gzip
 import os
 import time
->>>>>>> a98794fef118e4fbd47d0348edb5f8b3154dd000
+
+import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
 from keras import Model
-import matplotlib.pyplot as plt
 
 
 # 构建神经网络并训练，使模型对图片分类
 # 第一阶段数据准备
 # 导入数据集
 def load_data():
-    dirname = os.path.join('datasets', 'fashion-mnist')
+    dirname = os.path.join("datasets", "fashion-mnist")
     files = [
-        'train-labels-idx1-ubyte.gz', 'train-images-idx3-ubyte.gz',
-        't10k-labels-idx1-ubyte.gz', 't10k-images-idx3-ubyte.gz'
+        "train-labels-idx1-ubyte.gz",
+        "train-images-idx3-ubyte.gz",
+        "t10k-labels-idx1-ubyte.gz",
+        "t10k-images-idx3-ubyte.gz",
     ]
 
     paths = []
     for fname in files:
         paths.append(os.path.join(dirname, fname))
 
-    with gzip.open(paths[0], 'rb') as lbpath:
+    with gzip.open(paths[0], "rb") as lbpath:
         y_train = np.frombuffer(lbpath.read(), np.uint8, offset=8)
 
-    with gzip.open(paths[1], 'rb') as imgpath:
-        x_train = np.frombuffer(imgpath.read(), np.uint8,
-                                offset=16).reshape(len(y_train), 28, 28)
+    with gzip.open(paths[1], "rb") as imgpath:
+        x_train = np.frombuffer(imgpath.read(), np.uint8, offset=16).reshape(
+            len(y_train), 28, 28
+        )
 
-    with gzip.open(paths[2], 'rb') as lbpath:
+    with gzip.open(paths[2], "rb") as lbpath:
         y_test = np.frombuffer(lbpath.read(), np.uint8, offset=8)
 
-    with gzip.open(paths[3], 'rb') as imgpath:
-        x_test = np.frombuffer(imgpath.read(), np.uint8,
-                               offset=16).reshape(len(y_test), 28, 28)
+    with gzip.open(paths[3], "rb") as imgpath:
+        x_test = np.frombuffer(imgpath.read(), np.uint8, offset=16).reshape(
+            len(y_test), 28, 28
+        )
 
     return (x_train, y_train), (x_test, y_test)
 
@@ -48,26 +47,28 @@ def load_data():
 # 划分训练数据与测试数据并设置标签
 (train_images, train_labels), (test_images, test_labels) = load_data()
 label_class = {
-    0: 'T-shirt/top',
-    1: 'Trouser',
-    2: 'Pullover',
-    3: 'Dress',
-    4: 'Coat',
-    5: 'Sandal',
-    6: 'Shirt',
-    7: 'Sneaker',
-    8: 'Bag',
-    9: 'Ankle boot'
+    0: "T-shirt/top",
+    1: "Trouser",
+    2: "Pullover",
+    3: "Dress",
+    4: "Coat",
+    5: "Sandal",
+    6: "Shirt",
+    7: "Sneaker",
+    8: "Bag",
+    9: "Ankle boot",
 }
 
 # 数据归一化 0~1 并结构化 [b w h c]
 train_images, test_images = train_images / 255.0, test_images / 255.0
 train_images = train_images[..., tf.newaxis].astype("float32")
 test_images = test_images[..., tf.newaxis].astype("float32")
-train_ds = tf.data.Dataset.from_tensor_slices(
-    (train_images, train_labels)).shuffle(buffer_size=60000).batch(32)
-test_ds = tf.data.Dataset.from_tensor_slices(
-    (test_images, test_labels)).batch(32)
+train_ds = (
+    tf.data.Dataset.from_tensor_slices((train_images, train_labels))
+    .shuffle(buffer_size=60000)
+    .batch(32)
+)
+test_ds = tf.data.Dataset.from_tensor_slices((test_images, test_labels)).batch(32)
 
 for X, y in test_ds:
     print(f"Shape of X [N, H, W, C]: {X.shape}")
@@ -91,16 +92,15 @@ if visual_data:
 # 第二阶段构建模型
 # 定义模型类
 class MyModel(Model):
-
     def get_config(self):
         pass
 
     def __init__(self):
         super(MyModel, self).__init__()
-        self.conv1 = tf.keras.layers.Conv2D(32, 3, activation='relu')
+        self.conv1 = tf.keras.layers.Conv2D(32, 3, activation="relu")
         self.flatten = tf.keras.layers.Flatten()
-        self.d1 = tf.keras.layers.Dense(128, activation='relu')
-        self.d2 = tf.keras.layers.Dense(10, activation='softmax')
+        self.d1 = tf.keras.layers.Dense(128, activation="relu")
+        self.d2 = tf.keras.layers.Dense(10, activation="softmax")
 
     def call(self, inputs, training=None):
         x = self.conv1(inputs)
@@ -117,18 +117,15 @@ model = MyModel()
 
 # 定义优化器与损失函数
 optimizer = tf.keras.optimizers.Adam(learning_rate=0.001)
-loss_function = tf.keras.losses.SparseCategoricalCrossentropy(
-    from_logits=False)
+loss_function = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=False)
 
 # 定义训练损失与准确性记录容器
-train_loss_mean = tf.keras.metrics.Mean(name='train_loss')
-train_accuracy = tf.keras.metrics.SparseCategoricalAccuracy(
-    name='train_accuracy')
+train_loss_mean = tf.keras.metrics.Mean(name="train_loss")
+train_accuracy = tf.keras.metrics.SparseCategoricalAccuracy(name="train_accuracy")
 
 # 定义测试损失与准确性记录容器
-test_loss_mean = tf.keras.metrics.Mean(name='test_loss')
-test_accuracy = tf.keras.metrics.SparseCategoricalAccuracy(
-    name='test_accuracy')
+test_loss_mean = tf.keras.metrics.Mean(name="test_loss")
+test_accuracy = tf.keras.metrics.SparseCategoricalAccuracy(name="test_accuracy")
 
 
 # 计算训练集的梯度和损失
@@ -157,7 +154,7 @@ def test_step(image, label):
 if __name__ == "__main__":
     # 第三阶段运行策略
     num_epochs = 200
-    with tf.device('/GPU:0'):
+    with tf.device("/GPU:0"):
         for epoch in range(num_epochs):
             start_time = time.time_ns()
             train_loss_mean.reset_states()
@@ -172,9 +169,11 @@ if __name__ == "__main__":
                 test_step(test_images, test_labels)
 
             end_time = time.time_ns()
-            print(f'Epoch {epoch + 1}, '
-                  f'Loss:{train_loss_mean.result() : .8f}, '
-                  f'Accuracy:{train_accuracy.result() * 100 : .2f}%, '
-                  f'Test Loss:{test_loss_mean.result() : .8f}, '
-                  f'Test Accuracy:{test_accuracy.result() * 100 : .2f}%, '
-                  f'Take time:{(end_time-start_time) / 1e9 : .4f}s')
+            print(
+                f"Epoch {epoch + 1}, "
+                f"Loss:{train_loss_mean.result() : .8f}, "
+                f"Accuracy:{train_accuracy.result() * 100 : .2f}%, "
+                f"Test Loss:{test_loss_mean.result() : .8f}, "
+                f"Test Accuracy:{test_accuracy.result() * 100 : .2f}%, "
+                f"Take time:{(end_time-start_time) / 1e9 : .4f}s"
+            )

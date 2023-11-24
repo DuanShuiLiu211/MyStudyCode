@@ -10,5 +10,11 @@ context_string_5st = "\n搜索时显示\nconda config --set show_channel_urls ye
 
 context_string_6st = "\nTorch相关信息\nimport torch\nprint(torch.cuda.is_available())\nprint(torch.cuda.current_device())\nprint(torch.cuda.device(0))\nprint(torch.cuda.device_count())\nprint(torch.cuda.get_device_name(0))\nprint(torch.empty(3, 3))"
 
-print(context_string_1st, context_string_2st, context_string_3st,
-      context_string_4st, context_string_5st, context_string_6st)
+print(
+    context_string_1st,
+    context_string_2st,
+    context_string_3st,
+    context_string_4st,
+    context_string_5st,
+    context_string_6st,
+)

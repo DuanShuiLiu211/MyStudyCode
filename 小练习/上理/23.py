@@ -1,7 +1,6 @@
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 import numpy.fft as nf
-
 
 """
 三角函数 合成方波
@@ -45,7 +44,9 @@ fft_pow = np.abs(complex_ary)  # 复数的摸->能量 Y轴
 
 plt.subplot(133)
 plt.grid(linestyle=":")
-plt.plot(fft_freq[fft_freq > 0], fft_pow[fft_freq > 0], color="orangered", label="Freqency")
+plt.plot(
+    fft_freq[fft_freq > 0], fft_pow[fft_freq > 0], color="orangered", label="Freqency"
+)
 plt.legend()
 plt.tight_layout()
 

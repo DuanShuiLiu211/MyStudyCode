@@ -33,4 +33,3 @@ class MyConv(nn.Module):
         x = self.conv2(x)
         x = self.conv3(x)
         return x
-

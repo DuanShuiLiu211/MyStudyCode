@@ -1,7 +1,7 @@
-import tifffile
 import random
-import numpy as np
 
+import numpy as np
+import tifffile
 
 input = tifffile.imread(
     "/Users/WangHao/Desktop/Paper ImT UNet/data_0913/PreImage/Averaged shifted histograms_11.tif"
@@ -14,5 +14,6 @@ output = input[index, ...]
 
 tifffile.imsave(
     "/Users/WangHao/Desktop/Paper ImT UNet/data_0913/PreImage/Averaged shifted histograms_11_2.tif",
-    output)
-print('运行完成')
+    output,
+)
+print("运行完成")

@@ -7,7 +7,7 @@ print(x)
 print(16 * 16 * 1088)
 print(32 * 32 * 512)
 
-img = Image.open('数据/图片1.png')
+img = Image.open("数据/图片1.png")
 # 1
 img = np.asarray(img)
 print(img.max(), img.min())

@@ -2,7 +2,6 @@ import torch
 from torch import nn
 from torchvision import models
 
-
 model = models.resnet18()
 optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
 loss = nn.CrossEntropyLoss()
@@ -11,10 +10,12 @@ loss = nn.CrossEntropyLoss()
 for epoch in range(10):
     if epoch == 5:
         checkpoint_path = f"./checkpoint_epoch_{epoch}.pkl"
-        checkpoint = {"epoch": epoch,
-                      "model_state_dict": model.state_dict(),
-                      "optimizer_state_dict": optimizer.state_dict(),
-                      "loss": loss}
+        checkpoint = {
+            "epoch": epoch,
+            "model_state_dict": model.state_dict(),
+            "optimizer_state_dict": optimizer.state_dict(),
+            "loss": loss,
+        }
         torch.save(checkpoint, checkpoint_path)
         """
         torch.save({"epoch": epoch,

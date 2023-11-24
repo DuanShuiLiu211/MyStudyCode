@@ -3,12 +3,13 @@
 # 创建神经网络并训练
 # 功能：拟合 y=x*x+1
 
-import tensorflow as tf
 import numpy as np
-
+import tensorflow as tf
 
 # 创建一个具有输入层，隐藏层，输出层的三层神经网络，神经元个数分别为1，10，1
-x_data = np.linspace(-1, 1, 300)[:, np.newaxis]  # 创建输入数据  np.newaxis分别是在列(第二维)上增加维度，原先是（300，）变为（300，1）
+x_data = np.linspace(-1, 1, 300)[
+    :, np.newaxis
+]  # 创建输入数据  np.newaxis分别是在列(第二维)上增加维度，原先是（300，）变为（300，1）
 noise = np.random.normal(0, 0.05, x_data.shape)
 y_data = np.square(x_data) + 1 + noise  # 创建输入数据对应的输出
 

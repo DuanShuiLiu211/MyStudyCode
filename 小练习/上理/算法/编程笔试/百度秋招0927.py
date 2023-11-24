@@ -1,13 +1,14 @@
 import collections
 
 
-class Solution():
-
+class Solution:
     def count_diff_k(self, list_n, k):
         count, result = collections.defaultdict(int), 0
         for num in list_n:
-            count[num], result = count[num] + 1, result + count[
-                num + k] + count[num - k]
+            count[num], result = (
+                count[num] + 1,
+                result + count[num + k] + count[num - k],
+            )
 
         return result
 
@@ -21,8 +22,7 @@ result = Solution().count_diff_k(list_n, k)
 print(result)
 
 
-class Solution():
-
+class Solution:
     def mountain(self, k, m_list, a_list, result=0):
         if k < m_list[0]:
             if result == 0:
@@ -35,10 +35,9 @@ class Solution():
                 else:
                     k += a_list[idx]
                     result += 1
-                    return self.mountain(k,
-                                         m_list[idx + 1:],
-                                         a_list[idx + 1:],
-                                         result=result)
+                    return self.mountain(
+                        k, m_list[idx + 1 :], a_list[idx + 1 :], result=result
+                    )
 
     def main(self, k, m_list, a_list, result=0):
         ans = []

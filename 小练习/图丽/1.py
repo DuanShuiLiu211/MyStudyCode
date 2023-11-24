@@ -14,7 +14,7 @@ class VideoReader(Dataset):
             if not ret:
                 break
             frame_list.append(frame)
-            if cv2.waitKey(1) & 0xFF == ord('q'):
+            if cv2.waitKey(1) & 0xFF == ord("q"):
                 break
             for _ in range(frame_interval - 1):
                 cap.read()
@@ -29,7 +29,7 @@ class VideoReader(Dataset):
         return frame
 
 
-class VideoReaderIter():
+class VideoReaderIter:
     def __init__(self, path, frame_rate=30):
         self.path = path
         self.frame_rate = frame_rate

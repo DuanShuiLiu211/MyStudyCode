@@ -1,11 +1,12 @@
-import numpy as np
-from keras.losses import binary_crossentropy,mean_squared_error
 import keras.backend as K
 import keras_contrib.backend as KC
+import numpy as np
+from keras.losses import binary_crossentropy, mean_squared_error
+
 
 # evaluation
-class npcc():
-    def __init__(self, weight=None, reduction=True,size_average=True):
+class npcc:
+    def __init__(self, weight=None, reduction=True, size_average=True):
         super(npcc, self).__init__()
         self.reduce = reduction
 
@@ -16,9 +17,9 @@ class npcc():
         vpred = pred - pred.mean()
         vtarget = target - target.mean()
 
-        cost = - (vpred * vtarget).sum() / \
-               (np.sqrt((vpred ** 2).sum())
-                * np.sqrt((vtarget ** 2).sum()) + 1e-8)
+        cost = -(vpred * vtarget).sum() / (
+            np.sqrt((vpred**2).sum()) * np.sqrt((vtarget**2).sum()) + 1e-8
+        )
 
         # print(cost)
         if self.reduce is True:
@@ -26,18 +27,14 @@ class npcc():
         return cost
 
 
-eval_dict = {
-    'npcc': npcc(),
-    'bce': binary_crossentropy,
-    'mse': mean_squared_error
-}
+eval_dict = {"npcc": npcc(), "bce": binary_crossentropy, "mse": mean_squared_error}
 
 
 def generate_eval_function(loss_name):
     return eval_dict[loss_name]
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     x = np.random.rand(1, 28, 28)
     y = np.random.rand(1, 28, 28)
     a = npcc(x, y)

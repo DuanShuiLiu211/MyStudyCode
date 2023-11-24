@@ -1,8 +1,7 @@
-import threading
 import asyncio
 import datetime
+import threading
 import time
-
 
 """
 0. async 定义的函数是协程函数调用协程函数返回协程对象
@@ -39,8 +38,8 @@ async def say_after(delay, what):
 async def main():
     print(f"started at {time.strftime('%X')}")
 
-    await say_after(1, 'hello')
-    await say_after(2, 'world')
+    await say_after(1, "hello")
+    await say_after(2, "world")
 
     print(f"finished at {time.strftime('%X')}")
 
@@ -58,8 +57,8 @@ async def say_after(delay, what):
 
 
 async def main():
-    task1 = asyncio.create_task(say_after(1, 'hello'))
-    task2 = asyncio.create_task(say_after(2, 'world'))
+    task1 = asyncio.create_task(say_after(1, "hello"))
+    task2 = asyncio.create_task(say_after(2, "world"))
     print(f"started at {time.strftime('%X')}")
 
     await task1

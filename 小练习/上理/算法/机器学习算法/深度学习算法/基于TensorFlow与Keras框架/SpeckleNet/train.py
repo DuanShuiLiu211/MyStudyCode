@@ -1,5 +1,6 @@
 import os
 import time
+
 import keras.backend as K
 from config import generate_config
 from models.model import get_model_deep_speckle
@@ -19,19 +20,23 @@ def train_keras(model, epoch, trainloader):
         sampleNum += len(dataList[0])
 
         if batch_idx % 1 == 0:
-            outputString = '{} Train Epoch:{} [{}/{}] {}:{:.6f} LR:{:.10f}'.format(
-                time.strftime('%Y-%m-%d', time.localtime(time.time())),
-                epoch, sampleNum, len(trainloader.dataset), config['loss_function'],
-                totaLoss / (batch_idx+1), K.get_value(model.optimizer.lr)
+            outputString = "{} Train Epoch:{} [{}/{}] {}:{:.6f} LR:{:.10f}".format(
+                time.strftime("%Y-%m-%d", time.localtime(time.time())),
+                epoch,
+                sampleNum,
+                len(trainloader.dataset),
+                config["loss_function"],
+                totaLoss / (batch_idx + 1),
+                K.get_value(model.optimizer.lr),
             )
             print(outputString)
-            with open('train_log.txt', 'a') as f:
-                f.write(outputString + '\n')
+            with open("train_log.txt", "a") as f:
+                f.write(outputString + "\n")
 
-        save_result_image('train_image', epoch, fn, model.predict(dataList[0]))
+        save_result_image("train_image", epoch, fn, model.predict(dataList[0]))
 
-    with open('train_loss.txt', 'a') as f:
-        f.write('{}:{}\n'.format(epoch, totaLoss/(batch_idx+1)))
+    with open("train_loss.txt", "a") as f:
+        f.write("{}:{}\n".format(epoch, totaLoss / (batch_idx + 1)))
 
 
 def test_keras(model, epoch, evaluator, testloader):
@@ -40,53 +45,65 @@ def test_keras(model, epoch, evaluator, testloader):
         output = model.predict(dataList[0])
         insloss = evaluator(output[:, :, :, 0], target[:, :, :, 0])
         totaLoss += insloss
-        save_result_image('test_image', epoch, fn, output)
+        save_result_image("test_image", epoch, fn, output)
 
     avgLoss = totaLoss / len(testloader.dataset)
-    outputString = 'Test avg {}:{:.6f} '.format(config['eval_metric'], avgLoss)
+    outputString = "Test avg {}:{:.6f} ".format(config["eval_metric"], avgLoss)
     print(outputString)
 
-    with open('test_loss.txt', 'a') as f:
-        f.write('{}:{}\n'.format(epoch, avgLoss))
+    with open("test_loss.txt", "a") as f:
+        f.write("{}:{}\n".format(epoch, avgLoss))
 
-    with open('train_log.txt', 'a') as f:
-        f.write(outputString + '\n')
+    with open("train_log.txt", "a") as f:
+        f.write(outputString + "\n")
 
     save_model(config, model, epoch, avgLoss)
 
+
 def adjust_learning_rate(optimizer, epoch, strategy):
     if epoch in strategy:
-        K.set_value(optimizer.lr, K.get_value(optimizer.lr)*0.1)
+        K.set_value(optimizer.lr, K.get_value(optimizer.lr) * 0.1)
 
-def model_load_weight(config,model):
+
+def model_load_weight(config, model):
     try:
-        model.load_weights(config['model_initialize_weight'], by_name=True)
-        print('Successfully import weight from {} for model {}'.format(config['model_initialize_weight'], type(model).__name__))
+        model.load_weights(config["model_initialize_weight"], by_name=True)
+        print(
+            "Successfully import weight from {} for model {}".format(
+                config["model_initialize_weight"], type(model).__name__
+            )
+        )
     except Exception as r:
-        print('Error：%s' %(r))
-        print('Failed import weight from {} for model {}'.format(config['model_initialize_weight'], type(model).__name__))
+        print("Error：%s" % (r))
+        print(
+            "Failed import weight from {} for model {}".format(
+                config["model_initialize_weight"], type(model).__name__
+            )
+        )
     return model
 
+
 def save_model(config, model, epoch, metric=None):
-    save_path = config['model_save_dir']
+    save_path = config["model_save_dir"]
     if os.path.exists(save_path) == False:
         os.makedirs(save_path)
     if metric != None:
-        model.save_weights(os.path.join(save_path, f'epoch_{epoch}_{metric:.6f}.h5'))
+        model.save_weights(os.path.join(save_path, f"epoch_{epoch}_{metric:.6f}.h5"))
     else:
-        model.save_weights(os.path.join(save_path, f'epoch_{epoch}_final.h5'))
+        model.save_weights(os.path.join(save_path, f"epoch_{epoch}_final.h5"))
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     config = generate_config()
-    epochs = config['epochs']
+    epochs = config["epochs"]
     model = get_model_deep_speckle(config)
 
     optimizer = generate_optimizer(config)
 
-    criticizer = generate_loss_function(config['loss_function'])
-    evaluator = generate_eval_function(config['eval_metric'])
+    criticizer = generate_loss_function(config["loss_function"])
+    evaluator = generate_eval_function(config["eval_metric"])
 
-    model.compile(optimizer, loss = criticizer)
+    model.compile(optimizer, loss=criticizer)
     model = model_load_weight(config, model)
 
     train_dataloader, test_dataloader = generate_dataloader(config)
@@ -95,4 +112,6 @@ if __name__ == '__main__':
         train_keras(model, epoch_idx, train_dataloader)
         test_keras(model, epoch_idx, evaluator, test_dataloader)
 
-        adjust_learning_rate(model.optimizer, epoch_idx+1, strategy=config['learning_rate_decay'])
+        adjust_learning_rate(
+            model.optimizer, epoch_idx + 1, strategy=config["learning_rate_decay"]
+        )

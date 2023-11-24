@@ -1,7 +1,6 @@
+import os
 import signal
 import time
-import os
-
 
 print("Current process ID:", os.getpid())
 print(signal.SIGSTOP.value)

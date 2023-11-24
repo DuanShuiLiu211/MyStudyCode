@@ -1,5 +1,6 @@
 import sys
 
+
 class Solution:
     # 全部连续子串
     def get_all_series_subsets(self, string):
@@ -7,9 +8,8 @@ class Solution:
         lists = []
         for i in range(length):
             for j in range(i, length):
-                lists.append(string[i:j + 1])
+                lists.append(string[i : j + 1])
         return lists
-
 
     def subject01(self, lists):
         n = lists[0][0]
@@ -18,7 +18,7 @@ class Solution:
         max = 0
         for list in subset:
             if list:
-                temp = 2*sum(list) - len(list)
+                temp = 2 * sum(list) - len(list)
                 if temp > max:
                     max = temp
 
@@ -32,7 +32,7 @@ class Solution:
         max = 0
         for i in range(length):
             for j in range(i, length):
-                temp = 2 * sum(string[i:j + 1]) - len(string[i:j + 1])
+                temp = 2 * sum(string[i : j + 1]) - len(string[i : j + 1])
                 if temp > max:
                     max = temp
         return max

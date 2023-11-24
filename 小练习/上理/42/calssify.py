@@ -1,22 +1,24 @@
+import os
+import pickle
 import platform
+
+import numpy as np
+import pandas as pd
 import torch
 import torch.nn as nn
 import torch.optim as optim
-import os
-import pandas as pd
 from sklearn.model_selection import train_test_split
-from torch.utils.data import Dataset, DataLoader
-import numpy as np
-import pickle
-from torch.utils.data import RandomSampler
+from torch.utils.data import DataLoader, Dataset, RandomSampler
 
 
 class TransformerTSClassifier(nn.Module):
     def __init__(self, input_dim, num_classes, d_model=512, nhead=8, num_layers=3):
         super().__init__()
-        
+
         self.embedding = nn.Sequential(
-            nn.Linear(1, input_dim), nn.ReLU(), nn.Linear(input_dim, d_model), 
+            nn.Linear(1, input_dim),
+            nn.ReLU(),
+            nn.Linear(input_dim, d_model),
         )
 
         self.transformer_encoder = nn.TransformerEncoder(
@@ -83,23 +85,23 @@ class MyDataset(Dataset):
 
 
 if __name__ == "__main__":
-    if platform.system() == 'Darwin':
+    if platform.system() == "Darwin":
         device = "mps" if torch.backends.mps.is_available() else "cpu"
     else:
         device = "cuda" if torch.cuda.is_available() else "cpu"
     print(f"Using {device} device")
-    
+
     dataset = MyDataset(
         "./x50_240.csv",
         "./label.txt",
     )
-    
+
     train_dataset = dataset.train_set
     test_dataset = dataset.test_set
 
     train_loader = DataLoader(train_dataset, batch_size=6, shuffle=True)
     test_loader = DataLoader(test_dataset, batch_size=6, shuffle=False)
-    
+
     # 初始化模型
     input_dim = 50  # 输入特征维度
     num_classes = 3  # 分类类别数
@@ -118,7 +120,9 @@ if __name__ == "__main__":
 
         model.train()
         for inputs, labels in train_loader:
-            inputs, labels = torch.tensor(inputs, dtype=torch.float32, device=device), torch.tensor(labels, dtype=torch.float32, device=device)
+            inputs, labels = torch.tensor(
+                inputs, dtype=torch.float32, device=device
+            ), torch.tensor(labels, dtype=torch.float32, device=device)
             optimizer.zero_grad()
 
             outputs = model(inputs)

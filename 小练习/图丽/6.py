@@ -9,9 +9,9 @@ async def say_after(delay, what):
 
 
 async def main():
-    task1 = asyncio.create_task(say_after(1, 'hello'))
+    task1 = asyncio.create_task(say_after(1, "hello"))
     print(task1, type(task1))
-    task2 = asyncio.create_task(say_after(2, 'world'))
+    task2 = asyncio.create_task(say_after(2, "world"))
     print(task2, type(task2))
     print(f"started at {time.strftime('%X')}")
 

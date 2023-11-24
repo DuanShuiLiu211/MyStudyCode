@@ -10,17 +10,17 @@
 # %%
 class Toy(object):
     count = 0
-    
+
     def who_toy(*args):
         print(Toy)
-        
+
     @classmethod
     def show_toy_count(cls):
-        print('玩具对象的数量 %d' % cls.count, cls)
+        print("玩具对象的数量 %d" % cls.count, cls)
 
     @staticmethod
     def hi():
-        print('Hello!')
+        print("Hello!")
 
     def __init__(self, name):
         self.name = name
@@ -28,7 +28,7 @@ class Toy(object):
 
     def beybey(self):
         self.hi()
-        print('Sad！', self)
+        print("Sad！", self)
 
 
 # 类对象
@@ -39,7 +39,7 @@ Toy.hi()
 # Toy.beybey()  # 错误语法，self必须指向实例对象，此处实例方法指向类对象而不是实例对象
 
 # 实例对象
-toy1 = Toy('泰迪熊')
+toy1 = Toy("泰迪熊")
 toy1.hand = 2
 toy1.who_toy()
 print(toy1.name)
@@ -52,50 +52,51 @@ toy1.hi()
 toy1.beybey()
 Toy.beybey(toy1)
 # 隐式实例化掉用实例方法
-Toy('哥斯拉').beybey() 
+Toy("哥斯拉").beybey()
 # print(Toy.hand)  # AttributeError: type object 'Toy' has no attribute 'hand'
 
 # 类与其实例的类型和内存地址
 print(type(Toy), id(Toy), type(toy1), id(toy1))
 
+
 # %%
 # 类方法与静态方法辨析
 class Cat:  # 或者class Cat()不写父对象形式定义类对象，会默认继承祖先object对象
-    name = '小敏'
-        
+    name = "小敏"
+
     def smile():
-        print('哈哈～')
-      
+        print("哈哈～")
+
     def sad():
-        print('呜呜～')
+        print("呜呜～")
         Cat.run()
         Cat.set()
 
     @classmethod
     def run(cls):
-        print('起飞～')
-    
-    @classmethod   
+        print("起飞～")
+
+    @classmethod
     def say(cls):
-        print('%s，你好！' % cls.name)
+        print("%s，你好！" % cls.name)
         cls.set()  # 类方法可以调用静态方法
-        
+
     @staticmethod
     def stand():
-        print('{}，站着！'.format(Cat.name))
+        print("{}，站着！".format(Cat.name))
         Cat.run()  # 静态方法可以调用类方法
-    
+
     @staticmethod
     def set():
-        print('{}，坐下！'.format(Cat.name))
-                   
+        print("{}，坐下！".format(Cat.name))
+
     def __init__(self):
         print(self.name)
-        self.name = '胖虎'
+        self.name = "胖虎"
 
     def sleep(self):
-        print('呼呼～') 
-   
+        print("呼呼～")
+
 
 print(Cat.name)
 Cat.smile()
@@ -118,8 +119,8 @@ cat1.sleep()
 
 # %%
 
-class Vector:
 
+class Vector:
     def __init__(self, x, y):
         self.x = x
         self.y = y
@@ -128,7 +129,7 @@ class Vector:
         return Vector(self.x + other.x, self.y + other.y)
 
     def __repr__(self):
-        return f'Vector({self.x}, {self.y})'
+        return f"Vector({self.x}, {self.y})"
 
     def __eq__(self, other):
         return self.x == other.x and self.y == other.y

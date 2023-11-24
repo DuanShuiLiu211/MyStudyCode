@@ -19,20 +19,17 @@
 DFS   
 """
 
-from typing import List
 import itertools
+from typing import List
 
 
 class Solution1:
-
     def permute(self, nums: List[int]):
         return list(itertools.permutations(nums))
 
 
 class Solution2:
-
     def permute(self, nums: List[int]) -> List[List[int]]:
-
         def backtrack(first=0):
             # 所有数都填完了
             if first == n:
@@ -64,7 +61,6 @@ def dfs(arr, depth, result):
 
 
 class Solution3:
-
     def permute(self, nums: List[int]) -> List[List[int]]:
         if nums is None or len(nums) == 0:
             return []

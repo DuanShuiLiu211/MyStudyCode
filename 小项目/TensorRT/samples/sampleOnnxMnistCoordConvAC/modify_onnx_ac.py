@@ -19,16 +19,17 @@ import onnx
 import onnx_graphsurgeon as gs
 import argparse
 
-COORD_CONV_AC_OP_TYPE = 'CoordConvAC'
+COORD_CONV_AC_OP_TYPE = "CoordConvAC"
+
 
 def replace_with_coordconvac(graph, inputs, outputs):
-    '''
+    """
     Replace each unfolded CoordConv graph with a single CoordConv node.
     From
     ... -> (CoordConv subgraph) -> Conv -> Relu -> (CoordConv subgraph) -> ...
     To
     ... -> CoordConv -> Conv -> Relu -> CoordConv -> ...
-    '''
+    """
 
     # Disconnect output nodes of all input tensors
     for inp in inputs:
@@ -44,11 +45,13 @@ def replace_with_coordconvac(graph, inputs, outputs):
 
 def main():
     # Configurable parameters from command line
-    parser = argparse.ArgumentParser(description='ONNX Modifying Example')
-    parser.add_argument('--onnx', default="mnist_cc.onnx",
-                        help='onnx file to modify')
-    parser.add_argument('--output', default="mnist_with_coordconv.onnx",
-                        help='input batch size for testing (default: output.onnx)')
+    parser = argparse.ArgumentParser(description="ONNX Modifying Example")
+    parser.add_argument("--onnx", default="mnist_cc.onnx", help="onnx file to modify")
+    parser.add_argument(
+        "--output",
+        default="mnist_with_coordconv.onnx",
+        help="input batch size for testing (default: output.onnx)",
+    )
     args = parser.parse_args()
 
     # Load ONNX file
@@ -70,5 +73,6 @@ def main():
     # Save the modified model.
     onnx.save(gs.export_onnx(graph), "mnist_with_coordconv.onnx")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

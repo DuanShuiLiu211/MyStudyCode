@@ -36,7 +36,9 @@ def elt_const(self, op, name, input, value):
     input_tensor = input if type(input) is gs.Variable else input[0]
     log.debug("Created {} node '{}': {}".format(op, name, value.squeeze()))
     const = gs.Constant(name="{}_value:0".format(name), values=value)
-    return self.layer(name=name, op=op, inputs=[input_tensor, const], outputs=[name + ":0"])
+    return self.layer(
+        name=name, op=op, inputs=[input_tensor, const], outputs=[name + ":0"]
+    )
 
 
 @gs.Graph.register()
@@ -51,7 +53,13 @@ def unsqueeze(self, name, input, axes=[-1]):
     """
     input_tensor = input if type(input) is gs.Variable else input[0]
     log.debug("Created Unsqueeze node '{}': {}".format(name, axes))
-    return self.layer(name=name, op="Unsqueeze", inputs=[input_tensor], outputs=[name + ":0"], attrs={"axes": axes})
+    return self.layer(
+        name=name,
+        op="Unsqueeze",
+        inputs=[input_tensor],
+        outputs=[name + ":0"],
+        attrs={"axes": axes},
+    )
 
 
 @gs.Graph.register()
@@ -66,7 +74,13 @@ def transpose(self, name, input, perm):
     """
     input_tensor = input if type(input) is gs.Variable else input[0]
     log.debug("Created Transpose node '{}': {}".format(name, perm))
-    return self.layer(name=name, op="Transpose", inputs=[input_tensor], outputs=[name + ":0"], attrs={"perm": perm})
+    return self.layer(
+        name=name,
+        op="Transpose",
+        inputs=[input_tensor],
+        outputs=[name + ":0"],
+        attrs={"perm": perm},
+    )
 
 
 @gs.Graph.register()
@@ -80,7 +94,9 @@ def sigmoid(self, name, input):
     """
     input_tensor = input if type(input) is gs.Variable else input[0]
     log.debug("Created Sigmoid node '{}'".format(name))
-    return self.layer(name=name, op="Sigmoid", inputs=[input_tensor], outputs=[name + ":0"])
+    return self.layer(
+        name=name, op="Sigmoid", inputs=[input_tensor], outputs=[name + ":0"]
+    )
 
 
 @gs.Graph.register()
@@ -98,7 +114,9 @@ def plugin(self, op, name, inputs, outputs, attrs):
     """
     input_tensors = inputs if type(inputs) is list else [inputs]
     log.debug("Created TRT Plugin node '{}': {}".format(name, attrs))
-    return self.layer(op=op, name=name, inputs=input_tensors, outputs=outputs, attrs=attrs)
+    return self.layer(
+        op=op, name=name, inputs=input_tensors, outputs=outputs, attrs=attrs
+    )
 
 
 @gs.Graph.register()

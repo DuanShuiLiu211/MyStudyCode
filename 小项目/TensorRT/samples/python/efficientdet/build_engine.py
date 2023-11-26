@@ -56,7 +56,10 @@ class EngineCalibrator(trt.IInt8EntropyCalibrator2):
         :param image_batcher: The ImageBatcher object
         """
         self.image_batcher = image_batcher
-        size = int(np.dtype(self.image_batcher.dtype).itemsize * np.prod(self.image_batcher.shape))
+        size = int(
+            np.dtype(self.image_batcher.dtype).itemsize
+            * np.prod(self.image_batcher.shape)
+        )
         self.batch_allocation = common.cuda_call(cudart.cudaMalloc(size))
         self.batch_generator = self.image_batcher.get_batch()
 
@@ -81,8 +84,14 @@ class EngineCalibrator(trt.IInt8EntropyCalibrator2):
             return None
         try:
             batch, _, _ = next(self.batch_generator)
-            log.info("Calibrating image {} / {}".format(self.image_batcher.image_index, self.image_batcher.num_images))
-            common.memcpy_host_to_device(self.batch_allocation, np.ascontiguousarray(batch))
+            log.info(
+                "Calibrating image {} / {}".format(
+                    self.image_batcher.image_index, self.image_batcher.num_images
+                )
+            )
+            common.memcpy_host_to_device(
+                self.batch_allocation, np.ascontiguousarray(batch)
+            )
             return [int(self.batch_allocation)]
         except StopIteration:
             log.info("Finished calibration batches")
@@ -130,7 +139,7 @@ class EngineBuilder:
 
         self.builder = trt.Builder(self.trt_logger)
         self.config = self.builder.create_builder_config()
-        self.config.max_workspace_size = workspace * (2 ** 30)
+        self.config.max_workspace_size = workspace * (2**30)
 
         self.network = None
         self.parser = None
@@ -143,7 +152,7 @@ class EngineBuilder:
         :param dynamic_batch_size: Dynamic batch size to build the engine with, if given,
         batch_size is ignored, pass as a comma-separated string or int list as MIN,OPT,MAX
         """
-        network_flags = (1 << int(trt.NetworkDefinitionCreationFlag.EXPLICIT_BATCH))
+        network_flags = 1 << int(trt.NetworkDefinitionCreationFlag.EXPLICIT_BATCH)
 
         self.network = self.builder.create_network(network_flags)
         self.parser = trt.OnnxParser(self.network, self.trt_logger)
@@ -162,29 +171,46 @@ class EngineBuilder:
         profile = self.builder.create_optimization_profile()
         dynamic_inputs = False
         for input in inputs:
-            log.info("Input '{}' with shape {} and dtype {}".format(input.name, input.shape, input.dtype))
+            log.info(
+                "Input '{}' with shape {} and dtype {}".format(
+                    input.name, input.shape, input.dtype
+                )
+            )
             if input.shape[0] == -1:
                 dynamic_inputs = True
                 if dynamic_batch_size:
                     if type(dynamic_batch_size) is str:
-                        dynamic_batch_size = [int(v) for v in dynamic_batch_size.split(",")]
+                        dynamic_batch_size = [
+                            int(v) for v in dynamic_batch_size.split(",")
+                        ]
                     assert len(dynamic_batch_size) == 3
                     min_shape = [dynamic_batch_size[0]] + list(input.shape[1:])
                     opt_shape = [dynamic_batch_size[1]] + list(input.shape[1:])
                     max_shape = [dynamic_batch_size[2]] + list(input.shape[1:])
                     profile.set_shape(input.name, min_shape, opt_shape, max_shape)
-                    log.info("Input '{}' Optimization Profile with shape MIN {} / OPT {} / MAX {}".format(
-                        input.name, min_shape, opt_shape, max_shape))
+                    log.info(
+                        "Input '{}' Optimization Profile with shape MIN {} / OPT {} / MAX {}".format(
+                            input.name, min_shape, opt_shape, max_shape
+                        )
+                    )
                 else:
                     shape = [batch_size] + list(input.shape[1:])
                     profile.set_shape(input.name, shape, shape, shape)
-                    log.info("Input '{}' Optimization Profile with shape {}".format(input.name, shape))
+                    log.info(
+                        "Input '{}' Optimization Profile with shape {}".format(
+                            input.name, shape
+                        )
+                    )
         if dynamic_inputs:
             self.config.add_optimization_profile(profile)
 
         outputs = [self.network.get_output(i) for i in range(self.network.num_outputs)]
         for output in outputs:
-            log.info("Output '{}' with shape {} and dtype {}".format(output.name, output.shape, output.dtype))
+            log.info(
+                "Output '{}' with shape {} and dtype {}".format(
+                    output.name, output.shape, output.dtype
+                )
+            )
 
     def set_mixed_precision(self):
         """
@@ -201,7 +227,8 @@ class EngineBuilder:
         # add or remove blocks.
         for i in range(self.network.num_layers):
             layer = self.network.get_layer(i)
-            if layer.type == trt.LayerType.CONVOLUTION and any([
+            if layer.type == trt.LayerType.CONVOLUTION and any(
+                [
                     # AutoML Layer Names:
                     "/stem/" in layer.name,
                     "/blocks_0/" in layer.name,
@@ -212,12 +239,24 @@ class EngineBuilder:
                     "/stack_0/block_0/" in layer.name,
                     "/stack_1/block_0/" in layer.name,
                     "/stack_1/block_1/" in layer.name,
-                ]):
+                ]
+            ):
                 self.network.get_layer(i).precision = trt.DataType.HALF
-                log.info("Mixed-Precision Layer {} set to HALF STRICT data type".format(layer.name))
+                log.info(
+                    "Mixed-Precision Layer {} set to HALF STRICT data type".format(
+                        layer.name
+                    )
+                )
 
-    def create_engine(self, engine_path, precision, calib_input=None, calib_cache=None, calib_num_images=5000,
-                      calib_batch_size=8):
+    def create_engine(
+        self,
+        engine_path,
+        precision,
+        calib_input=None,
+        calib_cache=None,
+        calib_num_images=5000,
+        calib_batch_size=8,
+    ):
         """
         Build the TensorRT engine and serialize it to disk.
         :param engine_path: The path where to serialize the engine to.
@@ -247,12 +286,21 @@ class EngineBuilder:
                 calib_shape = [calib_batch_size] + list(inputs[0].shape[1:])
                 calib_dtype = trt.nptype(inputs[0].dtype)
                 self.config.int8_calibrator.set_image_batcher(
-                    ImageBatcher(calib_input, calib_shape, calib_dtype, max_num_images=calib_num_images,
-                                 exact_batches=True, shuffle_files=True))
+                    ImageBatcher(
+                        calib_input,
+                        calib_shape,
+                        calib_dtype,
+                        max_num_images=calib_num_images,
+                        exact_batches=True,
+                        shuffle_files=True,
+                    )
+                )
 
         engine_bytes = None
         try:
-            engine_bytes = self.builder.build_serialized_network(self.network, self.config)
+            engine_bytes = self.builder.build_serialized_network(
+                self.network, self.config
+            )
         except AttributeError:
             engine = self.builder.build_engine(self.network, self.config)
             engine_bytes = engine.serialize()
@@ -268,39 +316,83 @@ def main(args):
     builder.create_network(args.onnx, args.batch_size, args.dynamic_batch_size)
     if args.precision == "mixed":
         builder.set_mixed_precision()
-    builder.create_engine(args.engine, args.precision, args.calib_input, args.calib_cache, args.calib_num_images,
-                          args.calib_batch_size)
+    builder.create_engine(
+        args.engine,
+        args.precision,
+        args.calib_input,
+        args.calib_cache,
+        args.calib_num_images,
+        args.calib_batch_size,
+    )
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("-o", "--onnx", required=True,
-                        help="The input ONNX model file to load")
-    parser.add_argument("-e", "--engine", required=True,
-                        help="The output path for the TRT engine")
-    parser.add_argument("-b", "--batch_size", default=1, type=int,
-                        help="The static batch size to build the engine with, default: 1")
-    parser.add_argument("-d", "--dynamic_batch_size", default=None,
-                        help="Enable dynamic batch size by providing a comma-separated MIN,OPT,MAX batch size, "
-                             "if this option is set, --batch_size is ignored, example: -d 1,16,32, "
-                             "default: None, build static engine")
-    parser.add_argument("-p", "--precision", default="fp16", choices=["fp32", "fp16", "int8", "mixed"],
-                        help="The precision mode to build in, either fp32/fp16/int8/mixed, default: fp16")
-    parser.add_argument("-v", "--verbose", action="store_true",
-                        help="Enable more verbose log output")
-    parser.add_argument("-w", "--workspace", default=8, type=int,
-                        help="The max memory workspace size to allow in Gb, default: 8")
-    parser.add_argument("--calib_input",
-                        help="The directory holding images to use for calibration")
-    parser.add_argument("--calib_cache", default=None,
-                        help="The file path for INT8 calibration cache to use, default: ./calibration.cache")
-    parser.add_argument("--calib_num_images", default=5000, type=int,
-                        help="The maximum number of images to use for calibration, default: 5000")
-    parser.add_argument("--calib_batch_size", default=8, type=int,
-                        help="The batch size for the calibration process, default: 8")
+    parser.add_argument(
+        "-o", "--onnx", required=True, help="The input ONNX model file to load"
+    )
+    parser.add_argument(
+        "-e", "--engine", required=True, help="The output path for the TRT engine"
+    )
+    parser.add_argument(
+        "-b",
+        "--batch_size",
+        default=1,
+        type=int,
+        help="The static batch size to build the engine with, default: 1",
+    )
+    parser.add_argument(
+        "-d",
+        "--dynamic_batch_size",
+        default=None,
+        help="Enable dynamic batch size by providing a comma-separated MIN,OPT,MAX batch size, "
+        "if this option is set, --batch_size is ignored, example: -d 1,16,32, "
+        "default: None, build static engine",
+    )
+    parser.add_argument(
+        "-p",
+        "--precision",
+        default="fp16",
+        choices=["fp32", "fp16", "int8", "mixed"],
+        help="The precision mode to build in, either fp32/fp16/int8/mixed, default: fp16",
+    )
+    parser.add_argument(
+        "-v", "--verbose", action="store_true", help="Enable more verbose log output"
+    )
+    parser.add_argument(
+        "-w",
+        "--workspace",
+        default=8,
+        type=int,
+        help="The max memory workspace size to allow in Gb, default: 8",
+    )
+    parser.add_argument(
+        "--calib_input", help="The directory holding images to use for calibration"
+    )
+    parser.add_argument(
+        "--calib_cache",
+        default=None,
+        help="The file path for INT8 calibration cache to use, default: ./calibration.cache",
+    )
+    parser.add_argument(
+        "--calib_num_images",
+        default=5000,
+        type=int,
+        help="The maximum number of images to use for calibration, default: 5000",
+    )
+    parser.add_argument(
+        "--calib_batch_size",
+        default=8,
+        type=int,
+        help="The batch size for the calibration process, default: 8",
+    )
     args = parser.parse_args()
-    if args.precision in ["int8", "mixed"] and not (args.calib_input or os.path.exists(args.calib_cache)):
+    if args.precision in ["int8", "mixed"] and not (
+        args.calib_input or os.path.exists(args.calib_cache)
+    ):
         parser.print_help()
-        log.error("When building in int8 or mixed precision, --calib_input or an existing --calib_cache file is required")
+        log.error(
+            "When building in int8 or mixed precision, --calib_input or an existing --calib_cache file is required"
+        )
         sys.exit(1)
     main(args)

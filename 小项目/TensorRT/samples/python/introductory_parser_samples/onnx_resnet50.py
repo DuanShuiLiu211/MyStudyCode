@@ -40,6 +40,7 @@ class ModelData(object):
 # You can set the logger severity higher to suppress messages (or lower to display more messages).
 TRT_LOGGER = trt.Logger(trt.Logger.WARNING)
 
+
 # The Onnx path is used for Onnx models.
 def build_engine_onnx(model_file):
     builder = trt.Builder(TRT_LOGGER)
@@ -108,7 +109,9 @@ def main():
     test_case = load_normalized_test_case(test_image, inputs[0].host)
     # Run the engine. The output will be a 1D tensor of length 1000, where each value represents the
     # probability that the image corresponds to that label
-    trt_outputs = common.do_inference_v2(context, bindings=bindings, inputs=inputs, outputs=outputs, stream=stream)
+    trt_outputs = common.do_inference_v2(
+        context, bindings=bindings, inputs=inputs, outputs=outputs, stream=stream
+    )
     # We use the highest probability as our prediction. Its index corresponds to the predicted label.
     pred = labels[np.argmax(trt_outputs[0])]
     common.free_buffers(inputs, outputs, stream)

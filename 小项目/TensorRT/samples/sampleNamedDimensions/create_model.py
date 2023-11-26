@@ -19,17 +19,24 @@ import numpy as np
 import onnx
 import onnx_graphsurgeon as gs
 
-def main():
-    input0 = gs.Variable(name="input0", dtype=np.float32, shape=('n_rows', 8))
-    input1 = gs.Variable(name="input1", dtype=np.float32, shape=('n_rows', 8))
-    output = gs.Variable(name="output", dtype=np.float32, )
 
-    node = gs.Node(op="Concat", inputs=[input0, input1], outputs=[output], attrs={"axis": 0})
+def main():
+    input0 = gs.Variable(name="input0", dtype=np.float32, shape=("n_rows", 8))
+    input1 = gs.Variable(name="input1", dtype=np.float32, shape=("n_rows", 8))
+    output = gs.Variable(
+        name="output",
+        dtype=np.float32,
+    )
+
+    node = gs.Node(
+        op="Concat", inputs=[input0, input1], outputs=[output], attrs={"axis": 0}
+    )
 
     graph = gs.Graph(nodes=[node], inputs=[input0, input1], outputs=[output])
 
     model = gs.export_onnx(graph)
     onnx.save(model, "concat_layer.onnx")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

@@ -30,12 +30,16 @@ def main(args):
     for line in open(args.annotations, "r"):
         line = line.strip().split(args.separator)
         if len(line) < 2 or not line[1].isnumeric():
-            print("Could not parse the annotations file correctly, make sure the correct separator is used")
+            print(
+                "Could not parse the annotations file correctly, make sure the correct separator is used"
+            )
             sys.exit(1)
         annotations[os.path.basename(line[0])] = int(line[1])
 
     trt_infer = TensorRTInfer(args.engine)
-    batcher = ImageBatcher(args.input, *trt_infer.input_spec(), preprocessor=args.preprocessor)
+    batcher = ImageBatcher(
+        args.input, *trt_infer.input_spec(), preprocessor=args.preprocessor
+    )
     top1 = 0
     top5 = 0
     total = 0
@@ -71,9 +75,15 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-e", "--engine", help="The TensorRT engine to infer with")
     parser.add_argument(
-        "-i", "--input", help="The input to infer, either a single image path, or a directory of images"
+        "-i",
+        "--input",
+        help="The input to infer, either a single image path, or a directory of images",
     )
-    parser.add_argument("-a", "--annotations", help="Set the file to use for classification ground truth annotations")
+    parser.add_argument(
+        "-a",
+        "--annotations",
+        help="Set the file to use for classification ground truth annotations",
+    )
     parser.add_argument(
         "-s",
         "--separator",

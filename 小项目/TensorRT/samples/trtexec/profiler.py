@@ -37,9 +37,16 @@ allFeatures = ["name", "timeMs", "averageMs", "percentage"]
 
 defaultFeatures = ",".join(allFeatures)
 
-descriptions = ["layer name", "total layer time", "average layer time", "percentage of total time"]
+descriptions = [
+    "layer name",
+    "total layer time",
+    "average layer time",
+    "percentage of total time",
+]
 
-featuresDescription = pu.combineDescriptions("Features are (times in ms):", allFeatures, descriptions)
+featuresDescription = pu.combineDescriptions(
+    "Features are (times in ms):", allFeatures, descriptions
+)
 
 
 def hasNames(features):
@@ -95,7 +102,9 @@ def mergeHeaders(features, skipFirst=True):
     """Duplicate feature names for reference and target profile"""
 
     if skipFirst:
-        return [features[0]] + refFeatures(features[1:]) + features[1:] + ["% difference"]
+        return (
+            [features[0]] + refFeatures(features[1:]) + features[1:] + ["% difference"]
+        )
     return refFeatures(features) + features + ["% difference"]
 
 
@@ -156,7 +165,13 @@ def main():
     parser.add_argument("--total", action="store_true", help="Add total time row.")
     parser.add_argument("--gp", action="store_true", help="Print GNUPlot format.")
     parser.add_argument("--no-header", action="store_true", help="Omit the header row.")
-    parser.add_argument("--threshold", metavar="T", default=0.0, type=float, help="Threshold of percentage difference.")
+    parser.add_argument(
+        "--threshold",
+        metavar="T",
+        default=0.0,
+        type=float,
+        help="Threshold of percentage difference.",
+    )
     parser.add_argument("--reference", metavar="R", help="Reference profile file name.")
     parser.add_argument("name", metavar="filename", help="Profile file.")
     args = parser.parse_args()
@@ -189,7 +204,12 @@ def main():
     if not args.no_header:
         if reference:
             comment = "#" if args.gp else ""
-            print(comment + "reference count: {} - profile count: {}".format(referenceCount, profileCount))
+            print(
+                comment
+                + "reference count: {} - profile count: {}".format(
+                    referenceCount, profileCount
+                )
+            )
         pu.printHeader(allFeatures, features, args.gp, count)
 
     if reference:
@@ -199,7 +219,9 @@ def main():
         profile.append(totalData(allFeatures, profile))
         if reference:
             total = profile[len(profile) - 1]
-            total["% difference"] = (total["averageMs"] / total["refAverageMs"] - 1) * 100
+            total["% difference"] = (
+                total["averageMs"] / total["refAverageMs"] - 1
+            ) * 100
 
     profile = pu.filterData(profile, allFeatures, features)
 

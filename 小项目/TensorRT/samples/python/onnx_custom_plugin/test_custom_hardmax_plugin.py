@@ -29,11 +29,13 @@ from load_plugin_lib import load_plugin_lib
 
 TRT_LOGGER = trt.Logger(trt.Logger.ERROR)
 
+
 def hardmax_reference_impl(arr, axis):
     one_hot = np.zeros(arr.shape, dtype=arr.dtype)
     argmax = np.expand_dims(np.argmax(arr, axis), axis)
-    np.put_along_axis(one_hot,argmax,1,axis=axis)
+    np.put_along_axis(one_hot, argmax, 1, axis=axis)
     return one_hot
+
 
 def make_trt_network_and_engine(input_shape, axis):
     registry = trt.get_plugin_registry()
@@ -41,14 +43,18 @@ def make_trt_network_and_engine(input_shape, axis):
     axis_buffer = np.array([axis])
     axis_attr = trt.PluginField("axis", axis_buffer, type=trt.PluginFieldType.INT32)
     field_collection = trt.PluginFieldCollection([axis_attr])
-    plugin = plugin_creator.create_plugin(name="CustomHardmax", field_collection=field_collection)
+    plugin = plugin_creator.create_plugin(
+        name="CustomHardmax", field_collection=field_collection
+    )
 
     builder = trt.Builder(TRT_LOGGER)
     network = builder.create_network(common.EXPLICIT_BATCH)
     config = builder.create_builder_config()
     runtime = trt.Runtime(TRT_LOGGER)
 
-    input_layer = network.add_input(name="input_layer", dtype=trt.float32, shape=input_shape)
+    input_layer = network.add_input(
+        name="input_layer", dtype=trt.float32, shape=input_shape
+    )
     hardmax = network.add_plugin_v2(inputs=[input_layer], plugin=plugin)
     network.mark_output(hardmax.get_output(0))
 
@@ -56,6 +62,7 @@ def make_trt_network_and_engine(input_shape, axis):
     engine = runtime.deserialize_cuda_engine(plan)
 
     return engine
+
 
 def custom_plugin_impl(input_arr, engine):
     inputs, outputs, bindings, stream = common.allocate_buffers(engine)
@@ -67,6 +74,7 @@ def custom_plugin_impl(input_arr, engine):
     output = trt_outputs[0].copy()
     common.free_buffers(inputs, outputs, stream)
     return output
+
 
 def main():
     load_plugin_lib()
@@ -81,5 +89,6 @@ def main():
             assert np.all(res1 == res2), f"Test failed for shape={shape}, axis={axis}"
     print("Passed")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

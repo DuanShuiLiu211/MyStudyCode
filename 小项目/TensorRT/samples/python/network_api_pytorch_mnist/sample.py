@@ -41,7 +41,9 @@ class ModelData(object):
 
 def populate_network(network, weights):
     # Configure the network layers based on the weights provided.
-    input_tensor = network.add_input(name=ModelData.INPUT_NAME, dtype=ModelData.DTYPE, shape=ModelData.INPUT_SHAPE)
+    input_tensor = network.add_input(
+        name=ModelData.INPUT_NAME, dtype=ModelData.DTYPE, shape=ModelData.INPUT_SHAPE
+    )
 
     def add_matmul_as_fc(net, input, outputs, w, b):
         assert len(input.shape) >= 3
@@ -64,7 +66,9 @@ def populate_network(network, weights):
         )
 
         bias_const = net.add_constant(trt.Dims2(1, n), b)
-        bias_add = net.add_elementwise(mm.get_output(0), bias_const.get_output(0), trt.ElementWiseOperation.SUM)
+        bias_add = net.add_elementwise(
+            mm.get_output(0), bias_const.get_output(0), trt.ElementWiseOperation.SUM
+        )
 
         output_reshape = net.add_shuffle(bias_add.get_output(0))
         output_reshape.reshape_dims = trt.Dims4(m, n, 1, 1)
@@ -73,11 +77,17 @@ def populate_network(network, weights):
     conv1_w = weights["conv1.weight"].numpy()
     conv1_b = weights["conv1.bias"].numpy()
     conv1 = network.add_convolution(
-        input=input_tensor, num_output_maps=20, kernel_shape=(5, 5), kernel=conv1_w, bias=conv1_b
+        input=input_tensor,
+        num_output_maps=20,
+        kernel_shape=(5, 5),
+        kernel=conv1_w,
+        bias=conv1_b,
     )
     conv1.stride = (1, 1)
 
-    pool1 = network.add_pooling(input=conv1.get_output(0), type=trt.PoolingType.MAX, window_size=(2, 2))
+    pool1 = network.add_pooling(
+        input=conv1.get_output(0), type=trt.PoolingType.MAX, window_size=(2, 2)
+    )
     pool1.stride = (2, 2)
 
     conv2_w = weights["conv2.weight"].numpy()
@@ -92,11 +102,15 @@ def populate_network(network, weights):
     fc1_b = weights["fc1.bias"].numpy()
     fc1 = add_matmul_as_fc(network, pool2.get_output(0), 500, fc1_w, fc1_b)
 
-    relu1 = network.add_activation(input=fc1.get_output(0), type=trt.ActivationType.RELU)
+    relu1 = network.add_activation(
+        input=fc1.get_output(0), type=trt.ActivationType.RELU
+    )
 
     fc2_w = weights["fc2.weight"].numpy()
     fc2_b = weights["fc2.bias"].numpy()
-    fc2 = add_matmul_as_fc(network, relu1.get_output(0), ModelData.OUTPUT_SIZE, fc2_w, fc2_b)
+    fc2 = add_matmul_as_fc(
+        network, relu1.get_output(0), ModelData.OUTPUT_SIZE, fc2_w, fc2_b
+    )
 
     fc2.get_output(0).name = ModelData.OUTPUT_NAME
     network.mark_output(tensor=fc2.get_output(0))
@@ -143,7 +157,9 @@ def main():
     case_num = load_random_test_case(mnist_model, pagelocked_buffer=inputs[0].host)
     # For more information on performing inference, refer to the introductory samples.
     # The common.do_inference function will return a list of outputs - we only have one in this case.
-    [output] = common.do_inference_v2(context, bindings=bindings, inputs=inputs, outputs=outputs, stream=stream)
+    [output] = common.do_inference_v2(
+        context, bindings=bindings, inputs=inputs, outputs=outputs, stream=stream
+    )
     pred = np.argmax(output)
     common.free_buffers(inputs, outputs, stream)
     print("Test Case: " + str(case_num))

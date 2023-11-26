@@ -35,7 +35,14 @@ import argparse
 import prn_utils as pu
 
 
-timestamps = ["startInMs", "endInMs", "startComputeMs", "endComputeMs", "startOutMs", "endOutMs"]
+timestamps = [
+    "startInMs",
+    "endInMs",
+    "startComputeMs",
+    "endComputeMs",
+    "startOutMs",
+    "endOutMs",
+]
 
 intervals = ["inMs", "computeMs", "outMs", "latencyMs", "endToEndMs"]
 
@@ -57,7 +64,9 @@ descriptions = [
     "end to end latency",
 ]
 
-metricsDescription = pu.combineDescriptions("Possible metrics (all in ms) are:", allMetrics, descriptions)
+metricsDescription = pu.combineDescriptions(
+    "Possible metrics (all in ms) are:", allMetrics, descriptions
+)
 
 
 def skipTrace(trace, start):
@@ -113,7 +122,9 @@ def main():
         default=defaultMetrics,
         help="Comma separated list of metrics to print. " + metricsDescription,
     )
-    parser.add_argument("--avg", metavar="N", type=int, default=1, help="Print average every N records.")
+    parser.add_argument(
+        "--avg", metavar="N", type=int, default=1, help="Print average every N records."
+    )
     parser.add_argument(
         "--start",
         metavar="T",

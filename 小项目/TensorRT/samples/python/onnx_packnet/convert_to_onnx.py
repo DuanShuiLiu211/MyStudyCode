@@ -63,17 +63,29 @@ def build_packnet(model_file, args):
     model_pyt = PackNet01(version="1A")
 
     # Convert the model into ONNX
-    torch.onnx.export(model_pyt, input_pyt, model_file, verbose=args.verbose, opset_version=args.opset)
+    torch.onnx.export(
+        model_pyt, input_pyt, model_file, verbose=args.verbose, opset_version=args.opset
+    )
 
 
 def main():
     parser = argparse.ArgumentParser(
         description="Exports PackNet01 to ONNX, and post-processes it to insert TensorRT plugins"
     )
-    parser.add_argument("-o", "--output", help="Path to save the generated ONNX model", default="model.onnx")
-    parser.add_argument("-op", "--opset", type=int, help="ONNX opset to use", default=11)
     parser.add_argument(
-        "-v", "--verbose", action="store_true", help="Flag to enable verbose logging for torch.onnx.export"
+        "-o",
+        "--output",
+        help="Path to save the generated ONNX model",
+        default="model.onnx",
+    )
+    parser.add_argument(
+        "-op", "--opset", type=int, help="ONNX opset to use", default=11
+    )
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        action="store_true",
+        help="Flag to enable verbose logging for torch.onnx.export",
     )
     args = parser.parse_args()
 

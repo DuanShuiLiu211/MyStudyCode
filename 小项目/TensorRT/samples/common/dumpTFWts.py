@@ -38,19 +38,34 @@ parser.add_argument(
     required=True,
     help="The checkpoint file basename, example basename(model.ckpt-766908.data-00000-of-00001) -> model.ckpt-766908",
 )
-parser.add_argument("-o", "--output", required=True, help="The weight file to dump all the weights to.")
-parser.add_argument("-1", "--wtsv1", required=False, default=False, type=bool, help="Dump the weights in the wts v1.")
+parser.add_argument(
+    "-o", "--output", required=True, help="The weight file to dump all the weights to."
+)
+parser.add_argument(
+    "-1",
+    "--wtsv1",
+    required=False,
+    default=False,
+    type=bool,
+    help="Dump the weights in the wts v1.",
+)
 
 opt = parser.parse_args()
 
 if opt.wtsv1:
-    print("Outputting the trained weights in TensorRT's wts v1 format. This format is documented as:")
+    print(
+        "Outputting the trained weights in TensorRT's wts v1 format. This format is documented as:"
+    )
     print("Line 0: <number of buffers in the file>")
     print("Line 1-Num: [buffer name] [buffer type] [buffer size] <hex values>")
 else:
-    print("Outputting the trained weights in TensorRT's wts v2 format. This format is documented as:")
+    print(
+        "Outputting the trained weights in TensorRT's wts v2 format. This format is documented as:"
+    )
     print("Line 0: <number of buffers in the file>")
-    print("Line 1-Num: [buffer name] [buffer type] [(buffer shape{e.g. (1, 2, 3)}] <buffer shaped size bytes of data>")
+    print(
+        "Line 1-Num: [buffer name] [buffer type] [(buffer shape{e.g. (1, 2, 3)}] <buffer shaped size bytes of data>"
+    )
 
 inputbase = opt.model
 outputbase = opt.output
@@ -114,8 +129,12 @@ try:
 except Exception as e:  # pylint: disable=broad-except
     print(str(e))
     if "corrupted compressed block contents" in str(e):
-        print("It's likely that your checkpoint file has been compressed " "with SNAPPY.")
-        if "Data loss" in str(e) and (any([e in inputbase for e in [".index", ".meta", ".data"]])):
+        print(
+            "It's likely that your checkpoint file has been compressed " "with SNAPPY."
+        )
+        if "Data loss" in str(e) and (
+            any([e in inputbase for e in [".index", ".meta", ".data"]])
+        ):
             proposed_file = ".".join(inputbase.split(".")[0:-1])
             v2_file_error_template = """
            It's likely that this is a V2 checkpoint and you need to provide the filename

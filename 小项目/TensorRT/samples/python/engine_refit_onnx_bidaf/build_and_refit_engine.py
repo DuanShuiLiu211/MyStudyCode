@@ -61,33 +61,56 @@ def get_engine(onnx_file_path, engine_file_path):
         config.set_flag(trt.BuilderFlag.REFIT)
         config.max_workspace_size = 1 << 28  # 256MiB
 
-
         for opt in [6, 10]:
             profile = builder.create_optimization_profile()
 
             input0_min = (1, 1)
             input0_opt = (opt, 1)
             input0_max = (15, 1)
-            profile.set_shape(network.get_input(0).name, min=input0_min, opt=input0_opt, max=input0_max)
+            profile.set_shape(
+                network.get_input(0).name,
+                min=input0_min,
+                opt=input0_opt,
+                max=input0_max,
+            )
 
             input1_min = (1, 1, 1, 16)
             input1_opt = (opt, 1, 1, 16)
             input1_max = (15, 1, 1, 16)
-            profile.set_shape(network.get_input(1).name, min=input1_min, opt=input1_opt, max=input1_max)
+            profile.set_shape(
+                network.get_input(1).name,
+                min=input1_min,
+                opt=input1_opt,
+                max=input1_max,
+            )
 
             input2_min = (1, 1)
             input2_opt = (opt, 1)
             input2_max = (15, 1)
-            profile.set_shape(network.get_input(2).name, min=input2_min, opt=input2_opt, max=input2_max)
+            profile.set_shape(
+                network.get_input(2).name,
+                min=input2_min,
+                opt=input2_opt,
+                max=input2_max,
+            )
 
             input3_min = (1, 1, 1, 16)
             input3_opt = (opt, 1, 1, 16)
             input3_max = (15, 1, 1, 16)
-            profile.set_shape(network.get_input(3).name, min=input3_min, opt=input3_opt, max=input3_max)
+            profile.set_shape(
+                network.get_input(3).name,
+                min=input3_min,
+                opt=input3_opt,
+                max=input3_max,
+            )
 
             config.add_optimization_profile(profile)
 
-        print("Building an engine from file {}; this may take a while...".format(onnx_file_path))
+        print(
+            "Building an engine from file {}; this may take a while...".format(
+                onnx_file_path
+            )
+        )
         plan = builder.build_serialized_network(network, config)
         engine = runtime.deserialize_cuda_engine(plan)
         print("Completed creating Engine")
@@ -119,11 +142,18 @@ def main():
 
     # Do inference with TensorRT
     weights_names = ["Parameter576_B_0", "W_0"]
-    refit_weights_dict = {name: np.load("{}.npy".format(name)) for name in weights_names}
-    fake_weights_dict = {name: np.ones_like(weights) for name, weights in refit_weights_dict.items()}
+    refit_weights_dict = {
+        name: np.load("{}.npy".format(name)) for name in weights_names
+    }
+    fake_weights_dict = {
+        name: np.ones_like(weights) for name, weights in refit_weights_dict.items()
+    }
     engine = get_engine(onnx_file_path, engine_file_path)
     refitter = trt.Refitter(engine, TRT_LOGGER)
-    for weights_dict, answer_correct in [(fake_weights_dict, False), (refit_weights_dict, True)]:
+    for weights_dict, answer_correct in [
+        (fake_weights_dict, False),
+        (refit_weights_dict, True),
+    ]:
         print("Refitting engine...")
         # To get a list of all refittable weights' names
         # in the network, use refitter.get_all_weights().
@@ -145,7 +175,9 @@ def main():
         for profile_idx in range(engine.num_optimization_profiles):
             print("Doing inference...")
             # Do inference
-            inputs, outputs, bindings, stream = common.allocate_buffers(engine, profile_idx)
+            inputs, outputs, bindings, stream = common.allocate_buffers(
+                engine, profile_idx
+            )
             padding_bindings = [0] * (len(bindings) * profile_idx)
             new_bindings = padding_bindings + bindings
 
@@ -162,7 +194,11 @@ def main():
             execution_context.set_input_shape("CategoryMapper_7", (6, 1, 1, 16))
 
             trt_outputs = common.do_inference_v2(
-                execution_context, bindings=new_bindings, inputs=inputs, outputs=outputs, stream=stream
+                execution_context,
+                bindings=new_bindings,
+                inputs=inputs,
+                outputs=outputs,
+                stream=stream,
             )
 
             start = trt_outputs[0].item()

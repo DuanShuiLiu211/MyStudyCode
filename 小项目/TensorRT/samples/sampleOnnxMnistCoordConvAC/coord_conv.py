@@ -81,7 +81,9 @@ class AddCoords(nn.Module):
             out = torch.cat([input_tensor, xx_channel, yy_channel], dim=1)
 
             if self.with_r:
-                rr = torch.sqrt(torch.pow(xx_channel - 0.5, 2) + torch.pow(yy_channel - 0.5, 2))
+                rr = torch.sqrt(
+                    torch.pow(xx_channel - 0.5, 2) + torch.pow(yy_channel - 0.5, 2)
+                )
                 out = torch.cat([out, rr], dim=1)
 
         elif self.rank == 3:
@@ -118,9 +120,11 @@ class AddCoords(nn.Module):
             out = torch.cat([input_tensor, xx_channel, yy_channel, zz_channel], dim=1)
 
             if self.with_r:
-                rr = torch.sqrt(torch.pow(xx_channel - 0.5, 2) +
-                                torch.pow(yy_channel - 0.5, 2) +
-                                torch.pow(zz_channel - 0.5, 2))
+                rr = torch.sqrt(
+                    torch.pow(xx_channel - 0.5, 2)
+                    + torch.pow(yy_channel - 0.5, 2)
+                    + torch.pow(zz_channel - 0.5, 2)
+                )
                 out = torch.cat([out, rr], dim=1)
         else:
             raise NotImplementedError
@@ -129,14 +133,40 @@ class AddCoords(nn.Module):
 
 
 class CoordConv1d(conv.Conv1d):
-    def __init__(self, in_channels, out_channels, kernel_size, stride=1,
-                 padding=0, dilation=1, groups=1, bias=True, with_r=False):
-        super(CoordConv1d, self).__init__(in_channels, out_channels, kernel_size,
-                                          stride, padding, dilation, groups, bias)
+    def __init__(
+        self,
+        in_channels,
+        out_channels,
+        kernel_size,
+        stride=1,
+        padding=0,
+        dilation=1,
+        groups=1,
+        bias=True,
+        with_r=False,
+    ):
+        super(CoordConv1d, self).__init__(
+            in_channels,
+            out_channels,
+            kernel_size,
+            stride,
+            padding,
+            dilation,
+            groups,
+            bias,
+        )
         self.rank = 1
         self.addcoords = AddCoords(self.rank, with_r)
-        self.conv = nn.Conv1d(in_channels + self.rank + int(with_r), out_channels,
-                              kernel_size, stride, padding, dilation, groups, bias)
+        self.conv = nn.Conv1d(
+            in_channels + self.rank + int(with_r),
+            out_channels,
+            kernel_size,
+            stride,
+            padding,
+            dilation,
+            groups,
+            bias,
+        )
 
     def forward(self, input_tensor):
         """
@@ -151,14 +181,40 @@ class CoordConv1d(conv.Conv1d):
 
 
 class CoordConv2d(conv.Conv2d):
-    def __init__(self, in_channels, out_channels, kernel_size, stride=1,
-                 padding=0, dilation=1, groups=1, bias=True, with_r=False):
-        super(CoordConv2d, self).__init__(in_channels, out_channels, kernel_size,
-                                          stride, padding, dilation, groups, bias)
+    def __init__(
+        self,
+        in_channels,
+        out_channels,
+        kernel_size,
+        stride=1,
+        padding=0,
+        dilation=1,
+        groups=1,
+        bias=True,
+        with_r=False,
+    ):
+        super(CoordConv2d, self).__init__(
+            in_channels,
+            out_channels,
+            kernel_size,
+            stride,
+            padding,
+            dilation,
+            groups,
+            bias,
+        )
         self.rank = 2
         self.addcoords = AddCoords(self.rank, with_r)
-        self.conv = nn.Conv2d(in_channels + self.rank + int(with_r), out_channels,
-                              kernel_size, stride, padding, dilation, groups, bias)
+        self.conv = nn.Conv2d(
+            in_channels + self.rank + int(with_r),
+            out_channels,
+            kernel_size,
+            stride,
+            padding,
+            dilation,
+            groups,
+            bias,
+        )
 
     def forward(self, input_tensor):
         """
@@ -173,14 +229,40 @@ class CoordConv2d(conv.Conv2d):
 
 
 class CoordConv3d(conv.Conv3d):
-    def __init__(self, in_channels, out_channels, kernel_size, stride=1,
-                 padding=0, dilation=1, groups=1, bias=True, with_r=False):
-        super(CoordConv3d, self).__init__(in_channels, out_channels, kernel_size,
-                                          stride, padding, dilation, groups, bias)
+    def __init__(
+        self,
+        in_channels,
+        out_channels,
+        kernel_size,
+        stride=1,
+        padding=0,
+        dilation=1,
+        groups=1,
+        bias=True,
+        with_r=False,
+    ):
+        super(CoordConv3d, self).__init__(
+            in_channels,
+            out_channels,
+            kernel_size,
+            stride,
+            padding,
+            dilation,
+            groups,
+            bias,
+        )
         self.rank = 3
         self.addcoords = AddCoords(self.rank, with_r)
-        self.conv = nn.Conv3d(in_channels + self.rank + int(with_r), out_channels,
-                              kernel_size, stride, padding, dilation, groups, bias)
+        self.conv = nn.Conv3d(
+            in_channels + self.rank + int(with_r),
+            out_channels,
+            kernel_size,
+            stride,
+            padding,
+            dilation,
+            groups,
+            bias,
+        )
 
     def forward(self, input_tensor):
         """

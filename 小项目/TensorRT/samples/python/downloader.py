@@ -124,7 +124,9 @@ def download(data_dir, yaml_path, overwrite=False):
 
 
 def _parseArgs():
-    parser = argparse.ArgumentParser(description="Downloader of TensorRT sample data files.")
+    parser = argparse.ArgumentParser(
+        description="Downloader of TensorRT sample data files."
+    )
     parser.add_argument(
         "-d",
         "--data",
@@ -137,7 +139,11 @@ def _parseArgs():
         default="download.yml",
     )
     parser.add_argument(
-        "-o", "--overwrite", help="Force to overwrite if MD5 check failed", action="store_true", default=False
+        "-o",
+        "--overwrite",
+        help="Force to overwrite if MD5 check failed",
+        action="store_true",
+        default=False,
     )
     parser.add_argument(
         "-v",
@@ -150,7 +156,9 @@ def _parseArgs():
     args, _ = parser.parse_known_args()
     data = os.environ.get("TRT_DATA_DIR", None) if args.data is None else args.data
     if data is None:
-        raise ValueError("Data directory must be specified by either `-d $DATA` or environment variable $TRT_DATA_DIR.")
+        raise ValueError(
+            "Data directory must be specified by either `-d $DATA` or environment variable $TRT_DATA_DIR."
+        )
 
     return data, args
 
@@ -209,16 +217,22 @@ def getFilePath(path):
     """
     global TRT_DATA_DIR
     if not TRT_DATA_DIR:
-        parser = argparse.ArgumentParser(description="Helper of data file download tool")
+        parser = argparse.ArgumentParser(
+            description="Helper of data file download tool"
+        )
         parser.add_argument(
             "-d",
             "--data",
             help="Specify the data directory where it is saved in. $TRT_DATA_DIR will be overwritten by this argument.",
         )
         args, _ = parser.parse_known_args()
-        TRT_DATA_DIR = os.environ.get("TRT_DATA_DIR", None) if args.data is None else args.data
+        TRT_DATA_DIR = (
+            os.environ.get("TRT_DATA_DIR", None) if args.data is None else args.data
+        )
     if TRT_DATA_DIR is None:
-        raise ValueError("Data directory must be specified by either `-d $DATA` or environment variable $TRT_DATA_DIR.")
+        raise ValueError(
+            "Data directory must be specified by either `-d $DATA` or environment variable $TRT_DATA_DIR."
+        )
 
     fullpath = os.path.join(TRT_DATA_DIR, path)
     if not os.path.exists(fullpath):

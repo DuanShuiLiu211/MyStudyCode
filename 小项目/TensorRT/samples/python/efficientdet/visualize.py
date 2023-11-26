@@ -181,9 +181,18 @@ def visualize_detections(image_path, output_path, detections, labels=[]):
         text_left = d["xmin"]
         margin = np.ceil(0.05 * text_height)
         draw.rectangle(
-            [(text_left, text_bottom - text_height - 2 * margin), (text_left + text_width, text_bottom)], fill=color
+            [
+                (text_left, text_bottom - text_height - 2 * margin),
+                (text_left + text_width, text_bottom),
+            ],
+            fill=color,
         )
-        draw.text((text_left + margin, text_bottom - text_height - margin), text, fill="black", font=font)
+        draw.text(
+            (text_left + margin, text_bottom - text_height - margin),
+            text,
+            fill="black",
+            font=font,
+        )
     if output_path is None:
         return image
     image.save(output_path)
@@ -193,7 +202,12 @@ def concat_visualizations(images, names, colors, output_path):
     def draw_text(draw, font, text, width, bar_height, offset, color):
         text_width, text_height = font.getsize(text)
         draw.rectangle([(offset, 0), (offset + width, bar_height)], fill=color)
-        draw.text((offset + (width - text_width) / 2, text_height - text_height / 2), text, fill="black", font=font)
+        draw.text(
+            (offset + (width - text_width) / 2, text_height - text_height / 2),
+            text,
+            fill="black",
+            font=font,
+        )
 
     bar_height = 18
     width = 0

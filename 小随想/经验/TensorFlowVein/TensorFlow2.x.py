@@ -13,7 +13,7 @@ from keras import Model
 # 第一阶段数据准备
 # 导入数据集
 def load_data():
-    dirname = os.path.join("datasets", "fashion-mnist")
+    dirname = os.path.join("assets", "fashion-mnist")
     files = [
         "train-labels-idx1-ubyte.gz",
         "train-images-idx3-ubyte.gz",

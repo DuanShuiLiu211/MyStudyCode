@@ -9,14 +9,14 @@ from torchvision.transforms import ToTensor
 
 """定义数据"""
 training_data = datasets.FashionMNIST(
-    root="./datasets",
+    root="./assets",
     train=True,
     download=True,
     transform=ToTensor(),
 )
 
 test_data = datasets.FashionMNIST(
-    root="./datasets",
+    root="./assets",
     train=False,
     download=True,
     transform=ToTensor(),

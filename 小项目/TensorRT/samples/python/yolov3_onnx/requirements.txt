@@ -1,12 +1,3 @@
-cuda-python
-pywin32; platform_system == "Windows"
-numpy==1.18.1; python_version<"3.8" and platform_system == "Windows"
-numpy==1.19.4; python_version<"3.8" and platform_system != "Windows"
-numpy==1.23.2; python_version>="3.8"
-onnx==1.11.0
-Pillow
-protobuf; python_version<"3.7"
-protobuf==3.20.2; python_version>="3.7"
-pyyaml
-requests
-tqdm
+version https://git-lfs.github.com/spec/v1
+oid sha256:091bb885d7dd55c392671c38e699c7475ddadc686acaeb869ae36a601181c07c
+size 349

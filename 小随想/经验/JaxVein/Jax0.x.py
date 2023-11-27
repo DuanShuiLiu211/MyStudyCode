@@ -147,7 +147,7 @@ def data_flow(*, dataset, batch_size=1, prng=None):
         yield {"image": images, "label": labels}
 
 
-dataset_mnist = np.load("datasets/mnist.npy", allow_pickle=True).item()
+dataset_mnist = np.load("assets/mnist.npy", allow_pickle=True).item()
 
 
 # 定义损失函数

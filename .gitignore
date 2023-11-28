@@ -28,7 +28,6 @@ __pycache__
 *.txt
 *.csv
 *.log
-*.md
 *.pdf
 *.docx
 *.doc
@@ -47,5 +46,4 @@ __pycache__
 *.torchscript
 
 !**/assets/**
-!**/README.md
 !**/requirements.txt

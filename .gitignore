@@ -46,3 +46,4 @@ __pycache__
 *.torchscript
 
 !**/assets/**
+!**/requirements.txt

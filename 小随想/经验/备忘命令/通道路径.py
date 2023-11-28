@@ -1,2 +1,0 @@
-context_string = "阿里云\nhttp://mirrors.aliyun.com/pypi/simple\n\n豆瓣\nhttp://pypi.douban.com/simple\n\n清华大学\nhttps://pypi.tuna.tsinghua.edu.cn/simple\n\n中国科学技术大学\nhttp://pypi.mirrors.ustc.edu.cn/simple\n\n完整命令举例\npip install numpy -i http://pypi.douban.com/simple --trusted-host pypi.douban.com\npip install --no-cache-dir --extra-index-url https://pypi.nvidia.com pytorch-quantization\n\n安装包的网页=通道+库名\nhttp://mirrors.aliyun.com/pypi/simple/tensorflow-gpu/\n\n或特定网址\nhttps://download.pytorch.org/whl/torch_stable.html"
-print(context_string)

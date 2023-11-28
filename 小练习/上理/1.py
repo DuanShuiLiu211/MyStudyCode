@@ -1,16 +1,15 @@
+import platform
+
 import numpy as np
+import torch
 
 array = np.array([1, 2, 3, 4])
 print(array)
 chance = np.random.randint(100) + 1
 print(chance)
 
-import torch
-
 tensor = torch.empty(5, 3)
 print(tensor)
-
-import platform
 
 if platform.system() == "Darwin":
     from torch.backends import mps

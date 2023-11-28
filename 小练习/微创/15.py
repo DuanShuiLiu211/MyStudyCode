@@ -5,7 +5,6 @@ import cv2
 import numpy as np
 import pandas as pd
 import SimpleITK as sitk
-import xlrd
 from matplotlib import pyplot as plot
 from PIL import Image
 from skimage import morphology

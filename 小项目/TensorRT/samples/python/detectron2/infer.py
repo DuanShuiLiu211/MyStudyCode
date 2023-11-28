@@ -15,9 +15,10 @@
 # limitations under the License.
 #
 
+import argparse
 import os
 import sys
-import argparse
+
 import numpy as np
 import tensorrt as trt
 from cuda import cudart

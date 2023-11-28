@@ -15,11 +15,12 @@
 # limitations under the License.
 #
 
-import numpy as np
-import nltk
-from nltk import word_tokenize
 import json
+
+import nltk
+import numpy as np
 import tensorrt as trt
+from nltk import word_tokenize
 
 
 def preprocess(text):

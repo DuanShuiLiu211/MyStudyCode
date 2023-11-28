@@ -4,7 +4,6 @@ from functools import lru_cache
 
 import matplotlib.pyplot as plt
 import numpy as np
-from scipy import io
 from scipy.special import binom
 
 

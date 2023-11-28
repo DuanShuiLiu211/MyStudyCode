@@ -22,7 +22,6 @@ import random
 import sys
 
 import numpy as np
-
 import tensorrt as trt
 from PIL import Image
 

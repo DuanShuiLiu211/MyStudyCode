@@ -19,9 +19,8 @@ import os
 import sys
 
 import tensorrt as trt
-
-from model import TRT_MODEL_PATH
 from load_plugin_lib import load_plugin_lib
+from model import TRT_MODEL_PATH
 
 # ../common.py
 parent_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir)
@@ -31,7 +30,7 @@ import common
 # Reuse some BiDAF-specific methods
 # ../engine_refit_onnx_bidaf/data_processing.py
 sys.path.insert(1, os.path.join(parent_dir, "engine_refit_onnx_bidaf"))
-from engine_refit_onnx_bidaf.data_processing import preprocess, get_inputs
+from engine_refit_onnx_bidaf.data_processing import get_inputs, preprocess
 
 # Maxmimum number of words in context or query text.
 # Used in optimization profile when building engine.

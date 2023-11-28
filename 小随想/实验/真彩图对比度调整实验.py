@@ -2,7 +2,6 @@ import sys
 
 import cv2
 import matplotlib.pyplot as plot
-import numpy as np
 
 
 def ContrastAlgorithm(rgb_img, contrast=0.5, threshold=0.5):

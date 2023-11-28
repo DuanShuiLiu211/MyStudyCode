@@ -16,6 +16,7 @@
 #
 
 import logging
+
 import numpy as np
 import onnx_graphsurgeon as gs
 

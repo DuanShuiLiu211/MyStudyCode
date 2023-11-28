@@ -904,7 +904,7 @@ if __name__ == "__main__":
     )
     adam_optimize = optim.Adam(models1.parameters(), lr=1e-4, weight_decay=1e-5)
     ce_loss = nn.BCELoss()
-    # visual_writer = SummaryWriter('visualization')
+    visual_writer = SummaryWriter("visualization")
     path = r"/Users/WangHao/工作/纳米光子中心/全光相关/实验-0303/0303.png"
     inputs1 = Image.open(path).convert("L")
     inputs1 = transforms.Compose(
@@ -923,13 +923,19 @@ if __name__ == "__main__":
         print(loss_result.data.item())
         loss_result.backward()
         adam_optimize.step()
-        # if idx == 0:
-        #     visual_writer.add_graph(models1, inputs1)
-        # visual_writer.add_scalars('trainloss', {'ce_loss': loss_result.data.item(), }, idx)
-        # visual_writer.add_image('0303_1', inputs1.squeeze(0), idx)
-        # visual_writer.add_image('0303_2', outputs1.squeeze(0), idx)
+        if idx == 0:
+            visual_writer.add_graph(models1, inputs1)
+        visual_writer.add_scalars(
+            "trainloss",
+            {
+                "ce_loss": loss_result.data.item(),
+            },
+            idx,
+        )
+        visual_writer.add_image("0303_1", inputs1.squeeze(0), idx)
+        visual_writer.add_image("0303_2", outputs1.squeeze(0), idx)
 
-    # visual_writer.close()
+    visual_writer.close()
 
     for parameters in models1.named_parameters():
         plot.figure(parameters[0])

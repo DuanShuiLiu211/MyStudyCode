@@ -15,17 +15,17 @@
 # limitations under the License.
 #
 
+import argparse
+import json
 import os
 import sys
-import json
-import argparse
 
 import numpy as np
 import tensorflow as tf
-from pycocotools.coco import COCO
-from infer import TensorRTInfer
 from image_batcher import ImageBatcher
-from visualize import visualize_detections, concat_visualizations
+from infer import TensorRTInfer
+from pycocotools.coco import COCO
+from visualize import concat_visualizations, visualize_detections
 
 
 class TensorFlowInfer:

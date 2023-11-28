@@ -15,12 +15,13 @@
 # limitations under the License.
 #
 
-import onnx_graphsurgeon as gs
-import onnx
-import numpy as np
 import json
+import os
+import sys
 
-import sys, os
+import numpy as np
+import onnx
+import onnx_graphsurgeon as gs
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
 from downloader import getFilePath

@@ -5,9 +5,7 @@ import cv2
 import numpy as np
 import pandas as pd
 import SimpleITK as sitk
-import xlrd
 from matplotlib import pyplot as plot
-from PIL import Image
 from skimage import morphology
 
 # 计算狭窄率，对外膜的mask进行腐蚀操作，去除正常血管壁的厚度
@@ -174,11 +172,11 @@ for i, data_tuple in enumerate(list(mask_all.items())):
         )
         frame = frame_pad[100:-100, 100:-100]
         frame = remove_isolate(frame)
-        # plot.imshow(frame)
-        # print(np.max(frame))
+        plot.imshow(frame)
+        print(np.max(frame))
 
         (x, y), radius, visual_frame = minimum_external_circle(frame)
-        # plot.imshow(visual_frame)
+        plot.imshow(visual_frame)
 
         frame_index = np.argwhere(frame == 1)
 

@@ -1,24 +1,23 @@
 import threading
 import time
 
-import keyboard
 import pyautogui
+from pynput import keyboard
 
 flag = True
 
 
-def watch_key(key):
-    name = key.name
-    print(name)
+def on_press(key):
     global flag
-    if name == "esc":
-        flag = False
-        # print('此时flag为False，将退出子线程main')
-    elif name == "delete":
-        # print('此时执行delete，删除一个目标')
-        pass
-    else:
-        print("想退出子线程main，请按esc")
+    try:
+        if key == keyboard.Key.esc:
+            flag = False
+        elif key == keyboard.Key.delete:
+            pass
+        else:
+            print("想退出子线程main，请按esc")
+    except AttributeError:
+        print(f"特殊按键{key}按下")
 
 
 class MyThread(threading.Thread):
@@ -104,7 +103,9 @@ def step_three(w1, h1, w2, h2, w3, h3, w4, h4):
 
 def main():
     print(pyautogui.size())
-    keyboard.on_press(watch_key)  # 若使用hook则按下与释放都会触发
+    # 设置键盘监听
+    listener = keyboard.Listener(on_press=on_press)
+    listener.start()
     if flag:
         w1, h1, w2, h2, w3, h3, w4, h4 = step_one()
     if flag:
@@ -115,6 +116,7 @@ def main():
         for i in range(1, 1500):
             if flag:
                 step_three(w1, h1, w2, h2, w3, h3, w4, h4)
+    listener.join()
 
 
 if __name__ == "__main__":

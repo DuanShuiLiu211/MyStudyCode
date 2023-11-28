@@ -21,9 +21,8 @@ np.set_printoptions(threshold=np.inf, suppress=True)
 
 import PIL.Image as Image
 import PIL.ImageDraw as ImageDraw
-import PIL.ImageFont as ImageFont
 import PIL.ImageFilter as ImageFilter
-
+import PIL.ImageFont as ImageFont
 
 COLORS = [
     "GoldenRod",

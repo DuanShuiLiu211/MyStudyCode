@@ -16,8 +16,8 @@
 #
 
 import os
-import sys
 import random
+import sys
 
 import numpy as np
 from PIL import Image

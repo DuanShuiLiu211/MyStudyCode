@@ -15,9 +15,10 @@
 # limitations under the License.
 #
 
+import argparse
+
 import onnx
 import onnx_graphsurgeon as gs
-import argparse
 
 COORD_CONV_AC_OP_TYPE = "CoordConvAC"
 

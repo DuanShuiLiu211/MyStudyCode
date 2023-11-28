@@ -6,7 +6,7 @@ from torch import Tensor, nn
 
 
 class BenchmarkNet(nn.Module):
-    def __init__(self, mode: Optional = "tiny_cnn"):
+    def __init__(self, mode: Optional[str] = "tiny_cnn"):
         super().__init__()
         self.mode = mode
         if mode == "tiny_cnn":

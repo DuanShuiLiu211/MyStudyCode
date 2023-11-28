@@ -224,9 +224,9 @@ class ImageInterLines(object):
 
 
 if __name__ == "__main__":
-    pic1 = cv2.imread(r"\image processing\Carmen.jpg")
-    pic2 = cv2.imread(r"\image processing\girl.jpg")
-    pic3 = cv2.imread(r"\image processing\architecture.jpg")
+    pic1 = cv2.imread(r"/image_processing/carmen.jpg")
+    pic2 = cv2.imread(r"/image_processing/girl.jpg")
+    pic3 = cv2.imread(r"/image_processing/architecture.jpg")
     Obj_pic1 = ImageInterLines(pic1, modify_size=(2, 2), align="center")
     new_pic1 = Obj_pic1.nearest_inter()
     cv2.imshow("origin", pic1)

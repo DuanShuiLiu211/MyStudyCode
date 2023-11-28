@@ -16,9 +16,9 @@
 #
 
 import argparse
-import os
 import ctypes
-from typing import Optional, List
+import os
+from typing import List, Optional
 
 import numpy as np
 import tensorrt as trt

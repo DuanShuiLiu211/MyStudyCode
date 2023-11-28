@@ -1,5 +1,3 @@
-import keras.backend as K
-import keras_contrib.backend as KC
 import numpy as np
 from keras.losses import binary_crossentropy, mean_squared_error
 

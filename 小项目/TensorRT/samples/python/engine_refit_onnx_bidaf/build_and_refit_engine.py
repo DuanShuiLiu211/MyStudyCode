@@ -20,7 +20,6 @@ import os
 import sys
 
 import numpy as np
-
 import tensorrt as trt
 from data_processing import get_inputs, preprocess
 

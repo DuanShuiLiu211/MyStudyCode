@@ -15,20 +15,21 @@
 # limitations under the License.
 #
 
+import argparse
 import os
 import sys
-import argparse
+
 import numpy as np
 import torch
-from PIL import Image
-from infer import TensorRTInfer
 from image_batcher import ImageBatcher
+from infer import TensorRTInfer
+from PIL import Image
 
 try:
     from detectron2.config import get_cfg
     from detectron2.data import MetadataCatalog
     from detectron2.evaluation import COCOEvaluator
-    from detectron2.structures import Instances, Boxes, ROIMasks
+    from detectron2.structures import Boxes, Instances, ROIMasks
 except ImportError:
     print("Could not import Detectron 2 modules. Maybe you did not install Detectron 2")
     print(

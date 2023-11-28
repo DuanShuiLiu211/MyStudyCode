@@ -19,9 +19,9 @@
 # Script to dump TensorFlow weights in TRT v1 and v2 dump format.
 # The V1 format is for TensorRT 4.0. The V2 format is for TensorRT 4.0 and later.
 
-import sys
-import struct
 import argparse
+import struct
+import sys
 
 try:
     import tensorflow as tf

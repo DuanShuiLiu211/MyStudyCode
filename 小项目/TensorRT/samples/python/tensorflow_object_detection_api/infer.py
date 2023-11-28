@@ -15,16 +15,16 @@
 # limitations under the License.
 #
 
+import argparse
 import os
 import sys
-import argparse
+
 import numpy as np
 import tensorrt as trt
 from cuda import cudart
 
 sys.path.insert(1, os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir))
 import common
-
 from image_batcher import ImageBatcher
 from visualize import visualize_detections
 

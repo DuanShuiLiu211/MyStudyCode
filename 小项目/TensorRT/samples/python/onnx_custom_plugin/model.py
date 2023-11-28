@@ -15,12 +15,12 @@
 # limitations under the License.
 #
 
-import os
 import json
+import os
 
-import wget
 import onnx
 import onnx_graphsurgeon as gs
+import wget
 
 MODEL_URL = "https://github.com/onnx/models/raw/e77240a62df68ed13e3138a5812553a552b857bb/text/machine_comprehension/bidirectional_attention_flow/model/bidaf-9.onnx"
 

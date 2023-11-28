@@ -15,18 +15,17 @@
 # limitations under the License.
 #
 
+import argparse
+import json
 import os
 import sys
-import json
-import argparse
 
 import numpy as np
 import tensorflow as tf
-
+from image_batcher import ImageBatcher
 from infer import TensorRTInfer
 from infer_tf import TensorFlowInfer
-from image_batcher import ImageBatcher
-from visualize import visualize_detections, concat_visualizations
+from visualize import concat_visualizations, visualize_detections
 
 
 def run(batcher, inferer, framework, nms_threshold=None):

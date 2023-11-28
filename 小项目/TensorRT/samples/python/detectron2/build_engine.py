@@ -15,15 +15,14 @@
 # limitations under the License.
 #
 
+import argparse
+import logging
 import os
 import sys
-import logging
-import argparse
 
 import numpy as np
 import tensorrt as trt
 from cuda import cudart
-
 from image_batcher import ImageBatcher
 
 logging.basicConfig(level=logging.INFO)

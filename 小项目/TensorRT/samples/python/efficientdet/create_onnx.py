@@ -15,19 +15,18 @@
 # limitations under the License.
 #
 
-import os
-import sys
 import argparse
 import logging
+import os
+import sys
 
-import tensorflow as tf
-import onnx_graphsurgeon as gs
 import numpy as np
 import onnx
-from onnx import shape_inference
-from tf2onnx import tfonnx, optimizer, tf_loader
-
+import onnx_graphsurgeon as gs
 import onnx_utils
+import tensorflow as tf
+from onnx import shape_inference
+from tf2onnx import optimizer, tf_loader, tfonnx
 
 logging.basicConfig(level=logging.INFO)
 logging.getLogger("EfficientDetGraphSurgeon").setLevel(logging.INFO)

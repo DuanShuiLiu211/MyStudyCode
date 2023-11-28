@@ -27,11 +27,11 @@ The output format can be optionally converted to a
 format suitable for GNUPlot.
 """
 
-import sys
-import json
 import argparse
-import prn_utils as pu
+import json
+import sys
 
+import prn_utils as pu
 
 allFeatures = ["name", "timeMs", "averageMs", "percentage"]
 

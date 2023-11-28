@@ -21,7 +21,6 @@ import sys
 # This sample uses an MNIST PyTorch model to create a TensorRT Inference Engine
 import model
 import numpy as np
-
 import tensorrt as trt
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))

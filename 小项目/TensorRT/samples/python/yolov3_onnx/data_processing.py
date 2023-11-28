@@ -16,10 +16,10 @@
 #
 
 import math
-from PIL import Image
-import numpy as np
 import os
 
+import numpy as np
+from PIL import Image
 
 # YOLOv3-608 has been trained with these 80 categories from COCO:
 # Lin, Tsung-Yi, et al. "Microsoft COCO: Common Objects in Context."

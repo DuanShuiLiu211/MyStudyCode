@@ -16,13 +16,14 @@
 # limitations under the License.
 #
 
-import onnx
-import torch
-import numpy as np
 import argparse
+
+import numpy as np
+import onnx
 import onnx_graphsurgeon as gs
-from post_processing import *
+import torch
 from packnet_sfm.networks.depth.PackNet01 import PackNet01
+from post_processing import *
 
 
 def post_process_packnet(model_file, opset=11):

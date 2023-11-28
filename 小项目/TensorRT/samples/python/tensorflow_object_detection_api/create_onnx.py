@@ -15,18 +15,18 @@
 # limitations under the License.
 #
 
+import argparse
+import logging
 import os
 import re
 import sys
-import argparse
-import logging
 
-import tensorflow as tf
-import onnx_graphsurgeon as gs
 import numpy as np
 import onnx
+import onnx_graphsurgeon as gs
+import tensorflow as tf
 from onnx import shape_inference
-from tf2onnx import tfonnx, optimizer, tf_loader
+from tf2onnx import optimizer, tf_loader, tfonnx
 
 try:
     from object_detection.utils import config_util

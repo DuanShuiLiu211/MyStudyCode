@@ -15,14 +15,15 @@
 # limitations under the License.
 #
 
-import os
-import sys
 import argparse
 import json
+import os
+import sys
+
 import numpy as np
-from PIL import Image
-from infer import TensorRTInfer
 from image_batcher import ImageBatcher
+from infer import TensorRTInfer
+from PIL import Image
 
 
 def main(args):

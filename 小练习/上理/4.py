@@ -173,19 +173,22 @@ class MNISTClassifier:
         restore_model = models_weights[-1]
         model.load_weights(restore_model)
 
-        input_shape = self.setting.input_shape
         for name in os.listdir(setting.pred_dir):
-            if name == ".DS_Store":
+            if name in [".DS_Store", "__MACOSX"]:
                 continue
             img_file = os.path.join(setting.pred_dir, name)
-            print(img_file)
-            img = Image.open(img_file)
-            img = np.array(img)
-            img = img.reshape(input_shape)
-            img = img / 255
-            ret_np = model.predict(img)
-            parser_val = ret_np.argmax()
-            print("预测结果为：{}".format(parser_val))
+            try:
+                img = Image.open(img_file)
+                img = img.resize((setting.img_width, setting.img_height))
+                img = np.array(img)
+                if img.shape[2] != 3:
+                    continue  # 跳过非彩色图像
+                img = np.expand_dims(img, axis=0) / 255
+                ret_np = model.predict(img)
+                parser_val = np.argmax(ret_np)
+                print(f"预测结果为：{parser_val} - 文件名: {name}")
+            except Exception as e:
+                print(f"处理文件 {name} 时出错: {e}")
 
 
 def args_parser():

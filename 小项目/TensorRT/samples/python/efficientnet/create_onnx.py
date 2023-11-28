@@ -15,17 +15,16 @@
 # limitations under the License.
 #
 
+import argparse
 import os
 import sys
-import argparse
-
-import onnx
-import onnx_graphsurgeon as gs
-from onnx import shape_inference
 
 import numpy as np
+import onnx
+import onnx_graphsurgeon as gs
 import tensorflow as tf
-from tf2onnx import tfonnx, optimizer, tf_loader
+from onnx import shape_inference
+from tf2onnx import optimizer, tf_loader, tfonnx
 
 
 def main(args):

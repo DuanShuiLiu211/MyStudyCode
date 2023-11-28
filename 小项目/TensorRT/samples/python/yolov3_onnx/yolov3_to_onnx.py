@@ -17,14 +17,14 @@
 #
 
 from __future__ import print_function
-from collections import OrderedDict
-import sys
-import os
 
-import onnx
-from onnx import helper
-from onnx import TensorProto
+import os
+import sys
+from collections import OrderedDict
+
 import numpy as np
+import onnx
+from onnx import TensorProto, helper
 
 sys.path.insert(1, os.path.join(sys.path[0], os.path.pardir))
 from downloader import getFilePath

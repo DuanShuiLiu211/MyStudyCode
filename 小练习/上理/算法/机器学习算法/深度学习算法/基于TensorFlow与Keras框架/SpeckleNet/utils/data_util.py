@@ -40,7 +40,7 @@ class MyDataset(Dataset):
         img1 = img1.astype(np.float64) / 255
         ir_label = np.expand_dims((255 - label) / 255, 2)
         label = np.expand_dims(label / 255, 2)
-        # label = np.concatenate((label, ir_label), axis=2)
+        label = np.concatenate((label, ir_label), axis=2)
 
         fn1 = fn1.split("\\")[1:]
         fn = fn1[0] + "," + fn1[1]

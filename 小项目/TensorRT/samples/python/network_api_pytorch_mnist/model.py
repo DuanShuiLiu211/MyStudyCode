@@ -15,18 +15,18 @@
 # limitations under the License.
 #
 
+import os
+from random import randint
+
+import numpy as np
+
 # This file contains functions for training a PyTorch MNIST Model
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
-from torchvision import datasets, transforms
 from torch.autograd import Variable
-
-import numpy as np
-import os
-
-from random import randint
+from torchvision import datasets, transforms
 
 
 # Network

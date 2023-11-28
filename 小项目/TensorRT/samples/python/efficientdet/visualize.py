@@ -16,7 +16,6 @@
 #
 
 import numpy as np
-
 import PIL.Image as Image
 import PIL.ImageDraw as ImageDraw
 import PIL.ImageFont as ImageFont

@@ -15,8 +15,8 @@
 # limitations under the License.
 #
 
-import os
 import ctypes
+import os
 
 WORKING_DIR = os.environ.get("TRT_WORKING_DIR") or os.path.dirname(
     os.path.realpath(__file__)

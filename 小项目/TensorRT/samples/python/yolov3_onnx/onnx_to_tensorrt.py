@@ -18,14 +18,13 @@
 
 from __future__ import print_function
 
+import os
+import sys
+
 import numpy as np
 import tensorrt as trt
-
+from data_processing import ALL_CATEGORIES, PostprocessYOLO, PreprocessYOLO
 from PIL import ImageDraw
-
-from data_processing import PreprocessYOLO, PostprocessYOLO, ALL_CATEGORIES
-
-import sys, os
 
 sys.path.insert(1, os.path.join(sys.path[0], ".."))
 import common

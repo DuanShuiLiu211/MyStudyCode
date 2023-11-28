@@ -16,10 +16,11 @@
 # limitations under the License.
 #
 
-import onnx_graphsurgeon as gs
 import argparse
-import onnx
+
 import numpy as np
+import onnx
+import onnx_graphsurgeon as gs
 import torch
 
 

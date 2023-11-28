@@ -15,16 +15,16 @@
 # limitations under the License.
 #
 
-import numpy as np
 import os
 import sys
+
+import numpy as np
 import tensorrt as trt
 
 # ../common.py
 parent_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), os.pardir)
 sys.path.insert(1, parent_dir)
 import common
-
 from load_plugin_lib import load_plugin_lib
 
 TRT_LOGGER = trt.Logger(trt.Logger.ERROR)

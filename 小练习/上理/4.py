@@ -173,7 +173,6 @@ class MNISTClassifier:
         restore_model = models_weights[-1]
         model.load_weights(restore_model)
 
-        input_shape = self.setting.input_shape
         for name in os.listdir(setting.pred_dir):
             if name in [".DS_Store", "__MACOSX"]:
                 continue

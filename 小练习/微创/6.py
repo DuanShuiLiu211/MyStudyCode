@@ -2,8 +2,6 @@ import os
 import shutil
 from glob import glob
 
-import matplotlib.pyplot as plt
-
 
 def add_prefix(i):
     """

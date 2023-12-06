@@ -423,7 +423,7 @@ main.bind_all("<Escape>", end_draw)
 toolbar = tk.Frame(main, borderwidth=1, relief=tk.RIDGE)
 toolbar.pack(side=tk.LEFT, fill=tk.Y)
 
-btn_openimg = tk.Button(toolbar, text="打开图片与配置", height=3, width=10, command=open_image)
+btn_openimg = tk.Button(toolbar, text="加载图片与配置", height=3, width=10, command=open_image)
 btn_drawpoly1 = tk.Button(toolbar, text="识别区域", height=3, width=10, command=drawpoly1)
 btn_drawpoly2 = tk.Button(toolbar, text="跟踪区域", height=3, width=10, command=drawpoly2)
 btn_drawpoly3 = tk.Button(toolbar, text="车道区域", height=3, width=10, command=drawpoly3)

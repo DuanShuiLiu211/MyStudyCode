@@ -28,9 +28,9 @@ def adjust_pts_order(pts_2ds):
 
 if __name__ == "__main__":
     # 横切
-    img_folder = "D:\lessons\实习相关\微创实习\dataCvtCode\dataFolder\data-0718\image"
-    label_folder = "D:\lessons\实习相关\微创实习\dataCvtCode\dataFolder\data-0718\json"
-    save_folder = "D:\lessons\实习相关\微创实习\dataCvtCode\dataFolder\data-0718\dataset"
+    img_folder = r"D:\lessons\实习相关\微创实习\dataCvtCode\dataFolder\data-0718\image"
+    label_folder = r"D:\lessons\实习相关\微创实习\dataCvtCode\dataFolder\data-0718\json"
+    save_folder = r"D:\lessons\实习相关\微创实习\dataCvtCode\dataFolder\data-0718\dataset"
 
     img_list = os.listdir(img_folder)
     label_list = os.listdir(label_folder)

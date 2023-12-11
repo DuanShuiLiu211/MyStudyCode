@@ -1,4 +1,7 @@
 import random
+import time
+
+from shapely.geometry import Polygon
 
 
 def is_point_inside_polygon(point, polygon_points):
@@ -71,9 +74,6 @@ t_e = time.time()
 print((t_e - t_s) / 10)
 
 
-from shapely.geometry import Polygon
-
-
 def overlap_area(coords1, coords2):
     # 将坐标列表转换为点元组的列表
     polygon1 = Polygon(
@@ -90,7 +90,6 @@ def overlap_area(coords1, coords2):
 polygon_coords1 = [369, 946, 1, 812, 2, 1064, 197, 1066]
 polygon_coords2 = [400, 900, 20, 850, 10, 1000, 150, 1100]
 
-import time
 
 t_s = time.time()
 for _ in range(10):

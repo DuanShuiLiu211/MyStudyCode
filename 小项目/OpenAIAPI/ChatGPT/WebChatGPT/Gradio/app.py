@@ -52,8 +52,8 @@ def chatbot_interaction_2st(question):
         answer_list, _ = gpt_model(question)
         answer = answer_list[SESSIONINDEX]
         # TODO: Latex渲染bug的缓解方案
-        answer = answer.replace("$\sqrt{}$", "√")
-        answer = answer.replace("$\sqrt{ }$", "√")
+        answer = answer.replace(r"$\sqrt{}$", "√")
+        answer = answer.replace(r"$\sqrt{ }$", "√")
     else:
         answer = "很高兴遇见你！我是一个AI语言模型，我能为你提供准确和公正的信息！"
     text = ""
@@ -104,8 +104,8 @@ def load_logs_1st(logs, filename, password):
             with open(logspath, "r") as f:
                 logs = f.read()
             # TODO: Latex渲染问题的缓解方案
-            logs = logs.replace("$\sqrt{}$", "√")
-            logs = logs.replace("$\sqrt{ }$", "√")
+            logs = logs.replace(r"$\sqrt{}$", "√")
+            logs = logs.replace(r"$\sqrt{ }$", "√")
             text1 = f"日志「{filename}」已导入！"
             text2 = ""
         else:

@@ -190,7 +190,7 @@ def load_bin_files(dir):
 
 
 if __name__ == "__main__":
-    bin_fileslist = load_bin_files("W:\\桌面\QuickDraw\\10")
+    bin_fileslist = load_bin_files("W:\\桌面\\QuickDraw\\10")
     datasetdir = "W:\\桌面\\QuickDraw\\png"
     if not os.path.exists(datasetdir):
         os.mkdir(datasetdir)

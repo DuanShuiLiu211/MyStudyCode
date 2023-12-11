@@ -270,7 +270,7 @@ if __name__ == "__main__":
     elif mode == 1:
         # Import the saved data.
         # during the final iteration (denoted by the index -1) of valid events.
-        mfx = np.load("\桌面\PSD95 647 RIM 594 M2.npy")
+        mfx = np.load(r"\桌面\PSD95 647 RIM 594 M2.npy")
         tic1 = mfx[mfx["vld"]]["itr"]["tic"][:, -1]
         loc1 = mfx[mfx["vld"]]["itr"]["loc"][:, -1, :]
         efo1 = mfx[mfx["vld"]]["itr"]["efo"][:, -1]

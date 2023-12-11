@@ -14,7 +14,7 @@ attr_points = list()
 out_polygons = list()
 out_points = list()
 config_path = None
-draw_tag = 0  # 绘制类型 0：识别区域, 1：跟踪区域, 2: lanes
+draw_tag = 0  # 绘制类型 0：识别区域, 1：跟踪区域, 2: 车道区域
 
 lanes = OrderedDict()
 lanes_points = []
@@ -75,12 +75,12 @@ def refresh_info():
     """
     刷新当前标记框信息
     """
-    info_box.delete(0, info_box.size())
+    normal_info_box.delete(0, normal_info_box.size())
     lane_info_box.delete(0, lane_info_box.size())
     canvas_w, canvas_h = canvas.winfo_width(), canvas.winfo_height()
     x, y, w, h = image[0], image[1], image[2].width(), image[2].height()
     for rect in attr_polygons + out_polygons:
-        info_box.insert(
+        normal_info_box.insert(
             tk.END,
             "{:0>3d}-{:0>3d}-{:0>3d}-{:0>3d}".format(
                 int(rect[0] - x), int(rect[1] - y), int(rect[2] - x), int(rect[3] - y)
@@ -176,17 +176,20 @@ def open_image():
 
 
 def choose_polygon(event):
-    # 高亮选择的多边形框
-    selection = info_box.curselection()
+    """
+    高亮选择的多边形框
+    """
+
+    selection = normal_info_box.curselection()
     if len(selection) == 0:
         return
     polygons = attr_polygons + out_polygons
     polygon = polygons[selection[0]]
-    canvas.delete("tmp2")
+    canvas.delete("tmp1")
     if polygon in attr_polygons:
-        canvas.create_polygon(polygon, outline="red", fill="red", tags="tmp2")
+        canvas.create_polygon(polygon, outline="red", fill="red", tags="tmp1")
     else:
-        canvas.create_polygon(polygon, outline="blue", fill="blue", tags="tmp2")
+        canvas.create_polygon(polygon, outline="blue", fill="blue", tags="tmp1")
 
 
 def choose_polygon_delete(event):
@@ -195,21 +198,21 @@ def choose_polygon_delete(event):
     """
 
     def delete():
-        selection = info_box.curselection()
+        selection = normal_info_box.curselection()
         if len(selection) == 0:
             return
-        positions = info_box.get(selection).split("-")
+        positions = normal_info_box.get(selection).split("-")
         positions = [int(pos) for pos in positions]
-        canvas.delete("tmp2")
+        canvas.delete("tmp1")
         polygons = attr_polygons + out_polygons
         if polygons[selection[0]] in attr_polygons:
             attr_polygons.remove(polygons[selection[0]])
         else:
             out_polygons.remove(polygons[selection[0]])
-        info_box.delete(selection)
+        normal_info_box.delete(selection)
         refresh()
 
-    info_box.send
+    normal_info_box.send
     menu = tk.Menu(main, tearoff=0)
     menu.add_command(label="删除", command=delete)
     menu.post(event.x_root, event.y_root)
@@ -224,8 +227,8 @@ def choose_polygon1(event):
         return
     lane_id = list(lanes)[selection[0]]
     polygon = lanes[lane_id]
-    canvas.delete("tmp3")
-    canvas.create_polygon(polygon, outline="green", fill="green", tags="tmp3")
+    canvas.delete("tmp2")
+    canvas.create_polygon(polygon, outline="green", fill="green", tags="tmp2")
 
 
 def choose_polygon_delete1(event):
@@ -237,7 +240,7 @@ def choose_polygon_delete1(event):
         selection = lane_info_box.curselection()
         if len(selection) == 0:
             return
-        canvas.delete("tmp3")
+        canvas.delete("tmp2")
         lane_id = list(lanes)[selection[0]]
         del lanes[lane_id]
         lane_info_box.delete(selection)
@@ -410,8 +413,8 @@ def drawpoly3():
 main = tk.Tk()
 sw = main.winfo_screenwidth()
 sh = main.winfo_screenheight()
-ww = 1920
-wh = 1080
+ww = 1080
+wh = 720
 x = (sw - ww) / 2
 y = (sh - wh) / 2
 main.title("检测区域配置")
@@ -442,14 +445,14 @@ canvas.bind("<Button-1>", draw_point)
 canvas.bind("<Motion>", draw_reference_line)
 
 # 底部的infobox
-info_box = tk.Listbox(main, height=10)
-info_box.pack(side=tk.BOTTOM, fill=tk.X)
-info_box.bind("<Button-1>", choose_polygon)
-info_box.bind("<Button-3>", choose_polygon_delete)
+normal_info_box = tk.Listbox(main, height=10)
+normal_info_box.pack(side=tk.BOTTOM, fill=tk.X)
+normal_info_box.bind("<Button-1>", choose_polygon)
+normal_info_box.bind("<Button-2>", choose_polygon_delete)
 
-lane_info_box = tk.Listbox(info_box, width=50)
+lane_info_box = tk.Listbox(normal_info_box, width=50)
 lane_info_box.pack(side=tk.RIGHT, fill=tk.Y)
 lane_info_box.bind("<Button-1>", choose_polygon1)
-lane_info_box.bind("<Button-3>", choose_polygon_delete1)
+lane_info_box.bind("<Button-2>", choose_polygon_delete1)
 
 main.mainloop()

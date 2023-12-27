@@ -1,3 +1,10 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:eab9fa45597cdefd941d0b05e6cf6b71e3e5a04615dac1af59a12e56e99b1cd8
-size 271
+nltk>=3.5
+wget
+cuda-python
+pywin32; platform_system == "Windows"
+pyyaml
+requests
+tqdm
+numpy==1.18.1; python_version<"3.8" and platform_system == "Windows"
+numpy==1.19.4; python_version<"3.8" and platform_system != "Windows"
+numpy==1.23.2; python_version>="3.8"

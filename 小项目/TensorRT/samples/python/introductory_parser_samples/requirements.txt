@@ -1,3 +1,11 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:dc2d1e4f283168eb89d02cebdf85cc6fccba6550da4859e094842440888be68f
-size 330
+Pillow
+pycuda<2021.1; python_version<"3.7"
+pycuda; python_version>="3.7"
+cuda-python
+pywin32; platform_system == "Windows"
+pyyaml
+requests
+tqdm
+numpy==1.18.1; python_version<"3.8" and platform_system == "Windows"
+numpy==1.19.4; python_version<"3.8" and platform_system != "Windows"
+numpy==1.23.2; python_version>="3.8"

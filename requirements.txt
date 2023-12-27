@@ -1,3 +1,49 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:926ad3a53a222e77a6b0eb54e58e05f99286270a1815ece8935eb306229b2345
-size 759
+torch
+torchvision
+torchaudio
+torch-tb-profiler
+tensorflow
+tensorflow-metal; sys_platform == 'darwin' and platform_machine == 'arm64'
+tensorboard
+numpy
+pandas
+matplotlib
+scikit-image
+scikit-learn
+scipy
+opencv-python
+cython
+numba
+tifffile
+paramiko
+beautifulsoup4
+segmentation-models-pytorch
+simpleitk
+shapely
+fastdtw
+selenium
+pyautogui
+pynput
+pygame
+networkx
+jax
+optax
+flax
+tqdm
+einops
+openai
+transformers
+flask
+markdown
+markupsafe
+gradio
+onnx
+onnxruntime; sys_platform == 'darwin' and platform_machine == 'arm64'
+onnxruntime-gpu; sys_platform != 'darwin' or platform_machine != 'arm64'
+tensorrt; sys_platform != 'darwin' or platform_machine != 'arm64'
+pycuda; sys_platform != 'darwin' or platform_machine != 'arm64'
+jupyter
+isort
+black
+flake8
+flake8-pyproject

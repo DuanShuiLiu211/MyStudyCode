@@ -1,3 +1,6 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:d67b6b2ea3423ec17837636b2588c0d7763538e37af85ac3b44b752dd6be77f0
-size 202
+pyyaml
+requests
+tqdm
+numpy==1.18.1; python_version<"3.8" and platform_system == "Windows"
+numpy==1.19.4; python_version<"3.8" and platform_system != "Windows"
+numpy==1.23.2; python_version>="3.8"

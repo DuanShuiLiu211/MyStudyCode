@@ -125,52 +125,60 @@ def open_image():
     out_polygons.clear()
     lanes.clear()
     global config_path
-    config_path = filedialog.askopenfile(filetypes=[("Json Files", "*.json")])
-    if config_path is None:
-        return
-    config_path = config_path.name
-    if os.path.exists(config_path):
-        with open(config_path, "r", encoding="utf-8") as f:
-            config = json.load(f)
+    config_path = filedialog.askopenfilename(filetypes=[("Json Files", "*.json")])
+    if not config_path:
+        config_path = "default_config.json"  # 设置默认配置文件名
+        if not os.path.exists(config_path):
+            # 创建一个包含默认字段的空配置文件
+            default_config = {
+                "veh_attr_param": {"attributing_regions": []},
+                "filter_param": {"output_regions": []},
+                "dt_param": {"lanes": []},
+            }
+            with open(config_path, "w", encoding="utf-8") as f:
+                json.dump(default_config, f)
 
-            if (
-                "veh_attr_param" in config.keys()
-                and "attributing_regions" in config["veh_attr_param"].keys()
-            ):
-                for region in config["veh_attr_param"]["attributing_regions"]:
-                    points = region["ps"]
-                    points_ = []
-                    for point in points:
-                        x_ = x + img.width() * int(point["x"]) / image_w
-                        y_ = y + img.height() * int(point["y"]) / image_h
-                        points_.extend([x_, y_])
+    with open(config_path, mode="r", encoding="utf-8") as f:
+        config = json.load(f)
 
-                    attr_polygons.append(points_)
+        if (
+            "veh_attr_param" in config.keys()
+            and "attributing_regions" in config["veh_attr_param"].keys()
+        ):
+            for region in config["veh_attr_param"]["attributing_regions"]:
+                points = region["ps"]
+                points_ = []
+                for point in points:
+                    x_ = x + img.width() * int(point["x"]) / image_w
+                    y_ = y + img.height() * int(point["y"]) / image_h
+                    points_.extend([x_, y_])
 
-            if (
-                "filter_param" in config.keys()
-                and "output_regions" in config["filter_param"].keys()
-            ):
-                for region in config["filter_param"]["output_regions"]:
-                    points = region["ps"]
-                    points_ = []
-                    for point in points:
-                        x_ = x + img.width() * int(point["x"]) / image_w
-                        y_ = y + img.height() * int(point["y"]) / image_h
-                        points_.extend([x_, y_])
+                attr_polygons.append(points_)
 
-                    out_polygons.append(points_)
+        if (
+            "filter_param" in config.keys()
+            and "output_regions" in config["filter_param"].keys()
+        ):
+            for region in config["filter_param"]["output_regions"]:
+                points = region["ps"]
+                points_ = []
+                for point in points:
+                    x_ = x + img.width() * int(point["x"]) / image_w
+                    y_ = y + img.height() * int(point["y"]) / image_h
+                    points_.extend([x_, y_])
 
-            if "dt_param" in config.keys() and "lanes" in config["dt_param"].keys():
-                for lane in config["dt_param"]["lanes"]:
-                    lane_id = lane["id"]
-                    points = lane["area"]["ps"]
-                    points_ = []
-                    for point in points:
-                        x_ = x + img.width() * int(point["x"]) / image_w
-                        y_ = y + img.height() * int(point["y"]) / image_h
-                        points_.extend([x_, y_])
-                    lanes[lane_id] = points_
+                out_polygons.append(points_)
+
+        if "dt_param" in config.keys() and "lanes" in config["dt_param"].keys():
+            for lane in config["dt_param"]["lanes"]:
+                lane_id = lane["id"]
+                points = lane["area"]["ps"]
+                points_ = []
+                for point in points:
+                    x_ = x + img.width() * int(point["x"]) / image_w
+                    y_ = y + img.height() * int(point["y"]) / image_h
+                    points_.extend([x_, y_])
+                lanes[lane_id] = points_
     refresh()
     refresh_info()
 
@@ -413,8 +421,8 @@ def drawpoly3():
 main = tk.Tk()
 sw = main.winfo_screenwidth()
 sh = main.winfo_screenheight()
-ww = 1080
-wh = 720
+ww = 1500
+wh = 900
 x = (sw - ww) / 2
 y = (sh - wh) / 2
 main.title("检测区域配置")

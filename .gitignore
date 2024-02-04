@@ -1,29 +1,35 @@
+.git
+.idea
+.cache
+.vscode
 .DS_Store
 ._.DS_Store
-.idea
-.vscode
+.clang-format
 .ipynb_checkpoints
 
-logs
-results
+*.dSYM
+*.egg-info
 __pycache__
 
-*.zip
-*.tar
-*.gz
-*.rar
-*.7z
-*.bz2
-*.xz
+data
+datas
+build
+builds
+log
+logs
+result
+results
+resource
+resources
 
 *.jpg
 *.jpeg
 *.png
+*.bmp
 *.tif
 *.tiff
 *.gif
 *.svg
-*.bmp
 
 *.txt
 *.csv
@@ -33,6 +39,14 @@ __pycache__
 *.doc
 *.xls
 *.xlsx
+
+*.zip
+*.tar
+*.gz
+*.rar
+*.7z
+*.bz2
+*.xz
 
 *.npy
 *.h5
@@ -47,3 +61,4 @@ __pycache__
 
 !**/assets/**
 !**/requirements.txt
+!**/CMakeLists.txt

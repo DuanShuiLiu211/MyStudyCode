@@ -20,6 +20,8 @@ log
 logs
 result
 results
+resource
+resources
 
 *.jpg
 *.jpeg

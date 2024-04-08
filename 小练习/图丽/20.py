@@ -3,8 +3,8 @@ import numpy as np
 
 
 model = cv2.dnn.readNetFromCaffe(
-    "./assets/opencv_dnn/vehicle_detect/model.prototxt",
-    "./assets/opencv_dnn/vehicle_detect/model.caffemodel",
+    "./assets/opencv_dnn/vehicle_classify/model.prototxt",
+    "./assets/opencv_dnn/vehicle_classify/model.caffemodel",
 )
 
 img_path = "./assets/data/imgs/2.png"

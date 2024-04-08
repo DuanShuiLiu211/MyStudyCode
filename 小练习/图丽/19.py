@@ -46,8 +46,8 @@ def detect_face_net():
     # 使用DNN模型进行实时人脸检测
     # 加载预训练模型
     net = cv2.dnn.readNetFromCaffe(
-        "assets/opencv_dnn/deploy.prototxt",
-        "assets/opencv_dnn/res10_300x300_ssd_iter_140000_fp16.caffemodel",
+        "assets/opencv_dnn/face_detect/deploy.prototxt",
+        "assets/opencv_dnn/face_detect/res10_300x300_ssd_iter_140000_fp16.caffemodel",
     )
 
     # 打开摄像头

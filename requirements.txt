@@ -1,6 +1,7 @@
 torch
 torchvision
 torchaudio
+torch-tb-profiler
 tensorflow
 tensorflow-metal; sys_platform == 'darwin' and platform_machine == 'arm64'
 tensorboard
@@ -11,13 +12,15 @@ scikit-image
 scikit-learn
 scipy
 opencv-python
+opencv-contrib-python
 cython
 numba
 tifffile
 paramiko
 beautifulsoup4
-segmentation_models_pytorch
+segmentation-models-pytorch
 simpleitk
+shapely
 fastdtw
 selenium
 pyautogui
@@ -39,8 +42,8 @@ onnx
 onnxruntime; sys_platform == 'darwin' and platform_machine == 'arm64'
 onnxruntime-gpu; sys_platform != 'darwin' or platform_machine != 'arm64'
 tensorrt; sys_platform != 'darwin' or platform_machine != 'arm64'
-pycuda; sys_platform != 'darwin' or platform_machine != 'arm64'
 cuda-python; sys_platform != 'darwin' or platform_machine != 'arm64'
+pycuda; sys_platform != 'darwin' or platform_machine != 'arm64'
 jupyter
 isort
 black

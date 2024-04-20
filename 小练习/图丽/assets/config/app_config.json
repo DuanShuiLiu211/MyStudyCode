@@ -1,0 +1,10 @@
+{
+    "sources": [
+        {
+            "name": "test",
+            "url": "rtsp://localhost:8554/mystream"
+        }
+    ],
+    "max-duration": 60,
+    "split-interval": 10
+}

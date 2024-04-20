@@ -2,6 +2,7 @@ import sys
 
 import cv2
 import matplotlib.pyplot as plot
+import numpy as np
 
 
 def ContrastAlgorithm(rgb_img, contrast=0.5, threshold=0.5):
@@ -57,7 +58,7 @@ if __name__ == "__main__":
     img_new = ContrastAlgorithm(img, contrast, threshold)
 
     plot.figure("img_original")
-    plot.imshow(img / 255.0)
+    plot.imshow(np.asarray(img, dtype=np.uint8) / 255.0)
     plot.axis("off")
 
     plot.figure("img_contrast")

@@ -10,6 +10,7 @@ def signal_handler(signal_number, code_frame):
 
 
 def child_process(event):
+    signal.signal(signal.SIGINT, signal_handler)
     print("Press Ctrl+C to trigger the signal handler...")
     while not event.is_set():
         print("Waiting for signal...")

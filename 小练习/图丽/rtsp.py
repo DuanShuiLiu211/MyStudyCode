@@ -15,13 +15,13 @@ def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--input_file",
-        default="/Users/WangHao/Sites/工作/图丽信息/程序代码/东明停车/出入口数据/出口/出口20240123_105118_14.mkv",
-        help="程序的主要配置文件",
+        default="/home/wanghao/data/lane_gate/in_out/in/in_20240124_165600_26.mkv",
+        help="输入文件",
     )
     parser.add_argument(
         "--output_url",
         default="rtsp://localhost:8554/mystream",
-        help="程序的主要配置文件",
+        help="输出链接",
     )
 
     return parser.parse_args()

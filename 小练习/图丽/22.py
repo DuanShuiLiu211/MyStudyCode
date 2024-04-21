@@ -18,6 +18,7 @@ def signal_handler(event):
 def child_process(event):
     signal.signal(signal.SIGINT, signal_handler(event))
     signal.signal(signal.SIGTERM, signal_handler(event))
+    event.wait(5)
     while not event.is_set():
         print("子进程号", os.getpid(), "事件号", id(event), "事件状态", event.is_set())
         time.sleep(1)

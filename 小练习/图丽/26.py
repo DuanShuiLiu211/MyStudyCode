@@ -70,7 +70,7 @@ def convert_annotation(img_path, xml_path, out_path):
         os.makedirs(os.path.join(out_path, "images", split), exist_ok=True)
         os.makedirs(os.path.join(out_path, "labels", split), exist_ok=True)
 
-    for im_fn in im_fns[:train_num]:
+    for im_fn in tqdm(im_fns[:train_num]):
         shutil.copy(
             im_fn, os.path.join(out_path, "images", "train", os.path.basename(im_fn))
         )
@@ -81,7 +81,7 @@ def convert_annotation(img_path, xml_path, out_path):
         with open(annotation_txt_file_path, "w") as f:
             f.write("\n".join(images_annotations_dict[im_fn]))
 
-    for im_fn in im_fns[train_num:]:
+    for im_fn in tqdm(im_fns[train_num:]):
         shutil.copy(
             im_fn, os.path.join(out_path, "images", "val", os.path.basename(im_fn))
         )

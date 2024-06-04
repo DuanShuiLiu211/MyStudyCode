@@ -16,10 +16,10 @@ def convert_annotation(img_path, xml_path, out_path):
         tree = ET.parse(xml_fn)
         root = tree.getroot()
         for obj in root.iter("object"):
-            cls = obj.find("name").text
+            cls = obj.find("name").text  # type: ignore
             class_names.append(cls)
     class_names = sorted(list(set(class_names)))
-    print(f"标注类别 [{class_names}]。")
+    print(f"总标注类别 [{class_names}]。")
 
     images_annotations_dict = {}
     im_fns = glob.glob(os.path.join(img_path, "*.jpg"))
@@ -37,21 +37,21 @@ def convert_annotation(img_path, xml_path, out_path):
         tree = ET.parse(xml_fn)
         root = tree.getroot()
         annotations = []
-        xml_height = int(root.find("size").find("height").text)
-        xml_width = int(root.find("size").find("width").text)
+        xml_height = int(root.find("size").find("height").text)  # type: ignore
+        xml_width = int(root.find("size").find("width").text)  # type: ignore
         if height != xml_height or width != xml_width:
             print(
                 f"图像 [{im_fn}] 的高宽 [{(height, width)}] 与标注 [{xml_fn}] 的高宽 [{(xml_height, xml_width)}] 不匹配。"
             )
             continue
         for obj in root.iter("object"):
-            cls = obj.find("name").text
+            cls = obj.find("name").text  # type: ignore
             cls_id = class_names.index(cls)
             xmlbox = obj.find("bndbox")
-            xmin = int(xmlbox.find("xmin").text)
-            ymin = int(xmlbox.find("ymin").text)
-            xmax = int(xmlbox.find("xmax").text)
-            ymax = int(xmlbox.find("ymax").text)
+            xmin = int(xmlbox.find("xmin").text)  # type: ignore
+            ymin = int(xmlbox.find("ymin").text)  # type: ignore
+            xmax = int(xmlbox.find("xmax").text)  # type: ignore
+            ymax = int(xmlbox.find("ymax").text)  # type: ignore
             cx = (xmax + xmin) / 2.0 / width
             cy = (ymax + ymin) / 2.0 / height
             bw = (xmax - xmin) * 1.0 / width
@@ -61,6 +61,7 @@ def convert_annotation(img_path, xml_path, out_path):
         if len(annotations) > 0:
             images_annotations_dict[im_fn] = annotations
 
+    print(f"总图像标注匹配数 [{len(images_annotations_dict)}]。")
     im_fns = list(images_annotations_dict.keys())
     random.seed(51)
     random.shuffle(im_fns)
@@ -98,19 +99,19 @@ def parse_args():
     parser.add_argument(
         "--img_path",
         type=str,
-        default="/home/tlkj/datas1/import-datas/license-plate-character/images",
+        default="/Volumes/tlkj/datas1/import-datas/license-plate-character/images",
         help="input image directory",
     )
     parser.add_argument(
         "--xml_path",
         type=str,
-        default="/home/tlkj/datas1/import-datas/license-plate-character/labels_3cls",
+        default="/Volumes/tlkj/datas1/import-datas/license-plate-character/labels_3cls",
         help="input xml directory",
     )
     parser.add_argument(
         "--out_path",
         type=str,
-        default="/home/tlkj/datas/wangh/license-plate-character",
+        default="/Users/WangHao/Sites/学习/LargeData/licence_plate_character/detect",
         help="output directory",
     )
     args = parser.parse_args()

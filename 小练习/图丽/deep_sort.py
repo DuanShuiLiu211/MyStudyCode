@@ -151,7 +151,7 @@ def main(argv):
         fps = int(cap.get(cv2.CAP_PROP_FPS))
 
         # 初始化视频写入器
-        fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+        fourcc = cv2.VideoWriter_fourcc(*"mp4v")  # type: ignore
         writer = cv2.VideoWriter(
             FLAGS.outputs, fourcc, fps, (frame_width, frame_height)
         )

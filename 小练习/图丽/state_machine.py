@@ -23,7 +23,6 @@ class StateMachine:
         self.is_running = False
 
 
-# 示例状态机的具体实现
 def start_state():
     print("这是开始状态")
     user_input = input("输入 'a' 进入状态1，输入 'b' 进入状态2: ")

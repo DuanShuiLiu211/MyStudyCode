@@ -15,7 +15,7 @@ def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--input_file",
-        default="/home/wanghao/data/lane_gate/in_out/in/in_20240124_165600_26.mkv",
+        default="/home/wanghao/code/Python/SoundGuard/test/datas/mp4s/bilibili_ad.mp4",
         help="输入文件",
     )
     parser.add_argument(
@@ -32,7 +32,7 @@ def start_rtsp_stream(input_file, output_url):
     启动 RTSP 流
 
     :param input_file: 输入视频文件的路径
-    :param output_url: 输出 RTSP 流的 URL
+    :param output_url: 输出RTSP流的链接
     """
     command = [
         "ffmpeg",
@@ -54,11 +54,11 @@ def start_rtsp_stream(input_file, output_url):
         process = subprocess.Popen(
             command, stdout=subprocess.PIPE, stderr=subprocess.PIPE
         )
-        logging.info(f"启动 RTSP 流：{input_file} -> {output_url}")
+        logging.info(f"启动RTSP流：{input_file} -> {output_url}")
         return process
     except Exception as e:
-        logging.error(f"启动 RTSP 流失败：{e}")
-        exit(1)
+        logging.error(f"启动RTSP流失败：{e}")
+        exit(f"启动RTSP流失败：{e}")
 
 
 def stop_rtsp_stream(process) -> None:
@@ -70,12 +70,12 @@ def stop_rtsp_stream(process) -> None:
     try:
         process.terminate()
         process.wait(timeout=30)
-        logging.info("RTSP 流已停止")
+        logging.info("RTSP流已停止。")
     except subprocess.TimeoutExpired:
-        logging.warning("停止 RTSP 流超时强制终止")
+        logging.warning("停止RTSP流超时强制终止。")
         process.kill()
     except Exception as e:
-        logging.error(f"停止 RTSP 流时发生错误：{e}")
+        logging.error(f"停止RTSP流时发生错误：{e}！")
 
 
 def main():

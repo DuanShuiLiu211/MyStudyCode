@@ -268,7 +268,7 @@ def save():
     )
 
     result = {}
-    with open(config_path, "r", encoding="utf-8") as f:
+    with open(str(config_path), "r", encoding="utf-8") as f:
         result = json.load(f)
     regions = []
     for polygon in attr_polygons:

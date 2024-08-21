@@ -1,3 +1,4 @@
+# encoding:utf-8
 import os
 import glob
 import argparse
@@ -8,8 +9,9 @@ from tqdm import tqdm
 import shutil
 
 
-def convert_annotation(img_path, xml_path, out_path):
-    class_names = []
+def convert_annotation(img_path, xml_path, class_names, out_path):
+    print(f"定义的总标注类别 [{class_names}]。")
+    gather_class_names = []
     xml_fns = glob.glob(os.path.join(xml_path, "*.xml"))
     print(f"总标注数 [{len(xml_fns)}]。")
     for xml_fn in xml_fns:
@@ -17,9 +19,12 @@ def convert_annotation(img_path, xml_path, out_path):
         root = tree.getroot()
         for obj in root.iter("object"):
             cls = obj.find("name").text  # type: ignore
-            class_names.append(cls)
-    class_names = sorted(list(set(class_names)))
-    print(f"总标注类别 [{class_names}]。")
+            gather_class_names.append(cls)
+    gather_class_names = sorted(list(set(gather_class_names)))
+    print(f"收集的总标注类别 [{gather_class_names}]。")
+    if not len(set(class_names) - set(gather_class_names)):
+        class_names = gather_class_names
+    print(f"最终的总标注类别 [{class_names}]。")
 
     images_annotations_dict = {}
     im_fns = glob.glob(os.path.join(img_path, "*.jpg"))
@@ -99,19 +104,26 @@ def parse_args():
     parser.add_argument(
         "--img_path",
         type=str,
-        default="/Volumes/tlkj/datas1/import-datas/license-plate-character/images",
+        default="/home/tlkj/datas1/import-datas/lpd/images",
         help="input image directory",
     )
     parser.add_argument(
         "--xml_path",
         type=str,
-        default="/Volumes/tlkj/datas1/import-datas/license-plate-character/labels_3cls",
+        default="/home/tlkj/datas1/import-datas/lpd/labels",
         help="input xml directory",
+    )
+    parser.add_argument(
+        "--class_names",
+        nargs="*",
+        type=str,
+        default=["single", "double", "secondary"],
+        help="label class names",
     )
     parser.add_argument(
         "--out_path",
         type=str,
-        default="/Users/WangHao/Sites/学习/LargeData/licence_plate_character/detect",
+        default="/home/tlkj/datas/wangh/lpd",
         help="output directory",
     )
     args = parser.parse_args()
@@ -120,4 +132,4 @@ def parse_args():
 
 if __name__ == "__main__":
     args = parse_args()
-    convert_annotation(args.img_path, args.xml_path, args.out_path)
+    convert_annotation(args.img_path, args.xml_path, args.class_names, args.out_path)

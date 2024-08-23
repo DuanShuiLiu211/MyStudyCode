@@ -22,7 +22,7 @@ def convert_annotation(img_path, xml_path, class_names, out_path):
             gather_class_names.append(cls)
     gather_class_names = sorted(list(set(gather_class_names)))
     print(f"收集的总标注类别 [{gather_class_names}]。")
-    if not len(set(class_names) - set(gather_class_names)):
+    if len(set(class_names) - set(gather_class_names)):
         class_names = gather_class_names
     print(f"最终的总标注类别 [{class_names}]。")
 

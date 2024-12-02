@@ -1,6 +1,7 @@
 import json
-import yaml
 import uuid
+
+import yaml
 
 # 导入数据
 json_file_path = "default_config.json"

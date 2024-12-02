@@ -253,7 +253,9 @@ if __name__ == "__main__":
                 else:
                     label_img = cv2.imdecode(np.fromfile(label_dir, dtype=np.uint8), -1)
 
-                save_dir = os.path.join(save_folder, f"HSF杭肿正常二维横切_{data_list[i]}_{k}")
+                save_dir = os.path.join(
+                    save_folder, f"HSF杭肿正常二维横切_{data_list[i]}_{k}"
+                )
 
                 if not os.path.exists(save_dir):
                     os.makedirs(save_dir)

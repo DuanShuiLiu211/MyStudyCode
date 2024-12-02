@@ -52,7 +52,10 @@ class ImageInterLines(object):
             src_x = min((self.source_h - 1), src_x)
             src_y = min((self.source_w - 1), src_y)
 
-        return src_x, src_y  # 这里返回的数值可以是小数，也可能是整数例如：23.00，但是这个数仍然是小数
+        return (
+            src_x,
+            src_y,
+        )  # 这里返回的数值可以是小数，也可能是整数例如：23.00，但是这个数仍然是小数
 
     def nearest_inter(self):
         """最邻近插值法"""
@@ -200,7 +203,9 @@ class ImageInterLines(object):
                 new_img[i, j] = self.img[round(src_i), round(src_j)]
 
         """中间的使用双线性插值法"""
-        for i in range(1, new_img.shape[0] - 1):  # 减1的目的就是为了可以进行向上向下取整数
+        for i in range(
+            1, new_img.shape[0] - 1
+        ):  # 减1的目的就是为了可以进行向上向下取整数
             for j in range(1, new_img.shape[1] - 1):
                 inner_src_i, inner_src_j = self.convert2src_axes(
                     i, j

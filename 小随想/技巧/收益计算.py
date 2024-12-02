@@ -1,7 +1,12 @@
 class OurEth:
     @staticmethod
     def miner_power(num):
-        cp = list(map(float, input("请输入第{}个矿工的各个矿机的算力：".format(num)).split(" ")))
+        cp = list(
+            map(
+                float,
+                input("请输入第{}个矿工的各个矿机的算力：".format(num)).split(" "),
+            )
+        )
         miner_cp = sum(cp)
         return miner_cp
 

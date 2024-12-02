@@ -1,6 +1,7 @@
-import pyautogui
-import time
 import math
+import time
+
+import pyautogui
 
 
 def draw_heart(duration):

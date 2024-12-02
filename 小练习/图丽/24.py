@@ -1,12 +1,12 @@
-import cv2
-import os
 import json
+import os
 import tkinter as tk
-import numpy as np
-from tkinter import filedialog, simpledialog
-from PIL import Image, ImageTk
 from collections import OrderedDict
+from tkinter import filedialog, simpledialog
 
+import cv2
+import numpy as np
+from PIL import Image, ImageTk
 
 image = None
 config_path = None

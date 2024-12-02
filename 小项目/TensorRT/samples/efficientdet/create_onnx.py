@@ -344,13 +344,13 @@ class EfficientDetGraphSurgeon:
                 # If all the checks above pass, then this node sequence can be optimized by just the ReduceMean itself
                 # operating on a different set of axes
                 input_tensor = transpose.inputs[0]  # Input tensor to the Transpose
-                reduce.inputs[
-                    0
-                ] = input_tensor  # Forward the Transpose input to the ReduceMean node
+                reduce.inputs[0] = (
+                    input_tensor  # Forward the Transpose input to the ReduceMean node
+                )
                 output_tensor = reduce.outputs[0]  # Output tensor of the ReduceMean
-                conv.inputs[
-                    0
-                ] = output_tensor  # Forward the ReduceMean output to the Conv node
+                conv.inputs[0] = (
+                    output_tensor  # Forward the ReduceMean output to the Conv node
+                )
                 reduce.attrs["axes"] = [
                     2,
                     3,

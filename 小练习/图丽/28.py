@@ -1,7 +1,7 @@
-import numpy as np
-import cv2
 import os
 
+import cv2
+import numpy as np
 
 cache_file_path = "train.cache"
 save_dir = "train"

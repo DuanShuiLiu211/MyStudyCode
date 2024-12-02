@@ -8,7 +8,9 @@ class Solution:
 
     def subject01(self, arr):
         unique_arr = list(set(arr))  # [1, 2] / [2, 3, 5]  # 不重复的3个数
-        index_arr = [0 for _ in range(len(unique_arr))]  # [3, 3] / [3, 3, 2]  # 3个数的频数
+        index_arr = [
+            0 for _ in range(len(unique_arr))
+        ]  # [3, 3] / [3, 3, 2]  # 3个数的频数
         for num in arr:
             index = unique_arr.index(num)
             index_arr[index] += 1

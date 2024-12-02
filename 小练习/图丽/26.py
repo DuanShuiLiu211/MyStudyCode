@@ -1,12 +1,13 @@
 # encoding:utf-8
-import os
-import glob
 import argparse
+import glob
+import os
 import random
+import shutil
 import xml.etree.ElementTree as ET
+
 from PIL import Image
 from tqdm import tqdm
-import shutil
 
 
 def convert_annotation(img_path, xml_path, class_names, out_path):

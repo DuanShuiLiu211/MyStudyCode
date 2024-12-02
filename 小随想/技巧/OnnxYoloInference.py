@@ -220,7 +220,9 @@ def filter_box(org_box, conf_thres, iou_thres):  # 过滤掉无用的框
     org_box = np.squeeze(org_box)  # 删除数组形状中单维度条目(shape中为1的维度)
     # (25200, 9)
     # […,4]：代表了取最里边一层的所有第4号元素，…代表了对:,:,:,等所有的的省略。此处生成：25200个第四号元素组成的数组
-    conf = org_box[..., 4] > conf_thres  # 0 1 2 3 4 4是置信度，只要置信度 > conf_thres 的
+    conf = (
+        org_box[..., 4] > conf_thres
+    )  # 0 1 2 3 4 4是置信度，只要置信度 > conf_thres 的
     box = org_box[conf == True]  # 根据objectness score生成(n, 9)，只留下符合要求的框
     print("box:符合要求的框")
     print(box.shape)
@@ -228,7 +230,9 @@ def filter_box(org_box, conf_thres, iou_thres):  # 过滤掉无用的框
     # -------------------------------------------------------
     #   通过argmax获取置信度最大的类别
     # -------------------------------------------------------
-    cls_cinf = box[..., 5:]  # 左闭右开（5 6 7 8），就只剩下了每个grid cell中各类别的概率
+    cls_cinf = box[
+        ..., 5:
+    ]  # 左闭右开（5 6 7 8），就只剩下了每个grid cell中各类别的概率
     cls = []
     for i in range(len(cls_cinf)):
         cls.append(
@@ -259,7 +263,9 @@ def filter_box(org_box, conf_thres, iou_thres):  # 过滤掉无用的框
         curr_cls_box = xywh2xyxy(
             curr_cls_box
         )  # 0 1 2 3 4 5 分别是 x1 y1 x2 y2 score class
-        curr_out_box = nms(curr_cls_box, iou_thres)  # 获得nms后，剩下的类别在curr_cls_box中的下标
+        curr_out_box = nms(
+            curr_cls_box, iou_thres
+        )  # 获得nms后，剩下的类别在curr_cls_box中的下标
 
         for k in curr_out_box:
             output.append(curr_cls_box[k])

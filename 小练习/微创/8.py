@@ -6,16 +6,10 @@ import numpy as np
 
 if __name__ == "__main__":
     # 纵切
-    img_folder = (
-        r"D:\lessons\实习相关\微创实习\dataCvtCode\dataFolder\data-0718-长轴\长轴静态斑块标注--迪-image"
-    )
-    label_folder = (
-        r"D:\lessons\实习相关\微创实习\dataCvtCode\dataFolder\data-0718-长轴\长轴静态斑块标注--迪-json"
-    )
+    img_folder = r"D:\lessons\实习相关\微创实习\dataCvtCode\dataFolder\data-0718-长轴\长轴静态斑块标注--迪-image"
+    label_folder = r"D:\lessons\实习相关\微创实习\dataCvtCode\dataFolder\data-0718-长轴\长轴静态斑块标注--迪-json"
     visual_folder = r"D:\lessons\实习相关\微创实习\0704数据\visual"
-    save_folder = (
-        r"D:\lessons\实习相关\微创实习\dataCvtCode\dataFolder\data-0718-长轴\长轴静态斑块标注--迪-dataset"
-    )
+    save_folder = r"D:\lessons\实习相关\微创实习\dataCvtCode\dataFolder\data-0718-长轴\长轴静态斑块标注--迪-dataset"
 
     img_list = os.listdir(img_folder)
     label_list = os.listdir(label_folder)

@@ -1,4 +1,5 @@
 import xml.etree.ElementTree as ET
+
 from PIL import Image, ImageDraw
 
 xml_path = "/Users/WangHao/Desktop/TODO/测试/黑L4635挂.xml"

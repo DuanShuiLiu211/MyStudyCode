@@ -90,7 +90,9 @@ nn.init.sparse_(w, sparsity=0.1)
 
 # 13. Dirac delta 函数初始化，仅适用于 {3, 4, 5}-维的 torch.Tensor
 # torch.nn.init.dirac_(tensor)
-b = torch.empty(3, 16, 5, 5)  # 是根据输入的size信息生成张量的方法,其dtype默认torch.folat32
+b = torch.empty(
+    3, 16, 5, 5
+)  # 是根据输入的size信息生成张量的方法,其dtype默认torch.folat32
 nn.init.dirac_(b)
 c = torch.tensor(
     np.array([1, 2, 3.0])

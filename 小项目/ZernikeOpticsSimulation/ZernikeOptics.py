@@ -278,7 +278,9 @@ def ensure_dict(values, order="noll"):
         return values  # 字典数据无需处理
     if isinstance(values, np.ndarray):
         values = tuple(values.ravel())  # 将阵列值拉成一维
-    if isinstance(values, (tuple, list)):  # 确认值是元组或列表其中每个值都是振幅且按索引规则顺序对应像差类型
+    if isinstance(
+        values, (tuple, list)
+    ):  # 确认值是元组或列表其中每个值都是振幅且按索引规则顺序对应像差类型
         order = str(order).lower()
         order in ("noll", "ansi") or present(
             ValueError("Could not identify the Zernike nomenclature/order")

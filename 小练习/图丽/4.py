@@ -14,8 +14,7 @@ class ParkStatus(IntEnum):
 
 
 class ParkSpaceAnalyzer:
-    def __init__(self, image_queue: multiprocessing.Queue):
-        ...
+    def __init__(self, image_queue: multiprocessing.Queue): ...
 
     def _analyze_image(self, image):
         detected_objects = self._detector.predict(image)

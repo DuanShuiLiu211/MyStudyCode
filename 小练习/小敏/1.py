@@ -25,8 +25,12 @@ for file in all_files:
             df = pd.read_excel(file_path, sheet_name=sheet_name)
 
             # 过滤出包含"gfpt"的备注
-            mask = df["备注"].str.contains("gfpt", case=False, na=False)  # 这里假设列名为“项目备注”
-            filtered_data = df[mask].copy()  # 使用.copy()确保在原始DataFrame上没有任何修改
+            mask = df["备注"].str.contains(
+                "gfpt", case=False, na=False
+            )  # 这里假设列名为“项目备注”
+            filtered_data = df[
+                mask
+            ].copy()  # 使用.copy()确保在原始DataFrame上没有任何修改
 
             # 为每个筛选出的项目添加“补充说明”
             filtered_data["补充"] = (

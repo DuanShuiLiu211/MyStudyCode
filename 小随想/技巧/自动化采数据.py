@@ -33,7 +33,10 @@ class MyThread(threading.Thread):
 
 
 def CurrentMousePlace():
-    pyautogui.alert(text="请先选中对话框非确认按钮区域\n再将鼠标移至目标上方\n最后回车确认", title="命令")
+    pyautogui.alert(
+        text="请先选中对话框非确认按钮区域\n再将鼠标移至目标上方\n最后回车确认",
+        title="命令",
+    )
     CurrentMouseW, CurrentMouseH = pyautogui.position()
     return CurrentMouseW, CurrentMouseH
 

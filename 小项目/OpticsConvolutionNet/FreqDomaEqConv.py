@@ -325,9 +325,9 @@ plot.show()
 kernel_add_1 = torch.zeros(size=(scale * sc_ke_pad, scale * sc_ke_pad))
 for i in range(scale):
     for j in range(scale):
-        kernel_add_1[
-            sc_ke_pad * i + sc_ke_pad // 2, sc_ke_pad * j + sc_ke_pad // 2
-        ] = 1.0
+        kernel_add_1[sc_ke_pad * i + sc_ke_pad // 2, sc_ke_pad * j + sc_ke_pad // 2] = (
+            1.0
+        )
 
 
 result_add_1_fft_conv = torch.fft.ifftshift(

@@ -4,7 +4,9 @@ import shutil
 
 
 def GetArgs():
-    parser = argparse.ArgumentParser(description="将labelme标注后的json文件批量转换为图片")
+    parser = argparse.ArgumentParser(
+        description="将labelme标注后的json文件批量转换为图片"
+    )
     parser.add_argument("--input", "-i", help="json文件目录", default=".\\json")
     parser.add_argument("--out-mask", "-m", help="mask图存储目录", default=".\\mask")
     parser.add_argument("--out-img", "-r", help="json文件中提取出的原图存储目录")

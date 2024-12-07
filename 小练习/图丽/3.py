@@ -134,7 +134,9 @@ async def hello3():
 
 async def main():
     time_start = time.time()
-    result = await asyncio.gather(hello1(), hello2(), hello3())  # 使用gather来并发执行协程
+    result = await asyncio.gather(
+        hello1(), hello2(), hello3()
+    )  # 使用gather来并发执行协程
     print(result)
     time_end = time.time()
     print(f"Take time: {time_end - time_start}")

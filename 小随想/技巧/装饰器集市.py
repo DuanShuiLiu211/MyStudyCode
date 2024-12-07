@@ -2,7 +2,7 @@ import functools
 import time
 
 
-# 一个使用条件生存装饰器的例子
+# 一个使用条件生成装饰器的例子
 def take_time(threshold):
     def decorator(func):
         @functools.wraps(func)

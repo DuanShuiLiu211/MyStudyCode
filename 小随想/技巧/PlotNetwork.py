@@ -24,7 +24,9 @@ def plot_ann(number_input, number_hidden, number_output):
         start = end
         end = start + number_hidden[j]
         vertex_hidden_list.append(["v" + str(i) for i in range(start, end)])  # 隐藏层
-    vertex_output_list = ["v" + str(i) for i in range(end, end + number_output)]  # 输出层
+    vertex_output_list = [
+        "v" + str(i) for i in range(end, end + number_output)
+    ]  # 输出层
     vertex_list = []
     vertex_list.extend(vertex_input_list)
     list(map(lambda i: vertex_list.extend(vertex_hidden_list[i]), range(ceng_hidden)))

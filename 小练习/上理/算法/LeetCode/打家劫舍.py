@@ -21,6 +21,7 @@
 不偷窃第 k 间房屋，偷窃总金额为前 k-1 间房屋的最高总金额。
 即有 dp[i] = max{dp[i-2]+nums[i], dp[i-1]}
 """
+
 from typing import List
 
 

@@ -50,4 +50,6 @@ for i in range(len(foldlist)):
             if (int(imgList[k].split("/")[-1].replace(".png", "")) >= start_frame) & (
                 int(imgList[k].split("/")[-1].replace(".png", "")) <= end_frame
             ):
-                shutil.copy(imgList[k], imgList[k].replace("第三批", "第三批颈总动脉视频截取"))
+                shutil.copy(
+                    imgList[k], imgList[k].replace("第三批", "第三批颈总动脉视频截取")
+                )

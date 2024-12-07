@@ -1,7 +1,6 @@
 import cv2
 import numpy as np
 
-
 model = cv2.dnn.readNetFromCaffe(
     "./assets/opencv_dnn/vehicle_classify/deploy.prototxt",
     "./assets/opencv_dnn/vehicle_classify/model.caffemodel",

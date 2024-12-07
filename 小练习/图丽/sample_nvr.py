@@ -11,9 +11,8 @@ import argparse
 import json
 import os
 import subprocess
-from datetime import datetime
 import time
-
+from datetime import datetime
 
 BASE_PATH: str = os.path.abspath(os.path.dirname(__file__))
 

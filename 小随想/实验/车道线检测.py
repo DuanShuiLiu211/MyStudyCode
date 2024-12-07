@@ -1,30 +1,28 @@
+import sys
 import cv2
 import numpy as np
 import matplotlib.pyplot as plot
+from sklearn.cluster import DBSCAN
 
 
 class HighwayLaneDetector:
     def __init__(self, img_size=(720, 1280)):
         self.img_size = img_size
 
+        # 白线颜色阈值
         self.white_lower = np.array([200, 200, 200])
         self.white_upper = np.array([255, 255, 255])
-
-        self.edge_params = {
-            "low_threshold": 50,
-            "high_threshold": 150,
-            "aperture_size": 3,
-        }
 
         # 霍夫变换参数
         self.hough_params = {
             "rho": 1,
             "theta": np.pi / 180,
-            "threshold": 20,
-            "minLineLength": 30,
-            "maxLineGap": 35,
+            "threshold": 15,  # 降低阈值以检测更多线段
+            "minLineLength": 40,  # 增加最小线段长度
+            "maxLineGap": 50,  # 增加最大间隙以更好地连接线段
         }
 
+        # 直方图均衡化
         self.clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8, 8))
 
     def enhance_image(self, image):
@@ -33,130 +31,108 @@ class HighwayLaneDetector:
         l, a, b = cv2.split(lab)
         l_enhanced = self.clahe.apply(l)
         lab_enhanced = cv2.merge((l_enhanced, a, b))
-        enhanced = cv2.cvtColor(lab_enhanced, cv2.COLOR_LAB2BGR)
-        return enhanced
+        bgr_enhanced = cv2.cvtColor(lab_enhanced, cv2.COLOR_LAB2BGR)
+        return bgr_enhanced
 
     def detect_white_lines(self, image):
-        """白线检测"""
+        """白线检测 - 使用轮廓特征分析"""
+        # 基础的颜色阈值分割和形态学处理
         mask = cv2.inRange(image, self.white_lower, self.white_upper)
-
-        # 轻微的形态学处理来减少噪声
         kernel = np.ones((3, 3), np.uint8)
+        kernel_vertical = np.ones((5, 3), np.uint8)
         mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel, iterations=1)
-        mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel, iterations=1)
+        mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel_vertical)
 
-        return mask
-
-    def detect_edges(self, image):
-        """边缘检测"""
-        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-
-        # 使用更小的核进行模糊,保留更多细节
-        kernel_size = 3
-        blurred = cv2.GaussianBlur(gray, (kernel_size, kernel_size), 0)
-
-        # Canny边缘检测
-        edges = cv2.Canny(
-            blurred,
-            self.edge_params["low_threshold"],
-            self.edge_params["high_threshold"],
-            apertureSize=self.edge_params["aperture_size"],
-        )
-
-        return edges
-
-    def combine_detections(self, white_mask, edges):
-        """智能组合白线检测和边缘检测的特征"""
-        height, width = white_mask.shape
-
-        # 1. 分别增强两种特征中的垂直线条
-        kernel_vertical = np.ones((5, 1), np.uint8)
-        white_vertical = cv2.morphologyEx(white_mask, cv2.MORPH_CLOSE, kernel_vertical)
-        edges_vertical = cv2.morphologyEx(edges, cv2.MORPH_CLOSE, kernel_vertical)
-
-        # 2. 对白线掩码进行连通域分析，分别处理实线和虚线特征
+        # 连通域分析
         num_labels, labels, stats, _ = cv2.connectedComponentsWithStats(
-            white_vertical, connectivity=8
+            mask, connectivity=8
         )
-        white_filtered = np.zeros_like(white_mask)
-
-        # 虚线特征参数
-        min_height_dashed = height * 0.03  # 降低虚线最小高度要求
-        max_width_dashed = width * 0.03  # 适当降低宽度限制
-
-        # 实线特征参数
-        min_height_solid = height * 0.1  # 实线需要更长
-        max_width_solid = width * 0.05  # 实线可以稍宽
+        filtered_mask = np.zeros_like(mask)
+        height = mask.shape[0]
+        min_area = max(height * 0.05, 50) * 2  # 最小面积要求
 
         for i in range(1, num_labels):
-            x, y, w, h, area = stats[i]
-            aspect_ratio = h / w if w > 0 else float("inf")
+            # 获取区域面积
+            area = stats[i][4]
+            if area < min_area:
+                continue
 
-            # 分别处理实线和虚线特征
-            is_potential_solid = (
-                h > min_height_solid and w < max_width_solid and aspect_ratio > 3
+            # 获取当前连通域的掩码和轮廓
+            component_mask = (labels == i).astype(np.uint8)
+            contours, _ = cv2.findContours(
+                component_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
             )
-            is_potential_dashed = (
-                h > min_height_dashed
-                and h < min_height_solid
-                and w < max_width_dashed
-                and aspect_ratio > 1.5
+            if not contours:
+                continue
+
+            contour = contours[0]
+
+            # 1. 计算形状复杂度（面积与周长的比）
+            perimeter = cv2.arcLength(contour, True)
+            shape_complexity = (4 * np.pi * area) / (perimeter * perimeter)
+
+            # 2. 计算轮廓的拟合椭圆
+            if len(contour) < 5:
+                continue
+            ellipse = cv2.fitEllipse(contour)
+
+            # 获取椭圆的方向和扁率
+            angle = ellipse[2]  # 椭圆方向原始值为(-90,90]
+            # 将角度转换到[0,180)范围
+            if angle < 0:
+                angle += 180
+            # 将角度映射到[0,90]范围
+            if angle > 90:
+                angle = 180 - angle
+            vertical_deviation = abs(angle)
+
+            # 计算椭圆的长短轴比（扁率）
+            major_axis = max(ellipse[1])
+            minor_axis = min(ellipse[1])
+            ellipse_ratio = major_axis / minor_axis if minor_axis > 0 else float("inf")
+
+            # 3. 计算轮廓的不凸度
+            hull = cv2.convexHull(contour)
+            hull_area = cv2.contourArea(hull)
+            convexity = area / hull_area if hull_area > 0 else 0
+
+            # 4. 计算轮廓的矩形度
+            rect = cv2.minAreaRect(contour)
+            rect_area = rect[1][0] * rect[1][1]
+            rectangularity = area / rect_area if rect_area > 0 else 0
+
+            # 综合判断条件
+            is_line = (
+                shape_complexity < 0.5
+                and ellipse_ratio > 4
+                and vertical_deviation < 25
+                and convexity > 0.4
+                and rectangularity > 0.3
+                and area > min_area
             )
 
-            if is_potential_solid or is_potential_dashed:
-                component_mask = (labels == i).astype(np.uint8) * 255
-                white_filtered = cv2.bitwise_or(white_filtered, component_mask)
+            if is_line:
+                filtered_mask = cv2.bitwise_or(
+                    filtered_mask, component_mask.astype(np.uint8) * 255
+                )
 
-        # 3. 对边缘检测结果进行类似处理
-        num_labels, labels, stats, _ = cv2.connectedComponentsWithStats(
-            edges_vertical, connectivity=8
+        # 最终的形态学处理
+        filtered_mask = cv2.morphologyEx(
+            filtered_mask, cv2.MORPH_CLOSE, kernel_vertical
         )
-        edges_filtered = np.zeros_like(edges)
+        filtered_mask = cv2.morphologyEx(filtered_mask, cv2.MORPH_OPEN, kernel)
 
-        for i in range(1, num_labels):
-            x, y, w, h, area = stats[i]
-            aspect_ratio = h / w if w > 0 else float("inf")
-
-            # 使用相同的实虚线判断标准
-            is_potential_solid = (
-                h > min_height_solid and w < max_width_solid and aspect_ratio > 3
-            )
-            is_potential_dashed = (
-                h > min_height_dashed
-                and h < min_height_solid
-                and w < max_width_dashed
-                and aspect_ratio > 1.5
-            )
-
-            if is_potential_solid or is_potential_dashed:
-                component_mask = (labels == i).astype(np.uint8) * 255
-                edges_filtered = cv2.bitwise_or(edges_filtered, component_mask)
-
-        # 4. 智能组合两种过滤后的特征
-        # 首先找到两种特征都检测到的区域
-        overlap = cv2.bitwise_and(white_filtered, edges_filtered)
-
-        # 然后添加白线检测中置信度高的区域
-        high_conf_white = cv2.dilate(overlap, np.ones((3, 3), np.uint8))
-        white_confident = cv2.bitwise_and(
-            white_filtered, cv2.bitwise_not(high_conf_white)
-        )
-
-        # 最后添加边缘检测中与现有特征接近的区域
-        combined = cv2.bitwise_or(overlap, white_confident)
-        edge_complement = cv2.bitwise_and(edges_filtered, cv2.bitwise_not(combined))
-
-        # 进行最后的形态学清理
-        kernel = np.ones((3, 3), np.uint8)
-        combined = cv2.morphologyEx(combined, cv2.MORPH_CLOSE, kernel)
-        combined = cv2.morphologyEx(combined, cv2.MORPH_OPEN, kernel)
-
-        return combined
+        return filtered_mask
 
     def detect_lines(self, binary_image):
-        """改进线段检测的过滤逻辑"""
+        """线段检测 - 改进的霍夫变换和线段合并"""
+        # 进行形态学操作以增强垂直线条
+        kernel_vertical = np.ones((3, 1), np.uint8)
+        enhanced = cv2.morphologyEx(binary_image, cv2.MORPH_CLOSE, kernel_vertical)
+
+        # 霍夫变换检测线段
         lines = cv2.HoughLinesP(
-            binary_image,
+            enhanced,
             self.hough_params["rho"],
             self.hough_params["theta"],
             self.hough_params["threshold"],
@@ -167,26 +143,114 @@ class HighwayLaneDetector:
         if lines is None:
             return []
 
-        filtered_lines = []
+        # 预处理检测到的线段
         height = binary_image.shape[0]
+        preliminary_lines = []
 
         for line in lines:
             x1, y1, x2, y2 = line[0]
 
-            # 计算角度
-            angle = np.abs(np.arctan2(y2 - y1, x2 - x1) * 180 / np.pi)
+            # 确保y1总是较小的y值
+            if y2 < y1:
+                x1, x2 = x2, x1
+                y1, y2 = y2, y1
 
-            # 计算长度
-            length = np.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
+            # 计算角度和长度
+            dx = x2 - x1
+            dy = y2 - y1
+            angle = np.abs(np.arctan2(dy, dx) * 180 / np.pi)
+            length = np.sqrt(dx * dx + dy * dy)
 
-            # 更宽松的角度条件,但仍然保持合理范围
-            if (70 < angle < 110) and (length > height * 0.1):
-                filtered_lines.append(line[0])
+            # 使用更宽松的角度条件
+            if (60 < angle < 120) and (length > height * 0.05):
+                preliminary_lines.append([(x1, y1), (x2, y2), angle, length])
 
-        return filtered_lines
+        if not preliminary_lines:
+            return []
+
+        # 按x坐标分组
+        x_tolerance = binary_image.shape[1] * 0.02
+        preliminary_lines.sort(key=lambda l: (l[0][0] + l[1][0]) / 2)  # 按平均x坐标排序
+
+        merged_lines = []
+        current_group = [preliminary_lines[0]]
+
+        for line in preliminary_lines[1:]:
+            prev_line = current_group[-1]
+            curr_x = (line[0][0] + line[1][0]) / 2
+            prev_x = (prev_line[0][0] + prev_line[1][0]) / 2
+
+            # 检查是否属于同一组
+            if abs(curr_x - prev_x) < x_tolerance:
+                # 检查垂直重叠
+                y_overlap = min(line[1][1], prev_line[1][1]) - max(
+                    line[0][1], prev_line[0][1]
+                )
+
+                if y_overlap > -self.hough_params["maxLineGap"]:
+                    current_group.append(line)
+                else:
+                    # 合并当前组并开始新组
+                    if len(current_group) > 0:
+                        merged_line = self._merge_line_group(current_group)
+                        if merged_line is not None:
+                            merged_lines.append(merged_line)
+                    current_group = [line]
+            else:
+                # 合并当前组并开始新组
+                if len(current_group) > 0:
+                    merged_line = self._merge_line_group(current_group)
+                    if merged_line is not None:
+                        merged_lines.append(merged_line)
+                current_group = [line]
+
+        # 处理最后一组
+        if len(current_group) > 0:
+            merged_line = self._merge_line_group(current_group)
+            if merged_line is not None:
+                merged_lines.append(merged_line)
+
+        # 转换回原始格式 [x1, y1, x2, y2]
+        return [
+            [int(x1), int(y1), int(x2), int(y2)]
+            for (x1, y1), (x2, y2), _, _ in merged_lines
+        ]
+
+    def _merge_line_group(self, lines):
+        """合并一组线段"""
+        if not lines:
+            return None
+
+        # 如果只有一条线段
+        if len(lines) == 1:
+            return lines[0]
+
+        # 获取所有端点
+        points = []
+        for line in lines:
+            points.append(line[0])  # 起点
+            points.append(line[1])  # 终点
+
+        # 按y坐标排序
+        points.sort(key=lambda p: p[1])
+
+        # 获取最高和最低的点
+        top_point = points[0]
+        bottom_point = points[-1]
+
+        # 计算平均角度
+        avg_angle = np.mean([line[2] for line in lines])
+
+        # 计算合并后的长度
+        length = np.sqrt(
+            (bottom_point[0] - top_point[0]) ** 2
+            + (bottom_point[1] - top_point[1]) ** 2
+        )
+
+        return [top_point, bottom_point, avg_angle, length]
 
     def classify_lane_markings(self, lines, binary_image):
-        """改进车道线分类方法"""
+        """基于曲线拟合的车道线分类"""
         if not lines:
             return [], []
 
@@ -195,73 +259,107 @@ class HighwayLaneDetector:
 
         # 按x坐标分组
         lines_x = [(line, (line[0] + line[2]) / 2) for line in lines]
+        lines_x.sort(key=lambda x: x[1])  # 按x坐标排序
 
-        # 特别处理最左和最右的线段组
-        left_edge = width
-        right_edge = 0
-        for _, x in lines_x:
-            left_edge = min(left_edge, x)
-            right_edge = max(right_edge, x)
+        # 使用scikit-learn的DBSCAN聚类分组
+        x_coords = np.array([x for _, x in lines_x])
+        x_coords = x_coords.reshape(-1, 1)
+        db = DBSCAN(eps=x_tolerance * 3, min_samples=2)
+        labels = db.fit_predict(x_coords)
 
-        # 分组
-        lane_groups = {}
-        for line, x in lines_x:
-            group_id = int(x // x_tolerance)
-            if group_id not in lane_groups:
-                lane_groups[group_id] = []
-            lane_groups[group_id].append(line)
+        # 创建分组
+        groups = {}
+        for i, label in enumerate(labels):
+            if label < 0:  # 噪声点
+                continue
+            if label not in groups:
+                groups[label] = []
+            groups[label].append(lines_x[i][0])
 
         solid_lines = []
         dashed_lines = []
 
-        for group_id, group in lane_groups.items():
-            # 计算这组线段的平均x坐标
-            avg_x = sum((line[0] + line[2]) / 2 for line in group) / len(group)
+        for group in groups.values():
+            # 如果组内只有一条线
+            if len(group) == 1:
+                line = group[0]
+                length = np.sqrt((line[2] - line[0]) ** 2 + (line[3] - line[1]) ** 2)
+                if length > height * 0.25:
+                    solid_lines.append(line)
+                else:
+                    dashed_lines.append(line)
+                continue
+
+            # 收集所有线段的端点
+            points = []
+            for line in group:
+                points.append([line[0], line[1]])  # 起点
+                points.append([line[2], line[3]])  # 终点
+            points = np.array(points)
 
             # 按y坐标排序
-            group.sort(key=lambda l: min(l[1], l[3]))
+            points = points[points[:, 1].argsort()]
 
-            # 分析垂直连续性
-            y_segments = []
-            current_segment = [group[0]]
-            max_gap = height * 0.1  # 适当增加允许的间隙
+            # 尝试拟合多项式
+            try:
+                # 使用2阶多项式拟合
+                coeffs = np.polyfit(points[:, 1], points[:, 0], 2)
+                poly = np.poly1d(coeffs)
 
-            for i in range(1, len(group)):
-                prev_line = current_segment[-1]
-                curr_line = group[i]
+                # 计算拟合误差
+                fitted_x = poly(points[:, 1])
+                errors = np.abs(fitted_x - points[:, 0])
+                avg_error = np.mean(errors)
 
-                prev_bottom = max(prev_line[1], prev_line[3])
-                curr_top = min(curr_line[1], curr_line[3])
-                gap = curr_top - prev_bottom
+                # 如果拟合误差较小，说明这些点大致在同一条曲线上
+                if avg_error < x_tolerance * 2:
+                    # 计算首尾两点间的距离
+                    total_length = np.sqrt(
+                        (points[-1][0] - points[0][0]) ** 2
+                        + (points[-1][1] - points[0][1]) ** 2
+                    )
 
-                if gap < max_gap:
-                    current_segment.append(curr_line)
+                    # 计算所有线段的平均长度
+                    avg_seg_length = np.mean(
+                        [
+                            np.sqrt((line[2] - line[0]) ** 2 + (line[3] - line[1]) ** 2)
+                            for line in group
+                        ]
+                    )
+
+                    # 如果总长度大但平均线段长度小，归类为虚线
+                    if total_length > height * 0.25 and avg_seg_length < height * 0.15:
+                        dashed_lines.extend(group)
+                    else:
+                        for line in group:
+                            length = np.sqrt(
+                                (line[2] - line[0]) ** 2 + (line[3] - line[1]) ** 2
+                            )
+                            if length > height * 0.25:
+                                solid_lines.append(line)
+                            else:
+                                dashed_lines.append(line)
                 else:
-                    y_segments.append(current_segment)
-                    current_segment = [curr_line]
+                    # 拟合误差大，按单条线段处理
+                    for line in group:
+                        length = np.sqrt(
+                            (line[2] - line[0]) ** 2 + (line[3] - line[1]) ** 2
+                        )
+                        if length > height * 0.25:
+                            solid_lines.append(line)
+                        else:
+                            dashed_lines.append(line)
 
-            y_segments.append(current_segment)
-
-            # 分析特征
-            total_length = sum(
-                np.sqrt((line[2] - line[0]) ** 2 + (line[3] - line[1]) ** 2)
-                for segment in y_segments
-                for line in segment
-            )
-
-            coverage = total_length / height
-
-            # 根据位置和覆盖率判断
-            is_edge_line = (abs(avg_x - left_edge) < x_tolerance * 2) or (
-                abs(avg_x - right_edge) < x_tolerance * 2
-            )
-
-            if (is_edge_line and coverage > 0.5) or (coverage > 0.7):
-                solid_lines.extend([line for segment in y_segments for line in segment])
-            else:
-                dashed_lines.extend(
-                    [line for segment in y_segments for line in segment]
-                )
+            except np.linalg.LinAlgError:
+                # 如果拟合失败，按单条线段处理
+                for line in group:
+                    length = np.sqrt(
+                        (line[2] - line[0]) ** 2 + (line[3] - line[1]) ** 2
+                    )
+                    if length > height * 0.25:
+                        solid_lines.append(line)
+                    else:
+                        dashed_lines.append(line)
 
         return solid_lines, dashed_lines
 
@@ -292,14 +390,8 @@ class HighwayLaneDetector:
         # 颜色检测
         white_mask = self.detect_white_lines(enhanced)
 
-        # 边缘检测
-        edges = self.detect_edges(enhanced)
-
-        # 组合特征
-        combined = self.combine_detections(white_mask, edges)
-
         # 检测线段
-        lines = self.detect_lines(combined)
+        lines = self.detect_lines(white_mask)
 
         # 创建霍夫变换的可视化结果
         hough_result = image.copy()
@@ -309,68 +401,137 @@ class HighwayLaneDetector:
                 cv2.line(hough_result, (x1, y1), (x2, y2), (255, 255, 0), 2)
 
         # 分类车道线
-        solid_lines, dashed_lines = self.classify_lane_markings(lines, combined)
+        solid_lines, dashed_lines = self.classify_lane_markings(lines, white_mask)
 
         # 绘制最终结果
         result = self.draw_result(image, solid_lines, dashed_lines)
 
         if debug:
-            return result, white_mask, edges, combined, hough_result
+            return result, white_mask, hough_result
         return result
+
+
+def process_video(input_path, output_path):
+    """处理视频文件，将车道线检测结果写入新视频"""
+    # 打开视频文件
+    cap = cv2.VideoCapture(input_path)
+    if not cap.isOpened():
+        print("Error: Could not open video file")
+        return
+
+    # 获取视频参数
+    width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    fps = int(cap.get(cv2.CAP_PROP_FPS))
+    total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+
+    # 创建视频写入器
+    fourcc = cv2.VideoWriter.fourcc(*"mp4v")  # 或使用 'XVID'
+    out = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
+
+    # 创建车道线检测器
+    detector = HighwayLaneDetector(img_size=(height, width))
+
+    # 进度条所需变量
+    frame_count = 0
+
+    try:
+        while cap.isOpened():
+            ret, frame = cap.read()
+            if not ret:
+                break
+
+            # 处理当前帧
+            result = np.array(detector.process_image(frame), dtype=np.uint8)
+            out.write(result)
+
+            # 更新进度
+            frame_count += 1
+            progress = (frame_count / total_frames) * 100
+            print(f"\rProcessing: {progress:.1f}%", end="")
+
+    finally:
+        # 清理资源
+        cap.release()
+        out.release()
+        print("\nVideo processing completed")
 
 
 def main():
     """测试函数"""
-    # 初始化检测器
-    detector = HighwayLaneDetector()
+    import argparse
 
-    # 读取测试图像
-    image = cv2.imread("sample.jpg")
-    if image is None:
-        print("Error: Could not read the image")
-        return
-
-    # 处理图像
-    result, white_mask, edges, combined, hough_result = detector.process_image(
-        image, debug=True
+    parser = argparse.ArgumentParser(description="Highway Lane Detection")
+    parser.add_argument(
+        "--mode",
+        type=str,
+        choices=["image", "video"],
+        default="image",
+        help="Processing mode: image or video",
+    )
+    parser.add_argument(
+        "--input", type=str, required=True, help="Input image/video file path"
+    )
+    parser.add_argument(
+        "--output", type=str, default=None, help="Output file path (optional)"
     )
 
-    # 显示结果
-    plot.figure(figsize=(20, 10))
+    args = parser.parse_args()
 
-    plot.subplot(231)
-    plot.imshow(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
-    plot.title("Original Image")
-    plot.axis("off")
+    if args.mode == "image":
+        # 读取测试图像
+        image = cv2.imread(args.input)
+        if image is None:
+            print("Error: Could not read the image")
+            return
 
-    plot.subplot(232)
-    plot.imshow(white_mask, cmap="gray")
-    plot.title("White Line Mask")
-    plot.axis("off")
+        # 初始化检测器
+        detector = HighwayLaneDetector()
 
-    plot.subplot(233)
-    plot.imshow(edges, cmap="gray")
-    plot.title("Edge Detection")
-    plot.axis("off")
+        # 处理图像
+        result, white_mask, hough_result = detector.process_image(image, debug=True)
 
-    plot.subplot(234)
-    plot.imshow(combined, cmap="gray")
-    plot.title("Combined Detection")
-    plot.axis("off")
+        # 显示结果
+        plot.figure(figsize=(15, 10))
 
-    plot.subplot(235)
-    plot.imshow(cv2.cvtColor(hough_result, cv2.COLOR_BGR2RGB))
-    plot.title("Hough Transform Result")
-    plot.axis("off")
+        plot.subplot(221)
+        plot.imshow(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+        plot.title("Original Image")
+        plot.axis("off")
 
-    plot.subplot(236)
-    plot.imshow(cv2.cvtColor(result, cv2.COLOR_BGR2RGB))
-    plot.title("Final Result\nSolid(Red) & Dashed(Green)")
-    plot.axis("off")
+        plot.subplot(222)
+        plot.imshow(white_mask, cmap="gray")
+        plot.title("White Line Mask")
+        plot.axis("off")
 
-    plot.tight_layout()
-    plot.show()
+        plot.subplot(223)
+        plot.imshow(cv2.cvtColor(hough_result, cv2.COLOR_BGR2RGB))
+        plot.title("Hough Transform Result")
+        plot.axis("off")
+
+        plot.subplot(224)
+        plot.imshow(cv2.cvtColor(result, cv2.COLOR_BGR2RGB))
+        plot.title("Final Result\nSolid(Red) & Dashed(Green)")
+        plot.axis("off")
+
+        plot.tight_layout()
+
+        if args.output:
+            plot.savefig(args.output)
+        plot.show()
+
+    elif args.mode == "video":
+        output_path = args.output if args.output else "output.mp4"
+        process_video(args.input, output_path)
 
 
 if __name__ == "__main__":
+    sys.argv.extend(
+        [
+            "--mode",
+            "video",
+            "--input",
+            "./datas/videos/1.mp4",
+        ]
+    )
     main()

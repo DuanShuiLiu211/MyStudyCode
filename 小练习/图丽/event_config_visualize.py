@@ -19,7 +19,7 @@ def parse_arguments():
     parser.add_argument(
         "--font_path",
         type=str,
-        default="./datas/assets/font/simhei.ttf",
+        default="./assets/font/simhei.ttf",
         help="中文字体文件路径",
     )
     return parser.parse_args()
